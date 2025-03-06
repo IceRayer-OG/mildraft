@@ -167,3 +167,23 @@ export const settings = createTable(
     nameIndex: index("settings_idx").on(example.id),
   })
 );
+
+export const queue = createTable(
+  "queue",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    leagueId: integer("league_id").notNull(),
+    draftId: integer("draft_id").notNull(),
+    teamId: integer("team_id").notNull(),
+    name: varchar("name", { length: 256 }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+      () => new Date()
+    ),
+  },
+  (example) => ({
+    nameIndex: index("queue_idx").on(example.id),
+  })
+);

@@ -1,4 +1,5 @@
-
+import { Button } from "~/components/ui/button"
+import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -23,6 +24,11 @@ export default function HomePage() {
               guiding users on how to use it.
             </div>
           </div>
+        </div>
+        <div className="flex justify-center">
+          <Button asChild>
+            <Link href="/league">League</Link>
+          </Button>
         </div>
       </div>
     </main>

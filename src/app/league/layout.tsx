@@ -14,13 +14,9 @@ export default function LeagueLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
-
         <body>
             <LeagueNav />
             {children}
         </body>
-
-    </html>
   );
 }
