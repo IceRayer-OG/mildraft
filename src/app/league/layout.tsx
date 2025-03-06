@@ -13,9 +13,9 @@ export default function LeagueLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-        <body>
-            <LeagueNav />
+        <div>
+            {/* <LeagueNav /> */}
             {children}
-        </body>
+        </div>
   );
 }
