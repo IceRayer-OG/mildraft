@@ -25,11 +25,6 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="flex justify-center">
-          <Button asChild>
-            <Link href="/league">League</Link>
-          </Button>
-        </div>
       </div>
     </main>
   );
