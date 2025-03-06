@@ -36,8 +36,8 @@ Next steps:
   git commit -m "initial commit"
 
   TO DO LIST
-  [ ] Connect Vercel
+  [X] Connect Vercel
   [X] Connect DB
   [X] Connect Clerk
-  [ ] Reconnect to github
+  [X] Reconnect to github
   [ ] Restage UI
