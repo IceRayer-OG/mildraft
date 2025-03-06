@@ -1,4 +1,4 @@
-import { Players, columns } from "./columns"
+import { type Players, columns } from "./columns"
 import { DataTable } from "~/_components/data-table"
  
 async function getData(): Promise<Players[]> {

@@ -1,5 +1,5 @@
 import "~/styles/globals.css";
-import { LeagueNav } from "../../_components/LeagueNav";
+// import { LeagueNav } from "../../_components/LeagueNav";
 
 import { type Metadata } from "next";
 
