@@ -1,7 +1,7 @@
 "use client"
  
 import {
-  ColumnDef,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -14,7 +14,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table"
+} from "~/_components/ui/table"
  
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
