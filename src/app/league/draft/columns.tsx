@@ -2,6 +2,7 @@
  
 import { type ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react";
+import { z } from "zod";
 
 import { Button } from "~/_components/ui/button";
 import {
@@ -13,17 +14,20 @@ import {
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Players = {
-  id: string
-  playerName: string
-  position: "C" | "1B" | "2B" | "3V" | "SS" | "RF" | "CF" | "LF" | "P"
-  team: string
-  age: number
-  height: string
-  weight: number
-  throws: "R" | "L" | "B"
-  bats: "R" | "L" | "B"
-}
+
+const playersSchema = z.object({
+  id: z.number(),
+  playerName: z.string(),
+  position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
+  team: z.string(),
+  age: z.number(),
+  height: z.string(),
+  weight: z.number(),
+  throws: z.enum(["R", "L", "B"]),
+  bats: z.enum(["R", "L", "B"]),
+});
+
+export type Players = z.infer<typeof playersSchema>;
  
 export const columns: ColumnDef<Players>[] = [
   {
@@ -37,10 +41,6 @@ export const columns: ColumnDef<Players>[] = [
   { 
     accessorKey: "team", 
     header: "Team" 
-  },
-  {
-    accessorKey: "dlStatus",
-    header: "DL Eligble",
   },
   {
     accessorKey: "age",
@@ -77,10 +77,10 @@ export const columns: ColumnDef<Players>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(player.id)}>
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(player.id.toString())}>
               Draft
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(player.id)}>
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(player.id.toString())}>
               Queue
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -9,6 +9,7 @@ import {
   timestamp,
   varchar,
   boolean,
+  pgEnum,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -18,6 +19,9 @@ import {
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 export const createTable = pgTableCreator((name) => `mildraft_${name}`);
+export const positions = pgEnum('positions', ['P', 'C', '1B', '2B', '3B', 'SS', 'OF', 'CI', 'MI']);
+export const throws = pgEnum("throws", ["R", "L", "B"]);
+export const bats = pgEnum("bats", ["R", "L", "B"]);
 
 export const posts = createTable(
   "post",
@@ -79,6 +83,7 @@ export const players = createTable(
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
     teamId: integer("team_id").notNull(),
+    position: positions("positions"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -91,7 +96,7 @@ export const players = createTable(
   })
 );
 
-  export const drafts = createTable(
+export const drafts = createTable(
   "draft",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
@@ -117,6 +122,7 @@ export const draftPicks = createTable(
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     draftId: integer("draft_id").notNull(),
     playerId: integer("player_id").notNull(),
+    teamId: integer("team_id").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -136,7 +142,14 @@ export const pros = createTable(
     playerId: integer("player_id").notNull(),
     playerFirstName: varchar("player_first_name", { length: 256 }),
     playerLastName: varchar("player_last_name", { length: 256 }),
-    position: varchar("position", { length: 256 }),
+    playerName: varchar("player_name", { length: 256 }),
+    team: varchar("team", { length: 256 }),
+    position: positions("position"),
+    age: integer("age"),
+    height: varchar("height", { length: 256 }),
+    weight: integer("weight"),
+    throws: throws("throws"),
+    bats: bats("bats"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -168,7 +181,7 @@ export const settings = createTable(
   })
 );
 
-export const queue = createTable(
+export const queues = createTable(
   "queue",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
