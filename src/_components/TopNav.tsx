@@ -59,16 +59,16 @@ export function TopNav() {
                 }>
                 <div className="w-full">
                     <div className="block">
-                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-xl">
+                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-l">
                             <Link href="/league">League</Link>
                         </Button>
-                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-xl">
+                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-l">
                             <Link href="/league/team">Team</Link>
                         </Button>
-                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-xl">
+                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-l">
                             <Link href="/league/players">Players</Link>
                         </Button>
-                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-xl">
+                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-l">
                             <Link href="/league/draft">Draft</Link>
                         </Button>
                     </div>
