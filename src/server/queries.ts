@@ -3,6 +3,7 @@ import { db } from "./db";
 import { draftPicks, pros } from "./db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function getAllPosts() {
   const myPlayers = await db.query.players.findMany();
@@ -16,6 +17,7 @@ export async function getMyQueue() {
 
 export async function getDraftPlayers() {
   const draftPlayers = await db.query.pros.findMany();
+  revalidatePath("/league/draft");
   return draftPlayers;
 }
 

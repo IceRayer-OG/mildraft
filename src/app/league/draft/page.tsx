@@ -9,8 +9,8 @@ async function getData(): Promise<Players[]> {
   // Fetch data from your API here.
   const res = await getDraftPlayers() as Players[];
   return res;
-
 }
+
 export default async function DraftPage() {
   const data = await getData();
 
