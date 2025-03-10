@@ -1,6 +1,7 @@
 import "server-only";
 import { db } from "./db";
 import { draftPicks, pros } from "./db/schema";
+import { auth } from "@clerk/nextjs/server";
 import { sql } from "drizzle-orm";
 
 export async function getAllPosts() {
@@ -14,7 +15,7 @@ export async function getMyQueue() {
 }
 
 export async function getDraftPlayers() {
-  const draftPlayers = await db.select().from(pros);
+  const draftPlayers = await db.query.pros.findMany();
   return draftPlayers;
 }
 

@@ -46,6 +46,7 @@ export const leagues = createTable(
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
     commissioner: varchar("commissioner", { length: 256 }),
+    coCommissioner: varchar("co_commissioner", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -139,7 +140,7 @@ export const pros = createTable(
   "pros",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    playerId: integer("player_id").notNull(),
+    playerNumber: integer("player_number"),
     playerFirstName: varchar("player_first_name", { length: 256 }),
     playerLastName: varchar("player_last_name", { length: 256 }),
     playerName: varchar("player_name", { length: 256 }),

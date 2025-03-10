@@ -24,6 +24,9 @@ export function TopNav() {
                     <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-xl">
                         <Link href="/league/players">Players</Link>
                     </Button>
+                    <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-xl">
+                        <Link href="/league/draft">Draft</Link>
+                    </Button>
                 </div>
                 <div className="flex gap-4">
                     <div>Docs</div>

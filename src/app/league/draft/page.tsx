@@ -3,15 +3,16 @@ import { DataTable } from "~/_components/data-table";
 import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
 import { getDraftPlayers } from "~/server/queries";
 
+export const dynamic = "force-dynamic";
+
 async function getData(): Promise<Players[]> {
   // Fetch data from your API here.
-  const apiData = await getDraftPlayers();
+  const res = await getDraftPlayers() as Players[];
+  return res;
 
-  return apiData;
 }
-
 export default async function DraftPage() {
-  const data = await getData()
+  const data = await getData();
 
   return (
     <main className="flex-col justify-between w-full min-h-screen p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
