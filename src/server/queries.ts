@@ -18,23 +18,22 @@ export async function getMyQueue() {
   return myQueue;
 }
 
-export async function postToMyQueue() {
-
-  const user = await auth();
-  if (!user.userId) {
-    return { error: "Not logged in" };
-  }
+export async function postToMyQueue(prosId: number) {
+  // Authorization later
+  // const user = await auth();
+  // if (!user.userId) {
+  //   return { error: "Not logged in" };
+  // }
 
   try {
-    const myQueue = await db.insert(queues).values({
-      playerId: pros.id,
-      teamId: teams.id,
-      leagueId: leagues.id,
-      draftId: drafts.id,
+    await db.insert(queues).values({
+      playerId: prosId,
+      // teamId: teams.id,
+      // leagueId: leagues.id,
+      // draftId: drafts.id, 
     });
     return;
   } catch (error) {
-    console.log(error);
     return error;
   }
 }

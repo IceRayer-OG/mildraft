@@ -123,10 +123,10 @@ export const draftPicks = createTable(
   "draft_pick",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    leagueID: integer("league_id").notNull().references(() => leagues.id),
-    draftId: integer("draft_id").notNull().references(() => drafts.id),
-    playerId: integer("player_id").notNull().references(() => pros.id),
-    teamId: integer("team_id").notNull().references(() => teams.id),
+    leagueID: integer("league_id").references(() => leagues.id),  // Make not null later
+    draftId: integer("draft_id").references(() => drafts.id),     // Make not null later
+    playerId: integer("player_id").references(() => pros.id),     // Make not null later
+    teamId: integer("team_id").references(() => teams.id),        // Make not null later
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -189,10 +189,10 @@ export const queues = createTable(
   "queue",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    leagueId: integer("league_id").notNull().references(() => leagues.id),
-    draftId: integer("draft_id").notNull().references(() => drafts.id),
-    teamId: integer("team_id").notNull().references(() => teams.id),
-    playerId: integer("player_id").notNull().references(() => pros.id),
+    leagueId: integer("league_id").references(() => leagues.id),  // Make not null later
+    draftId: integer("draft_id").references(() => drafts.id),     // Make not null later
+    teamId: integer("team_id").references(() => teams.id),        // Make not null later
+    playerId: integer("player_id").references(() => pros.id),     // Make not null later
     name: varchar("name", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)

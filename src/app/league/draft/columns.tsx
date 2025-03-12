@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "~/_components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { postDraftPick, postToMyQueue, getMyQueue } from "~/server/queries";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -26,14 +27,13 @@ export type Players = {
   bats: "R" | "L" | "B" | null
 };
 
-function queuePlayer(playerToQueue: Players) {
+async function queuePlayer(playerToQueue: Players) {
   void navigator.clipboard.writeText(playerToQueue.playerName);
 
   // DB Call to add player to queue
-  
-  toast.message('Player Added to Queue',{
-    description: `${playerToQueue.playerName} has been added to your queue`
-  });
+  await postToMyQueue(playerToQueue.id);
+  toast.success( `${playerToQueue.playerName} has been added to your queue`);
+
 }
 
 async function removePlayerFromQueue(playerToRemove: Players) {
