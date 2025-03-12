@@ -1,5 +1,4 @@
 import "~/styles/globals.css";
-// import { LeagueNav } from "../../_components/LeagueNav";
 
 import { type Metadata } from "next";
 
@@ -14,7 +13,6 @@ export default function LeagueLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
         <div>
-            {/* <LeagueNav /> */}
             {children}
         </div>
   );

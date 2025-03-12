@@ -1,9 +1,9 @@
 import "server-only";
+
 import { db } from "./db";
-import { draftPicks, pros } from "./db/schema";
+import { draftPicks, pros, teams, leagues, drafts, queues } from "./db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { sql } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
 
 export async function getAllPosts() {
   const myPlayers = await db.query.players.findMany();
@@ -11,14 +11,44 @@ export async function getAllPosts() {
 }
 
 export async function getMyQueue() {
+  // Setup auth to see access to your queue
+
+  
   const myQueue = await db.query.players.findMany();
   return myQueue;
 }
 
+export async function postToMyQueue() {
+
+  const user = await auth();
+  if (!user.userId) {
+    return { error: "Not logged in" };
+  }
+
+  try {
+    const myQueue = await db.insert(queues).values({
+      playerId: pros.id,
+      teamId: teams.id,
+      leagueId: leagues.id,
+      draftId: drafts.id,
+    });
+    return;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
+
 export async function getDraftPlayers() {
-  const draftPlayers = await db.query.pros.findMany();
-  revalidatePath("/league/draft");
-  return draftPlayers;
+  // Build in auth for access to league
+
+  try {
+    const draftPlayers = await db.query.pros.findMany();
+    return draftPlayers;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 }
 
 export async function postDraftPick() {

@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 import { TopNav } from "../_components/TopNav";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "sonner";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
@@ -19,7 +20,10 @@ export default function RootLayout({
       <ClerkProvider>
         <body>
           <TopNav />
-          {children}
+          <main>
+            {children}
+          </main>
+          <Toaster />
         </body>
       </ClerkProvider>
     </html>

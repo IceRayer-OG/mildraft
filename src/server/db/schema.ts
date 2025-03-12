@@ -28,6 +28,9 @@ export const posts = createTable(
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
+    description: varchar("description", { length: 256 }),
+    leagueId: integer("league_id").notNull().references(() => leagues.id),
+    ownerId: integer("owner_id").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -64,7 +67,7 @@ export const teams = createTable(
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
-    leagueId: integer("league_id").notNull(),
+    leagueId: integer("league_id").notNull().references(() => leagues.id),
     owernId: integer("owner_id"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -83,7 +86,7 @@ export const players = createTable(
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
-    teamId: integer("team_id").notNull(),
+    teamId: integer("team_id").notNull().references(() => teams.id),
     position: positions("positions"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -102,9 +105,8 @@ export const drafts = createTable(
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
-    leagueId: integer("league_id").notNull(),
-    teamId: integer("team_id").notNull(),
-    playerId: integer("player_id").notNull(),
+    leagueId: integer("league_id").notNull().references(() => leagues.id),
+    teamId: integer("team_id").notNull().references(() => teams.id),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -121,9 +123,10 @@ export const draftPicks = createTable(
   "draft_pick",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    draftId: integer("draft_id").notNull(),
-    playerId: integer("player_id").notNull(),
-    teamId: integer("team_id").notNull(),
+    leagueID: integer("league_id").notNull().references(() => leagues.id),
+    draftId: integer("draft_id").notNull().references(() => drafts.id),
+    playerId: integer("player_id").notNull().references(() => pros.id),
+    teamId: integer("team_id").notNull().references(() => teams.id),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -167,7 +170,7 @@ export const settings = createTable(
   "settings",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    leagueId: integer("league_id").notNull(),
+    leagueId: integer("league_id").notNull().references(() => leagues.id),
     draftsEnabled: boolean("drafts_enabled").notNull(),
     draftType: varchar("draft_type", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -186,9 +189,10 @@ export const queues = createTable(
   "queue",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    leagueId: integer("league_id").notNull(),
-    draftId: integer("draft_id").notNull(),
-    teamId: integer("team_id").notNull(),
+    leagueId: integer("league_id").notNull().references(() => leagues.id),
+    draftId: integer("draft_id").notNull().references(() => drafts.id),
+    teamId: integer("team_id").notNull().references(() => teams.id),
+    playerId: integer("player_id").notNull().references(() => pros.id),
     name: varchar("name", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)

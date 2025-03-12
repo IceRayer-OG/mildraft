@@ -8,6 +8,7 @@ import { useState } from "react";
 
 export function TopNav() {
     const [isOpen, setIsOpen] = useState(false);
+    
     return (
         <nav className="flex flex-wrap w-full p-4 font-semibold text-xl bg-gradient-to-t from-[#12026d] to-[#15162c] text-white shadow-md">
             <div className="hidden md:flex w-full justify-between gap-4">
