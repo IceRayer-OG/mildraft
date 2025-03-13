@@ -9,8 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/_components/ui/dropdown-menu";
+import  { dbQueuePlayer, dbRemovePlayerFromQueue, dbDraftPlayer } from "./draftFunctions";
 import { toast } from "sonner";
-import { postDraftPick, postToMyQueue, getMyQueue } from "~/server/queries";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -28,28 +28,32 @@ export type Players = {
 };
 
 async function queuePlayer(playerToQueue: Players) {
-  void navigator.clipboard.writeText(playerToQueue.playerName);
-
-  // DB Call to add player to queue
-  await postToMyQueue(playerToQueue.id);
-  toast.success( `${playerToQueue.playerName} has been added to your queue`);
-
+  try {
+    await dbQueuePlayer(playerToQueue);
+    toast.success(`${playerToQueue.playerName} has been added to your queue`);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 async function removePlayerFromQueue(playerToRemove: Players) {
-  // DB Call to remove player from queue
-
-  toast.message('Player Removed from Queue',{
-    description: `${playerToRemove.playerName} has been removed from your queue`
-  });
-
+  try {
+    await dbRemovePlayerFromQueue(playerToRemove);
+    toast.message('Player Removed from Queue',{
+      description: `${playerToRemove.playerName} has been removed from your queue`
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 async function draftPlayer(playerToDraft: Players) {
-  // DB Call to draft player
-
-  toast.success(`${playerToDraft.playerName} has been drafted`);
-
+  try {
+    await dbDraftPlayer(playerToDraft);
+    toast.success(`${playerToDraft.playerName} has been added to your queue`);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export const draftColumns: ColumnDef<Players>[] = [

@@ -20,7 +20,7 @@ export function QueueDrawer() {
       <Drawer>
         <DrawerTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">Queue</span>
             </Button>
         </DrawerTrigger>
         <DrawerContent>
@@ -32,7 +32,7 @@ export function QueueDrawer() {
           </DrawerHeader>
           <DrawerClose />
           <DrawerFooter>
-            <Button variant="outline">Save</Button>
+            <Button variant="outline">Close</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

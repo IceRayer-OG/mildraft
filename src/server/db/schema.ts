@@ -12,6 +12,7 @@ import {
   pgEnum,
 } from "drizzle-orm/pg-core";
 
+
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
  * database instance for multiple projects.
@@ -27,10 +28,10 @@ export const posts = createTable(
   "post",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    name: varchar("name", { length: 256 }),
-    description: varchar("description", { length: 256 }),
-    leagueId: integer("league_id").notNull().references(() => leagues.id),
-    ownerId: integer("owner_id").notNull(),
+    title: varchar("title", { length: 256 }),
+    body: varchar("body", { length: 1024 }),
+    leagueId: integer("league_id").references(() => leagues.id), // Make not null later
+    ownerId: varchar("owner_id", { length: 256 }),                                // Make not null later         
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -39,7 +40,7 @@ export const posts = createTable(
     ),
   },
   (example) => ({
-    nameIndex: index("name_idx").on(example.name),
+    nameIndex: index("name_idx").on(example.title),
   })
 );
 

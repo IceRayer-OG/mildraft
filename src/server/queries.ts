@@ -1,18 +1,50 @@
 import "server-only";
 
 import { db } from "./db";
-import { draftPicks, pros, teams, leagues, drafts, queues } from "./db/schema";
+import { draftPicks, pros, teams, leagues, drafts, queues, posts } from "./db/schema";
 import { auth } from "@clerk/nextjs/server";
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
+import { type Post } from "../utils/posts";
 
 export async function getAllPosts() {
   const myPlayers = await db.query.players.findMany();
   return myPlayers;
 }
 
-export async function getMyQueue() {
-  // Setup auth to see access to your queue
+export async function getLeaguePosts(league: number) {
+  // Authorization
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
 
+  const leaguePosts = await db.query.posts.findMany({
+    orderBy: (model, {desc}) => desc(posts.createdAt),
+    limit: 3,
+    // where: eq(posts.leagueId, league),
+  });
+  return leaguePosts;
+
+}
+
+export async function createAPost(postData: Post) {
+  // Authorization
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in" );
+
+  const newPost = postData;
+
+  const postNewPost = await db.insert(posts).values({
+    title: newPost.title,
+    body: newPost.body,
+    leagueId: 1,
+    ownerId: user.userId,
+  });
+  return postNewPost;
+}
+
+export async function getMyQueue() {
+  // Authorization later
+  // const user = await auth();
+  // if (!user.userId) throw new Error("Not logged in");
   
   const myQueue = await db.query.players.findMany();
   return myQueue;
@@ -21,36 +53,42 @@ export async function getMyQueue() {
 export async function postToMyQueue(prosId: number) {
   // Authorization later
   // const user = await auth();
-  // if (!user.userId) {
-  //   return { error: "Not logged in" };
-  // }
+  // if (!user.userId) throw new Error("Not logged in");
 
-  try {
-    await db.insert(queues).values({
-      playerId: prosId,
-      // teamId: teams.id,
-      // leagueId: leagues.id,
-      // draftId: drafts.id, 
-    });
-    return;
-  } catch (error) {
-    return error;
-  }
+  await db.insert(queues).values({
+    playerId: prosId,
+    // teamId: teams.id,
+    // leagueId: leagues.id,
+    // draftId: drafts.id, 
+  });
+  return { success: "Player added to queue" };
+
+}
+
+export async function deletePlayerFromQueue(queueId: number) {
+  // Authorization later
+  // const user = await auth();
+  // if (!user.userId) throw new Error("Not logged in");
+
+  await db.delete(queues).where(eq(queues.id, queueId));
+
 }
 
 export async function getDraftPlayers() {
   // Build in auth for access to league
+  // const user = await auth();
+  // if (!user.userId) throw new Error("Not logged in");
 
-  try {
-    const draftPlayers = await db.query.pros.findMany();
-    return draftPlayers;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+  const draftPlayers = await db.query.pros.findMany();
+  return draftPlayers;
+
 }
 
 export async function postDraftPick() {
+  // Authorization later
+  // const user = await auth();
+  // if (!user.userId) throw new Error("Not logged in");
+
   const playerDrafted = await db.insert(draftPicks).values({
     draftId: 728,
     playerId: 728,
