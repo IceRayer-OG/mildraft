@@ -12,7 +12,7 @@ export async function getAllPosts() {
 }
 
 export async function getLeaguePosts(league: number) {
-  // Authorization
+  // Authorization required
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");
 
