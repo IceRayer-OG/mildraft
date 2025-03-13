@@ -41,7 +41,7 @@ export async function createAPost(postData: Post) {
   return postNewPost;
 }
 
-export async function getMyQueue() {
+export async function getMyQueue(): Promise<unknown> {
   // Authorization later
   // const user = await auth();
   // if (!user.userId) throw new Error("Not logged in");
@@ -74,7 +74,7 @@ export async function deletePlayerFromQueue(queueId: number) {
 
 }
 
-export async function getDraftPlayers() {
+export async function getDraftPlayers(): Promise<unknown> {
   // Build in auth for access to league
   // const user = await auth();
   // if (!user.userId) throw new Error("Not logged in");

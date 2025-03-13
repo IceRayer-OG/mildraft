@@ -50,7 +50,7 @@ async function removePlayerFromQueue(playerToRemove: Players) {
 async function draftPlayer(playerToDraft: Players) {
   try {
     await dbDraftPlayer(playerToDraft);
-    toast.success(`${playerToDraft.playerName} has been added to your queue`);
+    toast.success(`${playerToDraft.playerName} has been drafted`);
   } catch (error) {
     console.log(error);
   }
