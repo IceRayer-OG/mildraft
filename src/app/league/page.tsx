@@ -1,4 +1,4 @@
-import Image from "next/image";
+// import Image from "next/image";
 import { Avatar, AvatarImage,AvatarFallback } from "~/_components/ui/avatar";
 import { Posts } from "~/_components/posts";
 
