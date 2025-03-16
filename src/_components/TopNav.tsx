@@ -32,12 +32,14 @@ export function TopNav() {
                 <div className="flex gap-4">
                     <div>Docs</div>
                     <div>Help</div>
-                    <SignedOut>
-                        <SignInButton />
-                    </SignedOut>
-                    <SignedIn>
-                        <UserButton />
-                    </SignedIn>
+                    <div>
+                        <SignedOut>
+                            <SignInButton />
+                        </SignedOut>
+                        <SignedIn>
+                            <UserButton />
+                        </SignedIn>
+                    </div>
                 </div>
             </div>
             <div className="flex w-full justify-between gap-4 md:hidden">
