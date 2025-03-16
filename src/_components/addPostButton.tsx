@@ -8,7 +8,7 @@ async function createPost() {
     title: "New Post",
     body: "This is a new post",
   };
-  await createAPost(postData);
+  //await createAPost(postData);
 }
 
 export function addPostButton() {
