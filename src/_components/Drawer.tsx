@@ -11,16 +11,16 @@ import {
 import { Button } from "~/_components/ui/button";
 import { DataTable } from "./data-table";
 import { queueColumns } from "./QueueColumns";
-import { type Players } from "~/utils/players";
+import { type QueuePlayers } from "~/utils/players";
 import { getMyQueue } from "~/server/queries";
 
-async function getMyQueueData(): Promise<Players[]> {
+async function getMyQueueData(): Promise<QueuePlayers[]> {
   // Fetch data from your API here.
-  const myQueueData = await getMyQueue() as Players[];
+  const myQueueData = await getMyQueue() as QueuePlayers[];
   return myQueueData;
 }
 
-export async function DrawerExample() {
+export async function QueueDrawer() {
 
     const data = await getMyQueueData();
 

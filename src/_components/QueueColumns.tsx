@@ -11,59 +11,60 @@ import {
 } from "~/_components/ui/dropdown-menu";
 import { dbRemovePlayerFromQueue, dbDraftPlayer } from "~/app/league/draft/draftFunctions";
 import { toast } from "sonner";
-import { type Players } from "~/utils/players";
+import { type QueuePlayers } from "~/utils/players";
 
-async function removePlayerFromQueue(playerToRemove: Players) {
+async function removePlayerFromQueue(playerToRemove: QueuePlayers) {
   try {
     await dbRemovePlayerFromQueue(playerToRemove);
     toast.message('Player Removed from Queue',{
-      description: `${playerToRemove.playerName} has been removed from your queue`
+      description: `${playerToRemove.pros.playerName} has been removed from your queue`
     });
   } catch (error) {
     console.log(error);
+    toast.error('Error removing player from queue');
   }
 }
 
-async function draftPlayer(playerToDraft: Players) {
+async function draftPlayer(playerToDraft: QueuePlayers) {
   try {
-    await dbDraftPlayer(playerToDraft);
-    toast.success(`${playerToDraft.playerName} has been drafted`);
+    await dbDraftPlayer(playerToDraft.pros);
+    toast.success(`${playerToDraft.pros.playerName} has been drafted`);
   } catch (error) {
     console.log(error);
   }
 }
 
-export const queueColumns: ColumnDef<Players>[] = [
+export const queueColumns: ColumnDef<QueuePlayers>[] = [
     {
-      accessorKey: "playerName",
+      accessorKey: "pros.playerName",
       header: "Player Name",
     },
     {
-      accessorKey: "position",
+      accessorKey: "pros.position",
       header: "Position",
     },
     { 
-      accessorKey: "team", 
+      accessorKey: "pros.team", 
       header: "Team" 
     },
     {
-      accessorKey: "age",
+      accessorKey: "pros.age",
       header: "Age",
     },
     {
-      accessorKey: "height",
+      accessorKey: "pros.height",
       header: "Height",
     },
     {
-      accessorKey: "weight",
+      accessorKey: "pros.weight",
       header: "Weight",
     },
     {
-      accessorKey: "throws",
+      accessorKey: "pros.throws",
       header: "Throws",
     },
     {
-      accessorKey: "bats",
+      accessorKey: "pros.bats",
       header: "Bats",
     },
     {
