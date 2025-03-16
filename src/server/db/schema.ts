@@ -10,6 +10,7 @@ import {
   varchar,
   boolean,
   pgEnum,
+  unique,
 } from "drizzle-orm/pg-core";
 
 
@@ -194,6 +195,7 @@ export const queues = createTable(
     draftId: integer("draft_id").references(() => drafts.id),     // Make not null later
     teamId: integer("team_id").references(() => teams.id),        // Make not null later
     playerId: integer("player_id").references(() => pros.id),     // Make not null later
+    userId: varchar("user_id", { length: 256 }),                  // Make not null later
     name: varchar("name", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -203,6 +205,7 @@ export const queues = createTable(
     ),
   },
   (example) => ({
-    nameIndex: index("queue_idx").on(example.id),
+    nameIndex: index("queue_idx").on(example.playerId),
+    uniqueNameIndex: unique("inQueue").on(example.playerId, example.userId),
   })
 );

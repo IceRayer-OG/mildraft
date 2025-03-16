@@ -43,32 +43,35 @@ export async function createAPost(postData: Post) {
 
 export async function getMyQueue(): Promise<unknown> {
   // Authorization later
-  // const user = await auth();
-  // if (!user.userId) throw new Error("Not logged in");
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
   
-  const myQueue = await db.query.players.findMany();
+  const myQueue = await db.select().from(queues)
+    .leftJoin(pros, eq(queues.playerId, pros.id))
+    .where(eq(queues.userId, user.userId)
+  );
   return myQueue;
 }
 
 export async function postToMyQueue(prosId: number) {
   // Authorization later
-  // const user = await auth();
-  // if (!user.userId) throw new Error("Not logged in");
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+
 
   await db.insert(queues).values({
     playerId: prosId,
+    userId: user.userId,
     // teamId: teams.id,
     // leagueId: leagues.id,
     // draftId: drafts.id, 
   });
-  return { success: "Player added to queue" };
-
 }
 
 export async function deletePlayerFromQueue(queueId: number) {
   // Authorization later
-  // const user = await auth();
-  // if (!user.userId) throw new Error("Not logged in");
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
 
   await db.delete(queues).where(eq(queues.id, queueId));
 

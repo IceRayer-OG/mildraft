@@ -11,18 +11,19 @@ import {
 } from "~/_components/ui/dropdown-menu";
 import  { dbQueuePlayer, dbDraftPlayer } from "./draftFunctions";
 import { toast } from "sonner";
-import { type Players } from "~/utils/players"; 
+import { type DraftPlayers } from "~/utils/players"; 
 
-async function queuePlayer(playerToQueue: Players) {
+async function queuePlayer(playerToQueue: DraftPlayers) {
   try {
     await dbQueuePlayer(playerToQueue);
     toast.success(`${playerToQueue.playerName} has been added to your queue`);
   } catch (error) {
     console.log(error);
+    toast.error('Error adding player to queue');
   }
 }
 
-async function draftPlayer(playerToDraft: Players) {
+async function draftPlayer(playerToDraft: DraftPlayers) {
   try {
     await dbDraftPlayer(playerToDraft);
     toast.success(`${playerToDraft.playerName} has been drafted`);
@@ -31,7 +32,7 @@ async function draftPlayer(playerToDraft: Players) {
   }
 }
 
-export const draftColumns: ColumnDef<Players>[] = [
+export const draftColumns: ColumnDef<DraftPlayers>[] = [
   {
     accessorKey: "playerName",
     header: "Player Name",

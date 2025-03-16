@@ -2,14 +2,14 @@ import { draftColumns } from "./columns";
 import { DataTable } from "~/_components/data-table";
 import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
 import { getDraftPlayers} from "~/server/queries";
-import { type Players } from "~/utils/players";
-import { DrawerExample } from "~/_components/Drawer";
+import { type DraftPlayers } from "~/utils/players";
+import { QueueDrawer } from "~/_components/Drawer";
 
 export const dynamic = "force-dynamic";
 
-async function getPlayerData(): Promise<Players[]> {
+async function getPlayerData(): Promise<DraftPlayers[]> {
   // Fetch data from your API here.
-  const draftablePlayers = await getDraftPlayers() as Players[];
+  const draftablePlayers = await getDraftPlayers() as DraftPlayers[];
   return draftablePlayers;
 }
 
@@ -28,7 +28,7 @@ export default async function DraftPage() {
       </div>
       <div className="flex justify-center w-full">
         <div className="fixed bottom-0 size-16">
-          <DrawerExample />
+          <QueueDrawer />
         </div>
       </div>
     </main>
