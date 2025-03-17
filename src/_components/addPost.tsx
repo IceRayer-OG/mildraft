@@ -25,31 +25,31 @@ export async function addPost(postData: Post) {
   }
 }
 
-export function addPostDialog() {
+export function AddPostDialog() {
     return (
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline">Create</Button>
+          <Button variant="ghost">Create</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Create a post</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re done.
+              What do you want to tell the league. Click Post when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
+              <Label htmlFor="title" className="text-right">
                 Title
               </Label>
-              <Input id="name" value="Pedro Duarte" className="col-span-3" />
+              <Input id="title" value="Title" className="col-span-3" />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="username" className="text-right">
+              <Label htmlFor="body" className="text-right">
                 Body
               </Label>
-              <Input id="username" value="@peduarte" className="col-span-3" />
+              <Input id="body" value="Get Detailed" className="col-span-3" />
             </div>
           </div>
           <DialogFooter>

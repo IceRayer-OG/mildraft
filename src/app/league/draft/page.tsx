@@ -17,7 +17,7 @@ export default async function DraftPage() {
   const data = await getPlayerData();
 
   return (
-    <main className="flex flex-col justify-between w-full min-h-lvh p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
+    <main className="flex flex-col justify-between w-full min-h-screen p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
       <div>
         <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
           <div className="w-full overflow-hidden">
