@@ -12,9 +12,9 @@ export default function Posts({
   
   return (
   <div className="flex flex-col gap-4">
-    <ul>
+    <ul className="grow">
       {allPosts.map((post) => (
-        <li key={post.id}>
+        <li key={post.id} className="flex-col gap-8">
           <h2>{post.title}</h2>
           <p>{post.body}</p>
         </li>

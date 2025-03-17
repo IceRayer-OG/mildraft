@@ -22,18 +22,24 @@ export default async function LeaguePage() {
           </Avatar> 
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-4">
-        <div className="col-span-1 p-4">
-          <p>League Posts</p>
-          <Suspense fallback={<div>Loading...</div>}>
-            <Posts posts={posts} />
-          </Suspense>
-          <AddPostDialog />
+      <div className="h-full w-full">
+        <div className="grid grid-cols-4 gap-4">
+          <div className="col-span-1 p-4">
+            <div className="flex flex-col gap-4 items-center">
+              <p>League Posts</p>
+              <Suspense fallback={<div>Loading...</div>}>
+                <Posts posts={posts} />
+              </Suspense>
+              <AddPostDialog />
+            </div>
+          </div>
+          <div className="col-span-3 p-4">
+            <div className="flex flex-col gap-4 items-center">
+              <p>The Core Content. </p>
+            </div>
+          </div>
         </div>
-        <div className="col-span-3 p-4">
-          <p>This Core Content. </p>
-        </div>
-      </div>
+      </div>  
     </div>
   );
 }

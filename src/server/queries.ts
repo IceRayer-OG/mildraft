@@ -1,3 +1,4 @@
+// Persistance layer for queries to the database
 import "server-only";
 
 import { db } from "./db";
@@ -11,7 +12,7 @@ export async function getAllPosts() {
   return myPlayers;
 }
 
-export async function getLeaguePosts(league: number): Promise<unknown> {
+export async function getLeaguePosts(league: number): Promise<Post[]> {
   // Authorization required
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");
@@ -21,7 +22,8 @@ export async function getLeaguePosts(league: number): Promise<unknown> {
     limit: 3,
     // where: eq(posts.leagueId, league),
   });
-  return leaguePosts;
+
+  return leaguePosts as Post[];
 
 }
 
