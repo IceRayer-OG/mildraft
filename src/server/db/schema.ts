@@ -70,7 +70,7 @@ export const teams = createTable(
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
     leagueId: integer("league_id").notNull().references(() => leagues.id),
-    owernId: integer("owner_id"),
+    owernId: varchar("owner_id", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

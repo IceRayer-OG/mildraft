@@ -1,10 +1,15 @@
 // import Image from "next/image";
 import { Avatar, AvatarImage,AvatarFallback } from "~/_components/ui/avatar";
-import { Posts } from "~/_components/posts";
+import Posts from "~/_components/Posts";
+import { Suspense } from "react";
+import { getLeaguePosts } from "~/server/queries";
+import { AddPostDialog } from "~/_components/addPost";
 
 export default async function LeaguePage() {
+  const posts = getLeaguePosts(1);
+
   return (
-    <div className="min-h-screen w-full p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
+    <div className="flex flex-col min-h-screen min-w-screen p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
       <div className="flex justify-between gap-4">
         <div className="flex">Logo</div>
         <div>
@@ -17,10 +22,16 @@ export default async function LeaguePage() {
           </Avatar> 
         </div>
       </div>
-      <div>
-        <div className="flex flex-col gap-4">
-          <p>This is your home page. </p>
-          <Posts />
+      <div className="grid grid-cols-4 gap-4">
+        <div className="col-span-1 p-4">
+          <p>League Posts</p>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Posts posts={posts} />
+          </Suspense>
+          <AddPostDialog />
+        </div>
+        <div className="col-span-3 p-4">
+          <p>This Core Content. </p>
         </div>
       </div>
     </div>

@@ -11,7 +11,7 @@ export async function getAllPosts() {
   return myPlayers;
 }
 
-export async function getLeaguePosts(league: number) {
+export async function getLeaguePosts(league: number): Promise<unknown> {
   // Authorization required
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");
