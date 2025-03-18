@@ -1,5 +1,5 @@
 import { draftColumns } from "./columns";
-import { DataTable } from "~/_components/data-table";
+import { DataTable } from "./draft-data-table";
 import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
 import { getDraftPlayers} from "~/server/queries";
 import { type DraftPlayers } from "~/utils/players";
@@ -17,7 +17,15 @@ export default async function DraftPage() {
   const data = await getPlayerData();
 
   return (
-    <main className="flex flex-col justify-between w-full min-h-screen p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
+    <main className="flex flex-col w-full min-h-screen gap-4 p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
+      <div className="flex border p-2 rounded-md">
+        <div className="justify-start pr-2">Picks</div>
+        <div className="flex grow justify-evenly">
+          <div>1</div>
+          <div>2</div>
+          <div>3</div>
+        </div>
+      </div>
       <div>
         <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
           <div className="w-full overflow-hidden">
