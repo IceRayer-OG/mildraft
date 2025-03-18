@@ -19,6 +19,7 @@ async function removePlayerFromQueue(playerToRemove: QueuePlayers) {
     toast.message('Player Removed from Queue',{
       description: `${playerToRemove.pros.playerName} has been removed from your queue`
     });
+
   } catch (error) {
     console.log(error);
     toast.error('Error removing player from queue');
