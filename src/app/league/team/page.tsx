@@ -1,17 +1,14 @@
-import { type Players, columns } from "./columns"
-import { DataTable } from "~/_components/data-table"
- 
+import { columns } from "~/features/players/components/player-columns";
+import { DataTable } from "~/features/players/components/player-data-table";
+import { type Players } from "~/utils/players"; 
 async function getData(): Promise<Players[]> {
   // Fetch data from your API here.
   return [
     {
-      id: "728ed52f",
+      id: 1,
       playerName: "Inigo Montoya",
       position: "P",
       team: "Florida Marlins",
-      age: 22,
-      height: "6' 0''",
-      weight: 190,
       throws: "R",
       bats: "R",
     },
@@ -24,7 +21,7 @@ export default async function DemoPage() {
  
   return (
     <main className="flex min-h-screen p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
-        <div className="container mx-auto py-10">
+        <div className="grow p-4">
             <DataTable columns={columns} data={data} />
         </div>
     </main>

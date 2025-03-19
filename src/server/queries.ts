@@ -84,7 +84,9 @@ export async function getDraftPlayers(): Promise<unknown> {
   // const user = await auth();
   // if (!user.userId) throw new Error("Not logged in");
 
-  const draftPlayers = await db.query.pros.findMany();
+  const draftPlayers = await db.query.pros.findMany({
+    orderBy: (model, {asc}) => asc(pros.rank),
+  });
   return draftPlayers;
 
 }

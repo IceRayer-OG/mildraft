@@ -2,6 +2,7 @@ import z from "zod";
 
 const draftPlayersSchema = z.object({
     id: z.number(),
+    rank: z.number(),
     playerName: z.string(),
     userId: z.string(),
     position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
@@ -16,6 +17,7 @@ const draftPlayersSchema = z.object({
 const queuePlayersSchema = z.object({
     pros: z.object({
         id: z.number(),
+        rank: z.number(),
         playerName: z.string(),
         userId: z.string(),
         position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
@@ -36,5 +38,22 @@ const queuePlayersSchema = z.object({
     }),
 });
 
+const teamPlayersSchema = z.object({
+    id: z.number(),
+    playerName: z.string(),
+    position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
+    team: z.string(),
+});
+const PlayersSchema = z.object({
+    id: z.number(),
+    playerName: z.string(),
+    position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
+    team: z.string(),
+    throws: z.enum(["R", "L", "B"]),
+    bats: z.enum(["R", "L", "B"]),
+});
+
 export type DraftPlayers = z.infer<typeof draftPlayersSchema>;
 export type QueuePlayers = z.infer<typeof queuePlayersSchema>;
+export type teamPlayers = z.infer<typeof teamPlayersSchema>;
+export type Players = z.infer<typeof PlayersSchema>;

@@ -34,6 +34,10 @@ async function draftPlayer(playerToDraft: DraftPlayers) {
 
 export const draftColumns: ColumnDef<DraftPlayers>[] = [
   {
+    accessorKey: "rank",
+    header: "Rank",
+  },
+  {
     accessorKey: "playerName",
     header: "Player Name",
   },

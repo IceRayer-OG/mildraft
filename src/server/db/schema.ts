@@ -146,6 +146,7 @@ export const pros = createTable(
     weight: integer("weight"),
     throws: throws("throws"),
     bats: bats("bats"),
+    rank: integer("rank"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
