@@ -29,8 +29,8 @@ export default async function DraftPage() {
           <p className="grow content-center">Picks</p>
           <Separator />
           <div className="flex items-center p-2 gap-2">
-            <p className="font-semibold text-lg">Clock: </p>
-            <p>4:00</p>
+            <p className="font-semibold">Clock: </p>
+            <p>4:00:00</p>
           </div>
         </div>
         <div className="flex grow justify-evenly items-center">

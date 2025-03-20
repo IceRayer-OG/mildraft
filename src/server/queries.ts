@@ -2,9 +2,9 @@
 import "server-only";
 
 import { db } from "./db";
-import { draftPicks, pros, teams, leagues, drafts, queues, posts } from "./db/schema";
+import { draftPicks, pros, teams, leagues, drafts, queues, posts, players } from "./db/schema";
 import { auth } from "@clerk/nextjs/server";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { type Post } from "../utils/posts";
 
 export async function getAllPosts() {
@@ -60,7 +60,6 @@ export async function postToMyQueue(prosId: number) {
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");
 
-
   await db.insert(queues).values({
     playerId: prosId,
     userId: user.userId,
@@ -102,4 +101,43 @@ export async function postDraftPick() {
     teamId: 728,
   });
   return playerDrafted;
+}
+
+export async function getMyTeam(): Promise<unknown> {
+  // Authorization later
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+
+  const myTeamId = await db.query.teams.findFirst({
+    where: eq(teams.ownerId, user.userId),
+  });
+
+  if(myTeamId === undefined) throw new Error("No team found");
+
+  const myTeam = await db.select().from(players)
+    .leftJoin(pros, eq(players.id, pros.id))
+    .where(eq(players.teamId, myTeamId.id)
+  );
+
+  return myTeam;
+}
+
+export async function dropPlayer(playerId: number) {
+  // Authorization later
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+
+  const myTeamId = await db.query.teams.findFirst({
+    where: eq(teams.ownerId, user.userId),
+  });
+  
+  if(myTeamId === undefined) throw new Error("No team found");
+
+  await db.delete(players).where(
+    and(
+      eq(players.id, playerId),
+      eq(players.teamId, myTeamId.id)
+    )
+  );
+  
 }

@@ -10,21 +10,27 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "~/_components/ui/button";
 import { type teamPlayers } from "~/utils/players";
+import { dbDropPlayer } from "~/features/team/database/teamActions";
+import { toast } from "sonner";
  
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
+async function dropPlayer(player: teamPlayers) {
+  await dbDropPlayer(player.player.id);
+  toast.success(`${player.pros.playerName} has been removed from your team`);
+}
+
  
-export const columns: ColumnDef<teamPlayers>[] = [
+export const teamColumns: ColumnDef<teamPlayers>[] = [
   {
-    accessorKey: "playerName",
+    accessorKey: "pros.playerName",
     header: "Player Name",
   },
   {
-    accessorKey: "position",
+    accessorKey: "pros.position",
     header: "Position",
+    id: "position",
   },
   { 
-    accessorKey: "team", 
+    accessorKey: "pros.team", 
     header: "Team" 
   },
   {
@@ -42,7 +48,7 @@ export const columns: ColumnDef<teamPlayers>[] = [
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem /* onClick={() => dropPlayer(player)}> */>
+                <DropdownMenuItem onClick={() => dropPlayer(player)}>
                   Drop
                 </DropdownMenuItem>
               </DropdownMenuContent>
