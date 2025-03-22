@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/_components/ui/dropdown-menu";
-import  { dbQueuePlayer, dbDraftPlayer } from "~/server/actions/draftActions";
+import  { dbQueuePlayer, dbDraftPlayer } from "~/features/drafts/database/draftActions";
 import { toast } from "sonner";
 import { type DraftPlayers } from "~/utils/players"; 
 
@@ -33,6 +33,10 @@ async function draftPlayer(playerToDraft: DraftPlayers) {
 }
 
 export const draftColumns: ColumnDef<DraftPlayers>[] = [
+  {
+    accessorKey: "rank",
+    header: "Rank",
+  },
   {
     accessorKey: "playerName",
     header: "Player Name",

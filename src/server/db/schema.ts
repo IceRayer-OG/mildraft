@@ -60,7 +60,7 @@ export const teams = createTable(
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
     leagueId: integer("league_id").notNull().references(() => leagues.id),
-    owernId: varchar("owner_id", { length: 256 }),
+    ownerId: varchar("owner_id", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -78,7 +78,9 @@ export const players = createTable(
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
+    leagueId: integer("league_id").notNull().references(() => leagues.id),
     teamId: integer("team_id").notNull().references(() => teams.id),
+    proId: integer("pro_id").notNull().references(() => pros.id),
     position: positions("positions"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -89,6 +91,7 @@ export const players = createTable(
   },
   (example) => ({
     nameIndex: index("player_idx").on(example.name),
+    uniquePlayerIndex: unique("playerProId").on(example.proId, example.leagueId),
   })
 );
 
@@ -146,6 +149,7 @@ export const pros = createTable(
     weight: integer("weight"),
     throws: throws("throws"),
     bats: bats("bats"),
+    rank: integer("rank"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

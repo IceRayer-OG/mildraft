@@ -1,9 +1,10 @@
 // import Image from "next/image";
-import { Avatar, AvatarImage,AvatarFallback } from "~/_components/ui/avatar";
-import Posts from "~/_components/Posts";
 import { Suspense } from "react";
 import { getLeaguePosts } from "~/server/queries";
-import { AddPostDialog } from "~/_components/addPost";
+
+import { Avatar, AvatarImage,AvatarFallback } from "~/_components/ui/avatar";
+import Posts from "~/_components/Posts";
+import { AddPostDialog } from "~/features/posts/components/addPost";
 
 export default async function LeaguePage() {
   const posts = getLeaguePosts();
@@ -23,9 +24,9 @@ export default async function LeaguePage() {
         </div>
       </div>  
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="col-span-1 p-4">
+        <div className="col-span-1 p-2">
           <div className="flex flex-col gap-4 items-center">
-            <p>League Posts</p>
+            <p className="text-xl font-semibold">League Posts</p>
             <Suspense fallback={<div>Loading...</div>}>
               <Posts posts={posts} />
             </Suspense>

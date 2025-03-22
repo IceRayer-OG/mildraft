@@ -9,8 +9,8 @@ import {
     DrawerTrigger,
 } from "~/_components/ui/drawer";
 import { Button } from "~/_components/ui/button";
-import { DataTable } from "./data-table";
-import { queueColumns } from "./QueueColumns";
+import { DataTable } from "../../../_components/data-table";
+import { queueColumns } from "./queue-columns";
 import { type QueuePlayers } from "~/utils/players";
 import { getMyQueue } from "~/server/queries";
 
