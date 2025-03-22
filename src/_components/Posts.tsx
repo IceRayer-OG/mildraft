@@ -11,10 +11,10 @@ export default function Posts({
   const allPosts = use(posts);
   
   return (
-  <div className="flex flex-col gap-4">
+  <div className="flex flex-col">
     <ul className="grow">
       {allPosts.map((post) => (
-        <li key={post.id} className="flex-col gap-4">
+        <li key={post.id} className="flex-col p-2">
           <p className="font-bold">{post.title}</p>
           <p>{post.body}</p>
         </li>

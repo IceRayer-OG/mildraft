@@ -34,26 +34,26 @@ export const teamColumns: ColumnDef<teamPlayers>[] = [
     header: "Team" 
   },
   {
-        id: "actions",
-        header: "Actions",
-        cell: ({ row }) => {
-          const player = row.original
-     
-          return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="destructive" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => dropPlayer(player)}>
-                  Drop
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )
-        },
-      },
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const player = row.original
+  
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="destructive" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => dropPlayer(player)}>
+              Drop
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    },
+  },
 ]

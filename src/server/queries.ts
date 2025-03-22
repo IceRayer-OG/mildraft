@@ -5,7 +5,7 @@ import { db } from "./db";
 import { draftPicks, pros, teams, leagues, drafts, queues, posts, players } from "./db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq, sql } from "drizzle-orm";
-import { type Post } from "../utils/posts";
+import { type Post, type CreatePost } from "../utils/posts";
 
 export async function getAllPosts() {
   const myPlayers = await db.query.players.findMany();
@@ -19,7 +19,7 @@ export async function getLeaguePosts(): Promise<Post[]> {  // add league: number
 
   const leaguePosts = await db.query.posts.findMany({
     orderBy: (model, {desc}) => desc(posts.createdAt),
-    limit: 3,
+    limit: 4,
     // where: eq(posts.leagueId, league),
   });
 
@@ -27,7 +27,7 @@ export async function getLeaguePosts(): Promise<Post[]> {  // add league: number
 
 }
 
-export async function createAPost(postData: Post) {
+export async function createAPost(postData: CreatePost) {
   // Authorization
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in" );
@@ -37,7 +37,7 @@ export async function createAPost(postData: Post) {
   const postNewPost = await db.insert(posts).values({
     title: newPost.title,
     body: newPost.body,
-    leagueId: 1,
+    leagueId: newPost.leagueId,
     ownerId: user.userId,
   });
   return postNewPost;
