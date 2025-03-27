@@ -70,7 +70,7 @@ export async function postToMyQueue(prosId: number) {
 }
 
 export async function deletePlayerFromQueue(queueId: number) {
-  // Authorization later
+  // Authorization 
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");
 
@@ -79,9 +79,9 @@ export async function deletePlayerFromQueue(queueId: number) {
 }
 
 export async function getDraftPlayers(): Promise<unknown> {
-  // Build in auth for access to league
-  // const user = await auth();
-  // if (!user.userId) throw new Error("Not logged in");
+  // Authorization
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
 
   const draftPlayers = await db.query.pros.findMany({
     orderBy: (model, {asc}) => asc(pros.rank),
@@ -90,16 +90,28 @@ export async function getDraftPlayers(): Promise<unknown> {
 
 }
 
-export async function postDraftPick() {
-  // Authorization later
-  // const user = await auth();
-  // if (!user.userId) throw new Error("Not logged in");
-
-  const playerDrafted = await db.insert(draftPicks).values({
-    draftId: 728,
+export async function postDraftWriteIn() {
+  // Authorization
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+  
+  await db.insert(draftPicks).values({
     playerId: 728,
     teamId: 728,
   });
+
+}
+
+export async function postDraftPick() {
+  // Authorization
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+
+  const playerDrafted = await db.insert(draftPicks).values({
+    playerId: 728,
+    teamId: 728,
+  });
+
   return playerDrafted;
 }
 
@@ -120,6 +132,36 @@ export async function getMyTeam(): Promise<unknown> {
   );
 
   return myTeam;
+}
+
+export async function getFreeAgents() {
+  // Authorization later
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+
+  const freeAgents = await db.query.pros.findMany();
+  
+  return freeAgents;
+
+}
+
+export async function addFreeAgentToTeam(pro: number) {
+  // Authorization later
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+
+  const myTeamId = await db.query.teams.findFirst({
+    where: eq(teams.ownerId, user.userId),
+  });
+
+  if(myTeamId === undefined) throw new Error("No team found");
+
+  await db.insert(players).values({
+    leagueId: myTeamId.leagueId,
+    teamId: myTeamId.id,
+    proId: pro,
+  }).onConflictDoNothing();
+
 }
 
 export async function dropPlayer(playerId: number) {

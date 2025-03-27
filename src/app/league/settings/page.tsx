@@ -8,11 +8,12 @@ export default function SettingsPage() {
           <p>The Core Content. </p>
         </div>
         <div> Draft Settings
-          <p>The Core Content. </p>
+          <p>Start Date/Time </p>
+          <p>Pick Duration</p>
         </div>
         <div> Team Settings
           <p>The Core Content. </p>
         </div>
     </div>
   )
-}   
+}
