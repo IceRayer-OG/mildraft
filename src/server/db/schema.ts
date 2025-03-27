@@ -134,6 +134,28 @@ export const draftPicks = createTable(
   })
 );
 
+export const draftSettings = createTable(
+  "draft_settings",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    leagueId: integer("league_id").notNull().references(() => leagues.id),
+    draftId: integer("draft_id").notNull().references(() => drafts.id),
+    startDate: timestamp("start_date", { withTimezone: true }),
+    draftType: varchar("draft_type", { length: 256 }),
+    snakeDraft: boolean("snake_draft").default(false),
+    pickDuration: integer("pick_duration"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+      () => new Date()
+    ),
+  },
+  (example) => ({
+    nameIndex: index("draft_settings_idx").on(example.id),
+  })
+);
+
 export const pros = createTable(
   "pros",
   {
@@ -167,8 +189,12 @@ export const settings = createTable(
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     leagueId: integer("league_id").notNull().references(() => leagues.id),
-    draftsEnabled: boolean("drafts_enabled").notNull(),
-    draftType: varchar("draft_type", { length: 256 }),
+    draftsEnabled: boolean("drafts_enabled").default(false),
+    name: varchar("name", { length: 256 }),
+    abbreviation: varchar("abbreviation", { length: 10 }),
+    primaryColor: varchar("primary_color", { length: 7 }),
+    sceondaryColor: varchar("secondary_color", { length: 7 }),
+    teams: integer("teams"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
