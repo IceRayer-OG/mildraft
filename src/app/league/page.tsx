@@ -41,6 +41,7 @@ export default async function LeaguePage() {
         <div className="col-span-3 p-4">
           <div className="flex flex-col gap-4 items-center">
             <p>Settings Options Updated </p>
+            <p>Team UI Updates Next </p>
           </div>
         </div>
       </div>
