@@ -12,12 +12,15 @@ export default async function LeaguePage() {
 
   return (
     <div className="flex flex-col min-h-screen min-w-screen p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
-      <div className="flex justify-between gap-4">
-        <div className="h-24 w-24">Logo</div>
+      <div className="flex min-h-20 items-center justify-between gap-4">
+        <Avatar>
+          <AvatarImage src="/_assets/avatar.png" alt="Avatar" />
+          <AvatarFallback className="text-black">SVB</AvatarFallback>
+        </Avatar>
         <div>
           <p className="font-semibold text-xl md:text-4xl">Welcome to SvBaseball!</p>
         </div>
-        <div className="flex gap-4 content-right">
+        <div className="flex gap-4 items-center content-right">
           <SettingDialog />
           <Avatar >
             <AvatarImage src="/_assets/avatar.png" alt="Avatar" />
