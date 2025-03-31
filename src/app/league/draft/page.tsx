@@ -1,3 +1,5 @@
+// React and Next.js imports
+import { Suspense } from "react";
 // Queries
 import { getDraftPlayers} from "~/server/queries";
 // Utilities and type definitions
@@ -42,7 +44,9 @@ export default async function DraftPage() {
       <div>
         <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
           <div className="w-full overflow-hidden">
+            <Suspense fallback={<div className="w-full h-full">Loading...</div>}>
               <DataTable columns={draftColumns} data={data} />
+            </Suspense>
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
