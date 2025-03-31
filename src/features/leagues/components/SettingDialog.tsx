@@ -15,7 +15,7 @@ export function SettingDialog() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="secondary">Settings</Button>
+                <Button variant="ghost">Settings</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
