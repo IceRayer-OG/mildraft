@@ -18,7 +18,7 @@ export async function dbQueuePlayer(playerToQueue: DraftPlayers) {
 export async function dbRemovePlayerFromQueue(playerToRemove: QueuePlayers) {
   // DB Call to remove player from queue
   await deletePlayerFromQueue(playerToRemove.queue.id);
-  revalidatePath("league/queue");
+  revalidatePath("league/draft");
 }
 
 export async function dbDraftPlayer(playerToDraft: DraftPlayers) {
@@ -27,4 +27,11 @@ export async function dbDraftPlayer(playerToDraft: DraftPlayers) {
   // revalidatePath("league/queue");
   // toast.success(`${playerToDraft.playerName} has been drafted`);
 
+}
+
+export async function dbDraftWriteInPlayer(playerToDraft: DraftPlayers) {
+  // DB Call to draft player
+  // await postPlayerDrafted(playerToDraft.id);
+  // revalidatePath("league/queue");
+  // toast.success(`${playerToDraft.playerName} has been drafted`);
 }
