@@ -8,7 +8,7 @@ export async function dbQueuePlayer(playerToQueue: DraftPlayers) {
   // DB Call to add player to queue
   try {
     await postToMyQueue(playerToQueue.id);
-    revalidatePath("league/queue");
+    revalidatePath("league/draft");
   } catch (error) {
     console.log(error);
     throw new Error("Error adding player to queue");
