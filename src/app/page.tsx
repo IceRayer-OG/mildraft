@@ -13,7 +13,7 @@ export default function HomePage() {
             <h3 className="text-2xl font-bold">First Steps →</h3>
             <div className="text-lg">
               Just the basics - Get Everything scaffolded for league managers
-              Setting up the database and authentication.
+              Setting up the draft functionality.
               Make it mobile friendly.
             </div>
           </div>
