@@ -20,7 +20,8 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.12.4",
+    "@clerk/clerk-react": "^5.25.5",
+    "@clerk/nextjs": "^6.12.12",
     "@dotenvx/dotenvx": "^1.38.5",
     "@hookform/resolvers": "^4.1.3",
     "@neondatabase/serverless": "^0.10.4",
