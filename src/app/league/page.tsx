@@ -1,7 +1,6 @@
 // import Image from "next/image";
 import { Suspense } from "react";
 import { getLeaguePosts } from "~/server/queries";
-import {DatePickerDemo} from "~/_components/DatePicker";
 
 import { Avatar, AvatarImage,AvatarFallback } from "~/_components/ui/avatar";
 import Posts from "~/_components/Posts";
@@ -43,7 +42,6 @@ export default async function LeaguePage() {
           <div className="flex flex-col gap-4 items-center">
             <p>Settings Options Updated </p>
             <p>Team UI Updates Next </p>
-            <DatePickerDemo />
           </div>
         </div>
       </div>
