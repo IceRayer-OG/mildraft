@@ -4,8 +4,15 @@ import "server-only";
 import { db } from "./db";
 import { draftPicks, pros, teams, leagues, drafts, queues, posts, players } from "./db/schema";
 import { auth } from "@clerk/nextjs/server";
-import { and, eq, sql } from "drizzle-orm";
+import { and, asc, eq, isNull, sql } from "drizzle-orm";
 import { type Post, type CreatePost } from "../utils/posts";
+
+async function checkAuthorization() {
+  // Authorization
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+  return user;
+}
 
 export async function getAllPosts() {
   const myPlayers = await db.query.players.findMany();
@@ -13,7 +20,7 @@ export async function getAllPosts() {
 }
 
 export async function getLeaguePosts(): Promise<Post[]> {  // add league: number
-  // Authorization required
+  // Authorization
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");
 
@@ -102,6 +109,19 @@ export async function postDraftWriteIn() {
 
 }
 
+export async function getDraftPicks() {
+  // Authorization
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+
+  const draftPicksData = await db.select().from(draftPicks)
+    .where(and(isNull(draftPicks.playerId), eq(draftPicks.draftId, 2)))
+    .orderBy(asc(draftPicks.pickNumber))
+    .leftJoin(teams, eq(draftPicks.teamId, teams.id));
+
+  return draftPicksData;
+}
+
 export async function postDraftPick() {
   // Authorization
   const user = await auth();
@@ -150,12 +170,16 @@ export async function addFreeAgentToTeam(pro: number) {
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");
 
+  // Check user is team owner
   const myTeamId = await db.query.teams.findFirst({
     where: eq(teams.ownerId, user.userId),
   });
 
   if(myTeamId === undefined) throw new Error("No team found");
 
+  // Check Free Agent pick up is allowed
+
+  // Add free Agent Player to team
   await db.insert(players).values({
     leagueId: myTeamId.leagueId,
     teamId: myTeamId.id,
@@ -169,12 +193,14 @@ export async function dropPlayer(playerId: number) {
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");
 
+  // Check user is team owner
   const myTeamId = await db.query.teams.findFirst({
     where: eq(teams.ownerId, user.userId),
   });
   
   if(myTeamId === undefined) throw new Error("No team found");
 
+  // Delete player from team
   await db.delete(players).where(
     and(
       eq(players.id, playerId),

@@ -99,9 +99,8 @@ export const drafts = createTable(
   "draft",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    name: varchar("name", { length: 256 }),
-    leagueId: integer("league_id").notNull().references(() => leagues.id),
-    teamId: integer("team_id").notNull().references(() => teams.id),
+    leagueId: integer("league_id").references(() => leagues.id),  // Make not null later
+    draftYear: integer("draft_year"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -109,16 +108,14 @@ export const drafts = createTable(
       () => new Date()
     ),
   },
-  (example) => ({
-    nameIndex: index("draft_idx").on(example.name),
-  })
 );
 
 export const draftPicks = createTable(
   "draft_pick",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    leagueID: integer("league_id").references(() => leagues.id),  // Make not null later
+    pickNumber: integer("pick_number"),
+    leagueId: integer("league_id").references(() => leagues.id),  // Make not null later
     draftId: integer("draft_id").references(() => drafts.id),     // Make not null later
     playerId: integer("player_id").references(() => pros.id),     // Make not null later
     teamId: integer("team_id").references(() => teams.id),        // Make not null later

@@ -1,5 +1,4 @@
 import z from "zod";
-import { teams } from "~/server/db/schema";
 
 const draftPlayersSchema = z.object({
     id: z.number(),
