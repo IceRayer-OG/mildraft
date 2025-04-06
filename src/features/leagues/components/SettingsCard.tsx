@@ -1,4 +1,5 @@
-import { Button } from "~/_components/ui/button"
+"use client"
+
 import {
   Card,
   CardContent,
@@ -16,7 +17,8 @@ import {
   TabsTrigger,
 } from "~/_components/ui/tabs"
 import { Checkbox } from "~/_components/ui/checkbox"
-import { DatePicker } from "~/_components/DatePicker"
+import { Button } from "~/_components/ui/button"
+import { DatePickerDemo } from "~/_components/DatePicker"
 
 export function LeagueSettingsTabsCard() {
   return (
@@ -44,9 +46,6 @@ export function LeagueSettingsTabsCard() {
               <Input id="abbr" defaultValue="SVBB" />
             </div>
           </CardContent>
-          <CardFooter>
-            <Button>Save</Button>
-          </CardFooter>
         </Card>
       </TabsContent>
       <TabsContent value="draft">
@@ -64,12 +63,9 @@ export function LeagueSettingsTabsCard() {
             </div>
             <div className="flex items-center space-y-1">
               <Label htmlFor="new" >Start Date/Time</Label>
-              <DatePicker />
+              <DatePickerDemo />
             </div>
           </CardContent>
-          <CardFooter>
-            <Button>Save</Button>
-          </CardFooter>
         </Card>
       </TabsContent>
       <TabsContent value="team">
@@ -90,9 +86,6 @@ export function LeagueSettingsTabsCard() {
               <Input id="teamsallowed" type="draftStart" />
             </div>
           </CardContent>
-          <CardFooter>
-            <Button>Save</Button>
-          </CardFooter>
         </Card>
       </TabsContent>
     </Tabs>

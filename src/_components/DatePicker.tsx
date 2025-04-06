@@ -13,14 +13,14 @@ import {
   PopoverTrigger,
 } from "~/_components/ui/popover"
 
-export function DatePicker() {
+export function DatePickerDemo() {
   const [date, setDate] = React.useState<Date>()
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant={"ghost"}
+          variant={"outline"}
           className={cn(
             "w-[240px] justify-start text-left font-normal",
             !date && "text-muted-foreground"
