@@ -13,11 +13,11 @@ import {
   PopoverTrigger,
 } from "~/_components/ui/popover"
 
-export function DatePickerDemo() {
+export function DatePicker() {
   const [date, setDate] = React.useState<Date>()
 
   return (
-    <Popover>
+    <Popover modal={true}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
