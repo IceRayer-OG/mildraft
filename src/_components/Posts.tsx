@@ -2,6 +2,7 @@
 
 import { type Post } from "~/utils/posts";
 import { use } from "react";
+import { Separator } from "~/_components/ui/separator";
 
 export default function Posts({
   posts,
@@ -15,7 +16,8 @@ export default function Posts({
     <ul className="grow">
       {allPosts.map((post) => (
         <li key={post.id} className="flex-col p-2">
-          <p className="font-bold">{post.title}</p>
+          <p className="text-center font-bold">{post.title}</p>
+          <Separator />
           <p>{post.body}</p>
         </li>
       ))} 

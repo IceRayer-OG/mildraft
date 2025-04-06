@@ -18,7 +18,7 @@ import {
 } from "~/_components/ui/tabs"
 import { Checkbox } from "~/_components/ui/checkbox"
 import { Button } from "~/_components/ui/button"
-import { DatePickerDemo } from "~/_components/DatePicker"
+import { DatePicker } from "~/_components/DatePicker"
 
 export function LeagueSettingsTabsCard() {
   return (
@@ -61,9 +61,9 @@ export function LeagueSettingsTabsCard() {
               <Label htmlFor="draften">Draft Enabled</Label>
               <Checkbox id="draften" />
             </div>
-            <div className="flex items-center space-y-1">
+            <div className="flex justify-between items-center space-y-1">
               <Label htmlFor="new" >Start Date/Time</Label>
-              <DatePickerDemo />
+              <DatePicker />
             </div>
           </CardContent>
         </Card>
