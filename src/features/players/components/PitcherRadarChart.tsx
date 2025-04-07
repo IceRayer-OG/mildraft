@@ -19,11 +19,11 @@ import {
 } from "~/_components/ui/chart";
 
 const pitchSpeedData = [
-  { pitch: "4SFB", speed: 95, percent: 30 },
-  { pitch: "2SFB", speed: 92, percent: 20 },
-  { pitch: "CB", speed: 88, percent: 15 },
-  { pitch: "CU", speed: 84, percent: 20 },
-  { pitch: "SL", speed: 90,percent: 15 }
+  { pitch: "4SFB", speed: 95 },
+  { pitch: "2SFB", speed: 92 },
+  { pitch: "CB", speed: 88 },
+  { pitch: "CU", speed: 84 },
+  { pitch: "SL", speed: 90 },
 ]
 
 const chartConfig = {
@@ -46,10 +46,10 @@ export function PitcherRadarChart() {
           Ptich Speed by Pitch Type
         </CardDescription>
       </CardHeader>
-      <CardContent className="justify-self-center pb-0">
+      <CardContent className="pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-2 aspect-square max-h-[350px]"
+          className="mx-2 aspect-square max-h-[250px]"
         >
           <RadarChart data={pitchSpeedData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
@@ -58,11 +58,6 @@ export function PitcherRadarChart() {
             <Radar
               dataKey="speed"
               fill="var(--color-speed)"
-              fillOpacity={0.6}
-            />
-            <Radar
-              dataKey="percent"
-              fill="var(--color-percent)"
               fillOpacity={0.6}
             />
           </RadarChart>

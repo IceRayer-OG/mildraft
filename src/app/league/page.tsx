@@ -44,13 +44,9 @@ export default async function LeaguePage() {
             <p>Settings Options Updated </p>
             <p>Team UI Updates Next </p>
           </div>
-          <div className="grid grid-rows-2 grid-cols-2 gap-4">
-            <div>
-              <PitcherRadarChart />
-            </div>
-            <div>
-              <PitcherRadarChart />
-            </div>
+          <div className="flex flex-wrap gap-4">
+            <PitcherRadarChart />
+            <PitcherRadarChart />
           </div>
         </div>
       </div>
