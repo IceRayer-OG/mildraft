@@ -6,6 +6,7 @@ import { Avatar, AvatarImage,AvatarFallback } from "~/_components/ui/avatar";
 import Posts from "~/_components/Posts";
 import { AddPostDialog } from "~/features/posts/components/addPost";
 import { SettingDialog } from "~/features/leagues/components/SettingDialog";
+import { PitcherRadarChart } from "~/features/players/components/PitcherRadarChart";
 
 export default async function LeaguePage() {
   const posts = getLeaguePosts();
@@ -42,6 +43,14 @@ export default async function LeaguePage() {
           <div className="flex flex-col gap-4 items-center">
             <p>Settings Options Updated </p>
             <p>Team UI Updates Next </p>
+          </div>
+          <div className="grid grid-rows-2 grid-cols-2 gap-4">
+            <div>
+              <PitcherRadarChart />
+            </div>
+            <div>
+              <PitcherRadarChart />
+            </div>
           </div>
         </div>
       </div>

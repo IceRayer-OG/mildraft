@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/_components/ui/card"
@@ -17,7 +16,6 @@ import {
   TabsTrigger,
 } from "~/_components/ui/tabs"
 import { Checkbox } from "~/_components/ui/checkbox"
-import { Button } from "~/_components/ui/button"
 import { DatePicker } from "~/_components/DatePicker"
 
 export function LeagueSettingsTabsCard() {
