@@ -18,7 +18,7 @@ export function TeamSettingsForm() {
   return (
     <Dialog>
         <DialogTrigger asChild>
-            <Button variant="secondary">Settings</Button>
+            <Button variant="outline">Settings</Button>
         </DialogTrigger>
         <DialogContent>
             <DialogHeader>

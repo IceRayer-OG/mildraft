@@ -19,31 +19,27 @@ import {
 } from "~/_components/ui/chart";
 
 const pitchSpeedData = [
-  { pitch: "4SFB", speed: 95 },
-  { pitch: "2SFB", speed: 92 },
-  { pitch: "CB", speed: 88 },
-  { pitch: "CU", speed: 84 },
-  { pitch: "SL", speed: 90 },
+  { batter: "PWR", stat: 95 },
+  { batter: "AVG", stat: 92 },
+  { batter: "SPD", stat: 35 },
+  { batter: "DEF", stat: 72 },
+  { batter: "THR", stat: 80 },
 ]
 
 const chartConfig = {
-  speed: {
+  stat: {
     label: "Speed",
     color: "hsl(var(--chart-1))",
   },
-  percent: {
-    label: "Percent",
-    color: "hsl(var(--chart-2))",
-  }
 } satisfies ChartConfig
 
-export function PitcherRadarChart() {
+export function BatterRadarChart() {
   return (
     <Card>
       <CardHeader className="items-center pb-4">
         <CardTitle>Radar Chart</CardTitle>
         <CardDescription>
-          Pitch Speed by Pitch Type
+          Position Player 5 Tools
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
@@ -53,11 +49,11 @@ export function PitcherRadarChart() {
         >
           <RadarChart data={pitchSpeedData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <PolarAngleAxis dataKey="pitch" />
+            <PolarAngleAxis dataKey="batter" />
             <PolarGrid />
             <Radar
-              dataKey="speed"
-              fill="var(--color-speed)"
+              dataKey="stat"
+              fill="var(--color-stat)"
               fillOpacity={0.6}
             />
           </RadarChart>
@@ -65,7 +61,7 @@ export function PitcherRadarChart() {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+          Power up 5.2% from last season <TrendingUp className="h-4 w-4" />
         </div>
         <div className="flex items-center gap-2 leading-none text-muted-foreground">
           January - June 2024
