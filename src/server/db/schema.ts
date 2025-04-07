@@ -61,6 +61,7 @@ export const teams = createTable(
     name: varchar("name", { length: 256 }),
     leagueId: integer("league_id").notNull().references(() => leagues.id),
     ownerId: varchar("owner_id", { length: 256 }),
+    abbreviation: varchar("abbreviation", { length: 5 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

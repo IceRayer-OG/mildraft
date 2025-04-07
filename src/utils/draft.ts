@@ -4,6 +4,7 @@ const queueDraftPickSchema = z.object({
     team: z.object({
         id: z.number(),
         name: z.string(),
+        abbreviation: z.string(),
     }),
     draft_pick: z.object({
         id: z.number(),

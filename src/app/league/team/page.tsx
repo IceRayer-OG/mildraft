@@ -41,7 +41,7 @@ export default async function DemoPage() {
                   <AvatarFallback className="text-black">SV</AvatarFallback>
                 </Avatar>
               </PopoverTrigger>
-              <PopoverContent className="w-80 p-2">
+              <PopoverContent className="w-auto p-2">
                 <TeamSettingsForm />
               </PopoverContent>
             </Popover>

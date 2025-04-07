@@ -135,6 +135,18 @@ export async function postDraftPick() {
   return playerDrafted;
 }
 
+export async function getLeagueTeams() {
+  // Authorization later
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+
+  const leagueTeams = await db.query.teams.findMany({
+    where: eq(teams.leagueId, 1),
+  });
+
+  return leagueTeams;
+}
+
 export async function getMyTeam(): Promise<unknown> {
   // Authorization later
   const user = await auth();

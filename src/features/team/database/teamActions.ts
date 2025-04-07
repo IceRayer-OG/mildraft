@@ -1,7 +1,17 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getMyTeam, dropPlayer } from "~/server/queries";
+import { type Team } from "../utils/team";
+import { getMyTeam, dropPlayer, getLeagueTeams } from "~/server/queries";
+
+export async function dbGetLeagueTeams() {
+    // DB Call to get all teams
+    const allTeams = await getLeagueTeams();
+    // Check if the query was successful
+    if(allTeams === null) throw new Error("Error getting your League's team");
+    // Return the data
+    return allTeams as Team[];
+}
 
 export async function dbGetMyTeam() {
     // DB Call to get my team
