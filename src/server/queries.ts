@@ -4,7 +4,7 @@ import "server-only";
 import { db } from "./db";
 import { draftPicks, pros, teams, leagues, drafts, queues, posts, players } from "./db/schema";
 import { auth } from "@clerk/nextjs/server";
-import { and, asc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, eq, ne, isNull, sql } from "drizzle-orm";
 import { type Post, type CreatePost } from "../utils/posts";
 
 async function checkAuthorization() {
@@ -90,9 +90,12 @@ export async function getDraftPlayers(): Promise<unknown> {
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");
 
+  // remove players on teams and not eligible for draft
+
   const draftPlayers = await db.query.pros.findMany({
     orderBy: (model, {asc}) => asc(pros.rank),
   });
+
   return draftPlayers;
 
 }

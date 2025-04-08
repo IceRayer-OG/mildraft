@@ -37,7 +37,7 @@ export function BatterRadarChart() {
   return (
     <Card>
       <CardHeader className="items-center pb-4">
-        <CardTitle>Radar Chart</CardTitle>
+        <CardTitle>Player Name</CardTitle>
         <CardDescription>
           Position Player 5 Tools
         </CardDescription>
