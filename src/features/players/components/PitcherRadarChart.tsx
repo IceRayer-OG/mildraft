@@ -41,7 +41,7 @@ export function PitcherRadarChart() {
   return (
     <Card>
       <CardHeader className="items-center pb-4">
-        <CardTitle>Radar Chart</CardTitle>
+        <CardTitle>Player Name</CardTitle>
         <CardDescription>
           Pitch Speed by Pitch Type
         </CardDescription>
