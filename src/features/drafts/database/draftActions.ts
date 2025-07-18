@@ -33,7 +33,7 @@ export async function dbRemovePlayerFromQueue(playerToRemove: QueuePlayers) {
 }
 
  export async function dbDraftPlayer(playerToDraft: DraftPlayers) {
-//   // Get Current Pick
+   // Get Current Pick
 //   const currentPick = await getCurrentDraftPick();
 //   if(currentPick?.teamId === null || currentPick?.teamId === undefined) throw new Error("No current pick found");
 //   if(currentPick?.pickNumber === null || currentPick?.pickNumber === undefined) throw new Error("No current pick found");
