@@ -32,7 +32,7 @@ export async function dbRemovePlayerFromQueue(playerToRemove: QueuePlayers) {
   revalidatePath("league/draft");
 }
 
-// export async function dbDraftPlayer(playerToDraft: DraftPlayers) {
+ export async function dbDraftPlayer(playerToDraft: DraftPlayers) {
 //   // Get Current Pick
 //   const currentPick = await getCurrentDraftPick();
 //   if(currentPick?.teamId === null || currentPick?.teamId === undefined) throw new Error("No current pick found");
@@ -45,7 +45,7 @@ export async function dbRemovePlayerFromQueue(playerToRemove: QueuePlayers) {
 //   // DB Call to draft player
 //   await postDraftPick(playerToDraft.id, currentPick.pickNumber);
 //   revalidatePath("league/draft");
-// }
+ }
 
 export async function dbGetDraftPlayers() {
   // Data fetch draft players
