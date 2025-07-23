@@ -4,8 +4,9 @@ import "server-only";
 import { db } from "./db";
 import { draftPicks, pros, teams, leagues, drafts, queues, posts, players } from "./db/schema";
 import { auth } from "@clerk/nextjs/server";
-import { and, asc, eq, ne, isNull, sql } from "drizzle-orm";
+import { and, asc, eq, isNull, notInArray, isNotNull, not, notExists } from "drizzle-orm";
 import { type Post, type CreatePost } from "../utils/posts";
+import { union } from "drizzle-orm/pg-core";
 
 async function checkAuthorization() {
   // Authorization
@@ -90,14 +91,37 @@ export async function getDraftPlayers(): Promise<unknown> {
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");
 
-  // remove players on teams and not eligible for draft
-
-  const draftPlayers = await db.query.pros.findMany({
-    orderBy: (model, {asc}) => asc(pros.rank),
-  });
+  // get the pros
+  const draftPlayers = await db.select().from(pros);
 
   return draftPlayers;
 
+}
+
+export async function getLimitedDraftPlayers(): Promise<unknown> {
+  // Authorization
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+
+  // Get players on teams
+  const playersOnTeams = db.select().from(pros)
+    .innerJoin(draftPicks, eq(pros.id, draftPicks.playerId))
+  ;
+
+  // const ineligblePlayersIds = await union(dh184g6mwRPS
+  //   playersOnTeams,
+  //   db.select({player_id: draftPicks.playerId}).from(draftPicks)
+  //     .where(and(isNotNull(draftPicks.playerId), eq(draftPicks.draftId, 2)))
+  // )
+
+  // const ineligblePlayers = playersOnTeams.map(p => p.player_id);
+ 
+  const draftPlayers = await db.select().from(pros)
+    .where(notExists(playersOnTeams))
+    .orderBy(asc(pros.rank))
+  ;
+ 
+  return draftPlayers;
 }
 
 export async function postDraftWriteIn() {
@@ -125,17 +149,30 @@ export async function getDraftPicks() {
   return draftPicksData;
 }
 
-export async function postDraftPick() {
+export async function getCurrentDraftPick() {
+    // Authorization
+    const user = await auth();
+    if (!user.userId) throw new Error("Not logged in");
+  
+    // Check if user is current pick
+    const currentPick = await db.query.draftPicks.findFirst({
+      orderBy: [asc(draftPicks.pickNumber)],
+      where: isNull(draftPicks.playerId),
+    });
+  
+    if(currentPick === null) throw new Error("No current pick found");
+
+    return currentPick;
+}
+
+export async function postDraftPick(playerDrafted: number, draftingPick: number) {  
   // Authorization
   const user = await auth();
-  if (!user.userId) throw new Error("Not logged in");
+  if (!user.userId) throw new Error("Not logged in");  
 
-  const playerDrafted = await db.insert(draftPicks).values({
-    playerId: 728,
-    teamId: 728,
-  });
-
-  return playerDrafted;
+  await db.update(draftPicks)
+    .set({ playerId: playerDrafted})
+    .where(eq(draftPicks.pickNumber, draftingPick));
 }
 
 export async function getLeagueTeams() {
@@ -148,6 +185,22 @@ export async function getLeagueTeams() {
   });
 
   return leagueTeams;
+}
+
+export async function getTeamOwner(teamId: number) {
+  // Authorization later
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+  
+  const teamOwner = await db.query.teams.findFirst({
+    where: eq(teams.id, teamId),
+  });
+  
+  if(teamOwner === undefined) throw new Error("No team owner found");
+
+  if(teamOwner.ownerId !== user.userId) throw new Error("You are not the team owner");
+  
+  return true;
 }
 
 export async function getMyTeam(): Promise<unknown> {
@@ -167,6 +220,20 @@ export async function getMyTeam(): Promise<unknown> {
   );
 
   return myTeam;
+}
+
+export async function getMyTeamName() {
+  // Authorization later
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+
+  const myTeam = await db.query.teams.findFirst({
+    where: eq(teams.ownerId, user.userId),
+  });
+
+  if(myTeam === undefined) throw new Error("No team found");
+
+  return myTeam.name;
 }
 
 export async function getFreeAgents() {

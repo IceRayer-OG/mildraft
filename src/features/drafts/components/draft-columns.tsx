@@ -29,6 +29,7 @@ async function draftPlayer(playerToDraft: DraftPlayers) {
     toast.success(`${playerToDraft.playerName} has been drafted`);
   } catch (error) {
     console.log(error);
+    toast.error('Error drafting player');
   }
 }
 

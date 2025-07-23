@@ -6,11 +6,12 @@ import { Separator } from "~/_components/ui/separator";
 
 import { Avatar, AvatarImage,AvatarFallback } from "~/_components/ui/avatar";
 import Posts from "~/_components/Posts";
+import { PostsLoading } from "~/features/posts/components/PostsLoading";
+import { Skeleton } from "~/_components/ui/skeleton";
 import { AddPostDialog } from "~/features/posts/components/addPost";
 import { SettingDialog } from "~/features/leagues/components/SettingDialog";
-import { PitcherRadarChart } from "~/features/players/components/PitcherRadarChart";
-import { BatterRadarChart } from "~/features/players/components/BatterRadarChart";
 import TeamList from "~/features/team/components/TeamsList";
+import { TeamsLoadingSkeleton } from "~/features/team/components/TeamsLoading";
 import { dbGetLeagueTeams } from "~/features/team/database/teamActions";
 
 export default async function LeaguePage() {
@@ -39,7 +40,7 @@ export default async function LeaguePage() {
         <div className="col-span-1 p-2">
           <div className="flex flex-col gap-4 items-center pb-4">
             <p className="text-xl font-semibold">League Posts</p>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={PostsLoading()}>
               <Posts posts={posts} />
             </Suspense>
             <AddPostDialog />
@@ -49,27 +50,37 @@ export default async function LeaguePage() {
             <p className="text-xl font-semibold">League Teams</p>
           </div>
           <div>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={TeamsLoadingSkeleton()}>
               <TeamList teamList={leagueTeams} />
             </Suspense>
           </div>
         </div>
         <div className="col-span-3 p-4">
           <div className="flex flex-col gap-4 p-4 items-center">
-            <p className="text-xl md:text-3xl">Pitchers </p>
+            <p className="text-xl md:text-3xl">Pitcher Stats </p>
             <Separator />
           </div>
           <div className="flex flex-wrap gap-4">
-            <PitcherRadarChart />
-            <PitcherRadarChart />
+            <div className="flex flex-col space-y-3">
+              <Skeleton className="h-[125px] w-[250px] rounded-xl bg-slate-800" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px] bg-slate-800" />
+                <Skeleton className="h-4 w-[200px] bg-slate-800" />
+              </div>
+            </div>
           </div>
           <div className="flex flex-col gap-4 p-4 items-center">
-            <p className="text-xl md:text-3xl">Batters </p>
+            <p className="text-xl md:text-3xl">Batter Stats </p>
             <Separator />
           </div>
           <div className="flex flex-wrap gap-4">
-            <BatterRadarChart />
-            <BatterRadarChart />
+            <div className="flex flex-col space-y-3">
+              <Skeleton className="h-[125px] w-[250px] rounded-xl bg-slate-800" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px] bg-slate-800" />
+                <Skeleton className="h-4 w-[200px] bg-slate-800" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
