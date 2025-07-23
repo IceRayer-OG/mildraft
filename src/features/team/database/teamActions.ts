@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { type Team } from "../utils/team";
-import { getMyTeam, dropPlayer, getLeagueTeams } from "~/server/queries";
+import { getMyTeam, dropPlayer, getLeagueTeams, getMyTeamName } from "~/server/queries";
 
 export async function dbGetLeagueTeams() {
     // DB Call to get all teams
@@ -20,6 +20,13 @@ export async function dbGetMyTeam() {
     if(myTeam === null) throw new Error("Error getting your team");
     
     return myTeam;   
+}
+
+export async function dbGetMyTeamName() {
+    // DB Call to get my team name
+    const myTeamName = await getMyTeamName();
+    if(myTeamName === null) throw new Error("Error getting your team name");
+    return myTeamName;
 }
 
 export async function dbDropPlayer(playerId: number) {

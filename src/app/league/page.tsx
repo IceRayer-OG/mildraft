@@ -6,10 +6,12 @@ import { Separator } from "~/_components/ui/separator";
 
 import { Avatar, AvatarImage,AvatarFallback } from "~/_components/ui/avatar";
 import Posts from "~/_components/Posts";
+import { PostsLoading } from "~/features/posts/components/PostsLoading";
 import { Skeleton } from "~/_components/ui/skeleton";
 import { AddPostDialog } from "~/features/posts/components/addPost";
 import { SettingDialog } from "~/features/leagues/components/SettingDialog";
 import TeamList from "~/features/team/components/TeamsList";
+import { TeamsLoadingSkeleton } from "~/features/team/components/TeamsLoading";
 import { dbGetLeagueTeams } from "~/features/team/database/teamActions";
 
 export default async function LeaguePage() {
@@ -38,7 +40,7 @@ export default async function LeaguePage() {
         <div className="col-span-1 p-2">
           <div className="flex flex-col gap-4 items-center pb-4">
             <p className="text-xl font-semibold">League Posts</p>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={PostsLoading()}>
               <Posts posts={posts} />
             </Suspense>
             <AddPostDialog />
@@ -48,7 +50,7 @@ export default async function LeaguePage() {
             <p className="text-xl font-semibold">League Teams</p>
           </div>
           <div>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={TeamsLoadingSkeleton()}>
               <TeamList teamList={leagueTeams} />
             </Suspense>
           </div>

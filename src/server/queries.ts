@@ -222,6 +222,20 @@ export async function getMyTeam(): Promise<unknown> {
   return myTeam;
 }
 
+export async function getMyTeamName() {
+  // Authorization later
+  const user = await auth();
+  if (!user.userId) throw new Error("Not logged in");
+
+  const myTeam = await db.query.teams.findFirst({
+    where: eq(teams.ownerId, user.userId),
+  });
+
+  if(myTeam === undefined) throw new Error("No team found");
+
+  return myTeam.name;
+}
+
 export async function getFreeAgents() {
   // Authorization later
   const user = await auth();
