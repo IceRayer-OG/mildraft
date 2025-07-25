@@ -4,9 +4,11 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/_components/ui/card"
+import { Button } from "~/_components/ui/button"
 import { Input } from "~/_components/ui/input"
 import { Label } from "~/_components/ui/label"
 import {
@@ -44,6 +46,10 @@ export function LeagueSettingsTabsCard() {
               <Input id="abbr" defaultValue="SVBB" />
             </div>
           </CardContent>
+          <CardFooter className="flex justify-end gap-3">
+            <Button variant="outline">Save</Button>
+            <Button variant="destructive">Cancel</Button>
+          </CardFooter>
         </Card>
       </TabsContent>
       <TabsContent value="draft">
@@ -59,11 +65,31 @@ export function LeagueSettingsTabsCard() {
               <Label htmlFor="draften">Draft Enabled</Label>
               <Checkbox id="draften" />
             </div>
+            <div className="flex items-center justify-between space-y-1">
+              <Label htmlFor="snakedraft">Snake Draft</Label>
+              <Checkbox id="snakedraft" />
+            </div>
             <div className="flex justify-between items-center space-y-1">
-              <Label htmlFor="new" >Start Date/Time</Label>
+              <Label htmlFor="date-picker" >Start Date/Time</Label>
               <DatePicker />
             </div>
+            <div className="flex justify-between items-center">
+              <Label htmlFor="time-picker" className="px-1">
+                Time
+              </Label>
+              <Input
+                type="time"
+                id="time-picker"
+                step="1"
+                defaultValue="10:30:00"
+                className="w-[150px] bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+              />
+            </div>
           </CardContent>
+          <CardFooter className="flex justify-end gap-3">
+            <Button variant="outline">Save</Button>
+            <Button variant="destructive">Cancel</Button>
+          </CardFooter>
         </Card>
       </TabsContent>
       <TabsContent value="team">
@@ -84,6 +110,10 @@ export function LeagueSettingsTabsCard() {
               <Input id="teamsallowed" type="draftStart" />
             </div>
           </CardContent>
+          <CardFooter className="flex justify-end gap-3">
+            <Button variant="outline">Save</Button>
+            <Button variant="destructive">Cancel</Button>
+          </CardFooter>
         </Card>
       </TabsContent>
     </Tabs>

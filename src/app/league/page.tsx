@@ -1,9 +1,10 @@
+// React
 // import Image from "next/image";
 import { Suspense } from "react";
 import { getLeaguePosts } from "~/server/queries";
 
+// UI Elements
 import { Separator } from "~/_components/ui/separator";
-
 import { Avatar, AvatarImage,AvatarFallback } from "~/_components/ui/avatar";
 import Posts from "~/_components/Posts";
 import { PostsLoading } from "~/features/posts/components/PostsLoading";
@@ -12,6 +13,8 @@ import { AddPostDialog } from "~/features/posts/components/addPost";
 import { SettingDialog } from "~/features/leagues/components/SettingDialog";
 import TeamList from "~/features/team/components/TeamsList";
 import { TeamsLoadingSkeleton } from "~/features/team/components/TeamsLoading";
+
+// Actions
 import { dbGetLeagueTeams } from "~/features/team/database/teamActions";
 
 export default async function LeaguePage() {
