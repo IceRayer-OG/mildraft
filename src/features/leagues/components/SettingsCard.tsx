@@ -30,7 +30,6 @@ import {
 } from "~/_components/ui/form";
 import { teamColumns } from "~/features/team/components/team-columns"
 
-
 export function LeagueSettingsTabsCard() {
 
   const leageForm = useForm({
