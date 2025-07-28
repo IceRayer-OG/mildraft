@@ -1,7 +1,9 @@
 "use client"
 
+// React Components
 import { useForm } from "react-hook-form"
 
+// UI Components
 import {
   Card,
   CardContent,
@@ -12,7 +14,7 @@ import {
 } from "~/_components/ui/card"
 import { Button } from "~/_components/ui/button"
 import { Input } from "~/_components/ui/input"
-import { Label } from "~/_components/ui/label"
+import { toast } from "sonner"
 import {
   Tabs,
   TabsContent,
@@ -28,7 +30,16 @@ import {
   FormItem,
   FormLabel,
 } from "~/_components/ui/form";
-import { teamColumns } from "~/features/team/components/team-columns"
+
+// Actions
+import {
+  updateLeagueSettings,
+  updateDraftSettings,
+  updateTeamSettings,
+} from "../database/leagueActions"
+
+// Types
+import { DraftSettings, LeagueSettings, TeamSettings } from "../utils/settings"
 
 export function LeagueSettingsTabsCard() {
 
@@ -55,6 +66,23 @@ export function LeagueSettingsTabsCard() {
     },
   });
 
+  async function handleSubmit(data: any ) {
+    try {
+      // Call the appropriate update function based on the tab
+      if (data.tab === "league") {
+        await updateLeagueSettings(data);
+      } else if (data.tab === "draft") {
+        await updateDraftSettings(data);
+      } else if (data.tab === "team") {
+        await updateTeamSettings(data);
+      }
+      toast.success("Settings updated successfully");
+    } catch (error) {
+      console.error("Error updating settings:", error);
+      toast.error("Failed to update settings");
+    }
+  }
+
   return (
     <Tabs defaultValue="account" className="container">
       <TabsList className="grid w-full grid-cols-3">
@@ -71,44 +99,46 @@ export function LeagueSettingsTabsCard() {
             </CardDescription>
           </CardHeader>
           <Form {...leageForm}>
-            <CardContent className="space-y-2">
-              <FormField
-                control={leageForm.control}
-                name="name"
-                render={({ field }) => (
+            <form onSubmit={leageForm.handleSubmit(handleSubmit)}>
+              <CardContent className="space-y-2">
+                <FormField
+                  control={leageForm.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center space-y-1">
+                      <FormLabel htmlFor="name">League Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="name"
+                          defaultValue={field.value}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={leageForm.control}
+                  name="abbr"
+                  render={({ field }) => (
                   <FormItem className="flex items-center space-y-1">
-                    <FormLabel htmlFor="name">League Name</FormLabel>
+                    <FormLabel htmlFor="abbr">League Abbreviation</FormLabel>
                     <FormControl>
                       <Input
-                        id="name"
+                        id="abbr"
                         defaultValue={field.value}
                         onChange={field.onChange}
                       />
                     </FormControl>
                   </FormItem>
                 )}
-              />
-              <FormField
-                control={leageForm.control}
-                name="abbr"
-                render={({ field }) => (
-                <FormItem className="flex items-center space-y-1">
-                  <FormLabel htmlFor="abbr">League Abbreviation</FormLabel>
-                  <FormControl>
-                    <Input
-                      id="abbr"
-                      defaultValue={field.value}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-              />
-            </CardContent>
-            <CardFooter className="flex justify-end gap-3">
-              <Button variant="outline" type="submit">Save</Button>
-              <Button variant="destructive">Cancel</Button>
-            </CardFooter> 
+                />
+              </CardContent>
+              <CardFooter className="flex justify-end gap-3">
+                <Button variant="outline" type="submit">Save</Button>
+                <Button variant="destructive" type="reset">Cancel</Button>
+              </CardFooter> 
+            </form>
           </Form>
         </Card>
       </TabsContent>
@@ -121,6 +151,7 @@ export function LeagueSettingsTabsCard() {
             </CardDescription>
           </CardHeader>
           <Form {...draftForm}>
+            <form onSubmit={draftForm.handleSubmit(handleSubmit)}>
             <CardContent className="space-y-2">
               <FormField
                 control={draftForm.control}
@@ -187,9 +218,10 @@ export function LeagueSettingsTabsCard() {
               />
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
-              <Button variant="outline">Save</Button>
-              <Button variant="destructive">Cancel</Button>
+              <Button variant="outline" type="submit">Save</Button>
+              <Button variant="destructive" type="reset">Cancel</Button>
             </CardFooter>
+            </form>
           </Form>
         </Card>
       </TabsContent>
@@ -202,6 +234,7 @@ export function LeagueSettingsTabsCard() {
             </CardDescription>
           </CardHeader>
           <Form {...teamForm}>
+            <form onSubmit={teamForm.handleSubmit(handleSubmit)}>
             <CardContent className="space-y-2">
               <FormField
                 control={teamForm.control}
@@ -239,9 +272,10 @@ export function LeagueSettingsTabsCard() {
               />
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
-              <Button variant="outline">Save</Button>
-              <Button variant="destructive">Cancel</Button>
+              <Button variant="outline" type="submit">Save</Button>
+              <Button variant="destructive" type="reset">Cancel</Button>
             </CardFooter>
+            </form>
           </Form>
         </Card>
       </TabsContent>
