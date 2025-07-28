@@ -2,6 +2,7 @@
 
 // React Components
 import { useForm } from "react-hook-form"
+import { useState } from "react"
 
 // UI Components
 import {
@@ -42,11 +43,16 @@ import {
 import { DraftSettings, LeagueSettings, TeamSettings } from "../utils/settings"
 
 export function LeagueSettingsTabsCard() {
+  const tabs = ["league", "draft", "team"];
+  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const leagueId = 1; // This should be dynamically set based on the current league context
+  const id = 1; // This should also be dynamically set based on the current league context
+
 
   const leageForm = useForm({
     defaultValues: {
       name: "League Name",
-      abbr: "SVBB",
+      abbreviation: "SVBB",
     },
   });
 
@@ -54,29 +60,46 @@ export function LeagueSettingsTabsCard() {
     defaultValues: {
       draftEnabled: false,
       snakeDraft: false,
-      draftStart: new Date(),
+      draftStart: new Date().toDateString(),
       draftTime: "10:30",
+      pickDuration: 4, // in hours
     },
   });
 
   const teamForm = useForm({
     defaultValues: {
-      teamLogoEnabled: false,
+      logoEnabled: false,
       teamsAllowed: 10,
     },
   });
 
-  async function handleSubmit(data: any ) {
+  async function handleLeagueSubmit(data: LeagueSettings) {
     try {
       // Call the appropriate update function based on the tab
-      if (data.tab === "league") {
-        await updateLeagueSettings(data);
-      } else if (data.tab === "draft") {
-        await updateDraftSettings(data);
-      } else if (data.tab === "team") {
-        await updateTeamSettings(data);
-      }
-      toast.success("Settings updated successfully");
+      await updateLeagueSettings(data as LeagueSettings);
+      toast.success("League settings updated successfully");
+    } catch (error) {
+      console.error("Error updating settings:", error);
+      toast.error("Failed to update settings");
+    }
+  }
+  
+  async function handleDraftSubmit(data: DraftSettings) {
+    try {
+      // Call the appropriate update function based on the tab
+      await updateDraftSettings(data as DraftSettings);
+      toast.success("Draft settings updated successfully");
+    } catch (error) {
+      console.error("Error updating settings:", error);
+      toast.error("Failed to update settings");
+    }
+  }
+
+  async function handleTeamSubmit(data: TeamSettings) {
+    try {
+      // Call the appropriate update function based on the tab
+      await updateTeamSettings(data as TeamSettings);
+      toast.success("Team settings updated successfully");
     } catch (error) {
       console.error("Error updating settings:", error);
       toast.error("Failed to update settings");
@@ -84,11 +107,16 @@ export function LeagueSettingsTabsCard() {
   }
 
   return (
-    <Tabs defaultValue="account" className="container">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="container">
       <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="league">League</TabsTrigger>
+        {tabs.map((value: string) => (
+          <TabsTrigger key={value} value={value}>
+            {value.charAt(0).toUpperCase() + value.slice(1)}
+          </TabsTrigger>
+        ))}
+        {/* <TabsTrigger value="league">League</TabsTrigger>
         <TabsTrigger value="draft">Draft</TabsTrigger>
-        <TabsTrigger value="team">Team</TabsTrigger>
+        <TabsTrigger value="team">Team</TabsTrigger> */}
       </TabsList>
       <TabsContent value="league">
         <Card>
@@ -99,7 +127,7 @@ export function LeagueSettingsTabsCard() {
             </CardDescription>
           </CardHeader>
           <Form {...leageForm}>
-            <form onSubmit={leageForm.handleSubmit(handleSubmit)}>
+            <form onSubmit={leageForm.handleSubmit(handleLeagueSubmit)}>
               <CardContent className="space-y-2">
                 <FormField
                   control={leageForm.control}
@@ -119,13 +147,13 @@ export function LeagueSettingsTabsCard() {
                 />
                 <FormField
                   control={leageForm.control}
-                  name="abbr"
+                  name="abbreviation"
                   render={({ field }) => (
                   <FormItem className="flex items-center space-y-1">
-                    <FormLabel htmlFor="abbr">League Abbreviation</FormLabel>
+                    <FormLabel htmlFor="abbreviation">League Abbreviation</FormLabel>
                     <FormControl>
                       <Input
-                        id="abbr"
+                        id="abbreviation"
                         defaultValue={field.value}
                         onChange={field.onChange}
                       />
@@ -151,17 +179,17 @@ export function LeagueSettingsTabsCard() {
             </CardDescription>
           </CardHeader>
           <Form {...draftForm}>
-            <form onSubmit={draftForm.handleSubmit(handleSubmit)}>
+            <form onSubmit={draftForm.handleSubmit(handleDraftSubmit)}>
             <CardContent className="space-y-2">
               <FormField
                 control={draftForm.control}
                 name="draftEnabled"
                 render={({ field }) => (
                   <FormItem className="flex items-center justify-between space-y-1">
-                    <FormLabel htmlFor="draften">Draft Enabled</FormLabel>
+                    <FormLabel htmlFor="draftEnabled">Draft Enabled</FormLabel>
                     <FormControl>
                       <Checkbox
-                        id="draften"
+                        id="draftEnabled"
                         checked={field.value}
                         onCheckedChange={field.onChange}
                       />
@@ -216,6 +244,25 @@ export function LeagueSettingsTabsCard() {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={draftForm.control}
+                name="pickDuration"
+                render={({ field }) => (
+                  <FormItem className="flex justify-between items-center space-y-1">
+                    <FormLabel htmlFor="pickDuration">Pick Duration</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="pickDuration"
+                        type="number"
+                        step="1"
+                        value={field.value}
+                        onChange={(e) => field.onChange(e.target.value)}
+                        className="w-[150px] bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
             </CardContent>
             <CardFooter className="flex justify-end gap-3">
               <Button variant="outline" type="submit">Save</Button>
@@ -234,17 +281,17 @@ export function LeagueSettingsTabsCard() {
             </CardDescription>
           </CardHeader>
           <Form {...teamForm}>
-            <form onSubmit={teamForm.handleSubmit(handleSubmit)}>
+            <form onSubmit={teamForm.handleSubmit(handleTeamSubmit)}>
             <CardContent className="space-y-2">
               <FormField
                 control={teamForm.control}
-                name="teamLogoEnabled"
+                name="logoEnabled"
                 render={({ field }) => (
                   <FormItem className="flex items-center justify-between space-y-1">
-                    <FormLabel htmlFor="teamlogoen">Team Logo Enabled</FormLabel>
+                    <FormLabel htmlFor="logoEnabled">Team Logo Enabled</FormLabel>
                     <FormControl>
                       <Checkbox
-                        id="teamlogoen"
+                        id="logoEnabled"
                         checked={field.value}
                         onCheckedChange={field.onChange}
                       />
