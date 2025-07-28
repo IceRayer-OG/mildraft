@@ -45,9 +45,6 @@ import { DraftSettings, LeagueSettings, TeamSettings } from "../utils/settings"
 export function LeagueSettingsTabsCard() {
   const tabs = ["league", "draft", "team"];
   const [activeTab, setActiveTab] = useState(tabs[0]);
-  const leagueId = 1; // This should be dynamically set based on the current league context
-  const id = 1; // This should also be dynamically set based on the current league context
-
 
   const leageForm = useForm({
     defaultValues: {
@@ -76,7 +73,7 @@ export function LeagueSettingsTabsCard() {
   async function handleLeagueSubmit(data: LeagueSettings) {
     try {
       // Call the appropriate update function based on the tab
-      await updateLeagueSettings(data as LeagueSettings);
+      await updateLeagueSettings(data);
       toast.success("League settings updated successfully");
     } catch (error) {
       console.error("Error updating settings:", error);
@@ -87,7 +84,7 @@ export function LeagueSettingsTabsCard() {
   async function handleDraftSubmit(data: DraftSettings) {
     try {
       // Call the appropriate update function based on the tab
-      await updateDraftSettings(data as DraftSettings);
+      await updateDraftSettings(data);
       toast.success("Draft settings updated successfully");
     } catch (error) {
       console.error("Error updating settings:", error);
@@ -98,7 +95,7 @@ export function LeagueSettingsTabsCard() {
   async function handleTeamSubmit(data: TeamSettings) {
     try {
       // Call the appropriate update function based on the tab
-      await updateTeamSettings(data as TeamSettings);
+      await updateTeamSettings(data);
       toast.success("Team settings updated successfully");
     } catch (error) {
       console.error("Error updating settings:", error);
