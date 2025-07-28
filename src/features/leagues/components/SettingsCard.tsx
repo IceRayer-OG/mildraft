@@ -28,9 +28,34 @@ import {
   FormItem,
   FormLabel,
 } from "~/_components/ui/form";
+import { teamColumns } from "~/features/team/components/team-columns"
 
 
 export function LeagueSettingsTabsCard() {
+
+  const leageForm = useForm({
+    defaultValues: {
+      name: "League Name",
+      abbr: "SVBB",
+    },
+  });
+
+  const draftForm = useForm({
+    defaultValues: {
+      draftEnabled: false,
+      snakeDraft: false,
+      draftStart: new Date(),
+      draftTime: "10:30",
+    },
+  });
+
+  const teamForm = useForm({
+    defaultValues: {
+      teamLogoEnabled: false,
+      teamsAllowed: 10,
+    },
+  });
+
   return (
     <Tabs defaultValue="account" className="container">
       <TabsList className="grid w-full grid-cols-3">
@@ -46,20 +71,46 @@ export function LeagueSettingsTabsCard() {
               Settings for the League.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex items-center space-y-1">
-              <Label htmlFor="name"> League Name</Label>
-              <Input id="name" defaultValue="League Name" />
-            </div>
-            <div className="flex items-center space-y-1">
-              <Label htmlFor="abbr">League Abbreviation</Label>
-              <Input id="abbr" defaultValue="SVBB" />
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-end gap-3">
-            <Button variant="outline">Save</Button>
-            <Button variant="destructive">Cancel</Button>
-          </CardFooter>
+          <Form {...leageForm}>
+            <CardContent className="space-y-2">
+              <FormField
+                control={leageForm.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="flex items-center space-y-1">
+                    <FormLabel htmlFor="name">League Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="name"
+                        defaultValue={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={leageForm.control}
+                name="abbr"
+                render={({ field }) => (
+                <FormItem className="flex items-center space-y-1">
+                  <FormLabel htmlFor="abbr">League Abbreviation</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="abbr"
+                      defaultValue={field.value}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+              />
+            </CardContent>
+            <CardFooter className="flex justify-end gap-3">
+              <Button variant="outline" type="submit">Save</Button>
+              <Button variant="destructive">Cancel</Button>
+            </CardFooter> 
+          </Form>
         </Card>
       </TabsContent>
       <TabsContent value="draft">
@@ -70,36 +121,77 @@ export function LeagueSettingsTabsCard() {
               Settings for the mil Draft.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex items-center justify-between space-y-1">
-              <Label htmlFor="draften">Draft Enabled</Label>
-              <Checkbox id="draften" />
-            </div>
-            <div className="flex items-center justify-between space-y-1">
-              <Label htmlFor="snakedraft">Snake Draft</Label>
-              <Checkbox id="snakedraft" />
-            </div>
-            <div className="flex justify-between items-center space-y-1">
-              <Label htmlFor="date-picker" >Start Date/Time</Label>
-              <DatePicker />
-            </div>
-            <div className="flex justify-between items-center">
-              <Label htmlFor="time-picker" className="px-1">
-                Time
-              </Label>
-              <Input
-                type="time"
-                id="time-picker"
-                step="1"
-                defaultValue="10:30:00"
-                className="w-[150px] bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+          <Form {...draftForm}>
+            <CardContent className="space-y-2">
+              <FormField
+                control={draftForm.control}
+                name="draftEnabled"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between space-y-1">
+                    <FormLabel htmlFor="draften">Draft Enabled</FormLabel>
+                    <FormControl>
+                      <Checkbox
+                        id="draften"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
               />
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-end gap-3">
-            <Button variant="outline">Save</Button>
-            <Button variant="destructive">Cancel</Button>
-          </CardFooter>
+              <FormField
+                control={draftForm.control}
+                name="snakeDraft"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between space-y-1">
+                    <FormLabel htmlFor="snakeDraft">Snake Draft</FormLabel>
+                    <FormControl>
+                      <Checkbox
+                        id="snakeDraft"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={draftForm.control}
+                name="draftStart"
+                render={({ field }) => (
+                  <FormItem className="flex justify-between items-center space-y-1">
+                    <FormLabel htmlFor="draftStart">Start Date</FormLabel>
+                    <FormControl>
+                      <DatePicker />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={draftForm.control}
+                name="draftTime"
+                render={({ field }) => (
+                  <FormItem className="flex justify-between items-center space-y-1">
+                    <FormLabel htmlFor="draftTime">Draft Time</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="draftTime"
+                        type="time"
+                        step="1"
+                        value={field.value}
+                        onChange={(e) => field.onChange(e.target.value)}
+                        className="w-[150px] bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+            <CardFooter className="flex justify-end gap-3">
+              <Button variant="outline">Save</Button>
+              <Button variant="destructive">Cancel</Button>
+            </CardFooter>
+          </Form>
         </Card>
       </TabsContent>
       <TabsContent value="team">
@@ -110,20 +202,48 @@ export function LeagueSettingsTabsCard() {
               Settings for the Teams.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex items-center justify-between space-y-1">
-              <Label htmlFor="teamlogoen">Allow Logo&apos;s</Label>
-              <Checkbox id="teamlogoen" />
-            </div>
-            <div className="flex items-center space-y-1">
-              <Label htmlFor="teamsallowed">Teams Allowed</Label>
-              <Input id="teamsallowed" type="draftStart" />
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-end gap-3">
-            <Button variant="outline">Save</Button>
-            <Button variant="destructive">Cancel</Button>
-          </CardFooter>
+          <Form {...teamForm}>
+            <CardContent className="space-y-2">
+              <FormField
+                control={teamForm.control}
+                name="teamLogoEnabled"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between space-y-1">
+                    <FormLabel htmlFor="teamlogoen">Team Logo Enabled</FormLabel>
+                    <FormControl>
+                      <Checkbox
+                        id="teamlogoen"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={teamForm.control}
+                name="teamsAllowed"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between space-y-1">
+                    <FormLabel htmlFor="teamsallowed">Teams Allowed</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="teamsallowed"
+                        type="number"
+                        className="w-[100px]"
+                        value={field.value}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+            <CardFooter className="flex justify-end gap-3">
+              <Button variant="outline">Save</Button>
+              <Button variant="destructive">Cancel</Button>
+            </CardFooter>
+          </Form>
         </Card>
       </TabsContent>
     </Tabs>
