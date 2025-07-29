@@ -1,7 +1,7 @@
 // React and Next.js imports
 import { Suspense } from "react";
 // Utilities and type definitions
-import { dbGetDraftQueue, dbGetDraftPlayers } from "~/features/drafts/database/draftActions";
+import { dbGetDraftQueue, dbGetDraftPlayers } from "~/features/drafts/actions/draftActions";
 // Global UI components
 import { Separator } from "~/_components/ui/separator";
 import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";

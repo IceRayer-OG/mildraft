@@ -37,7 +37,7 @@ import {
   updateLeagueSettings,
   updateDraftSettings,
   updateTeamSettings,
-} from "../database/leagueActions"
+} from "../actions/leagueActions"
 
 // Types
 import { DraftSettings, LeagueSettings, TeamSettings, LeagueData } from "../utils/settings"

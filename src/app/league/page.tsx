@@ -15,7 +15,7 @@ import TeamList from "~/features/team/components/TeamsList";
 import { TeamsLoadingSkeleton } from "~/features/team/components/TeamsLoading";
 
 // Actions
-import { dbGetLeagueTeams } from "~/features/team/database/teamActions";
+import { dbGetLeagueTeams } from "~/features/team/actions/teamActions";
 
 export default async function LeaguePage() {
   const posts = getLeaguePosts();

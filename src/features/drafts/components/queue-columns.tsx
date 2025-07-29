@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/_components/ui/dropdown-menu";
-import { dbRemovePlayerFromQueue, dbDraftPlayer } from "~/features/drafts/database/draftActions";
+import { dbRemovePlayerFromQueue, dbDraftPlayer } from "~/features/drafts/actions/draftActions";
 import { toast } from "sonner";
 import { type QueuePlayers } from "~/utils/players";
 

@@ -23,7 +23,7 @@ import { teamColumns } from "~/features/team/components/team-columns";
 import { DataTable } from "~/features/team/components/team-data-table";
 
 // Actions
-import { dbGetMyTeam, dbGetMyTeamName } from "~/features/team/database/teamActions";
+import { dbGetMyTeam, dbGetMyTeamName } from "~/features/team/actions/teamActions";
 
 async function getData(): Promise<teamPlayers[]> {
   // Fetch data
