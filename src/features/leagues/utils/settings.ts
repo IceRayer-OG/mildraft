@@ -18,6 +18,12 @@ const teamSettingsSchema = z.object({
   teamsAllowed: z.number(),
 });
 
+export const leagueDataSchema = z.object({
+  leagueId: z.number(),
+  draftId: z.number(),
+});
+
 export type LeagueSettings = z.infer<typeof leagueSettingsSchema>;
 export type DraftSettings = z.infer<typeof draftSettingsSchema>;
 export type TeamSettings = z.infer<typeof teamSettingsSchema>;
+export type LeagueData = z.infer<typeof leagueDataSchema>;

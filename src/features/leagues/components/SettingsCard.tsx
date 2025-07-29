@@ -40,11 +40,16 @@ import {
 } from "../database/leagueActions"
 
 // Types
-import { DraftSettings, LeagueSettings, TeamSettings } from "../utils/settings"
+import { DraftSettings, LeagueSettings, TeamSettings, LeagueData } from "../utils/settings"
 
 export function LeagueSettingsTabsCard() {
+  // State for active tab
   const tabs = ["league", "draft", "team"];
   const [activeTab, setActiveTab] = useState(tabs[0]);
+  const leagueData = {
+    leagueId: 1, // Example league ID, replace with actual logic to get league ID
+    draftId: 1, // Example draft ID, replace with actual logic to get draft ID
+  };
 
   const leageForm = useForm({
     defaultValues: {
@@ -73,7 +78,7 @@ export function LeagueSettingsTabsCard() {
   async function handleLeagueSubmit(data: LeagueSettings) {
     try {
       // Call the appropriate update function based on the tab
-      await updateLeagueSettings(data);
+      await updateLeagueSettings(data, leagueData);
       toast.success("League settings updated successfully");
     } catch (error) {
       console.error("Error updating settings:", error);
@@ -84,7 +89,7 @@ export function LeagueSettingsTabsCard() {
   async function handleDraftSubmit(data: DraftSettings) {
     try {
       // Call the appropriate update function based on the tab
-      await updateDraftSettings(data);
+      await updateDraftSettings(data, leagueData);
       toast.success("Draft settings updated successfully");
     } catch (error) {
       console.error("Error updating settings:", error);
@@ -95,7 +100,7 @@ export function LeagueSettingsTabsCard() {
   async function handleTeamSubmit(data: TeamSettings) {
     try {
       // Call the appropriate update function based on the tab
-      await updateTeamSettings(data);
+      await updateTeamSettings(data, leagueData);
       toast.success("Team settings updated successfully");
     } catch (error) {
       console.error("Error updating settings:", error);
