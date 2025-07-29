@@ -40,6 +40,7 @@ export const leagues = createTable(
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
+    abbreviation: varchar("abbreviation", { length: 4 }),
     commissioner: varchar("commissioner", { length: 256 }),
     coCommissioner: varchar("co_commissioner", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
