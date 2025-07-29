@@ -34,9 +34,9 @@ import {
 
 // Actions
 import {
-  updateLeagueSettings,
-  updateDraftSettings,
-  updateTeamSettings,
+  updateLeagueSettingsAction,
+  updateDraftSettingsAction,
+  updateTeamSettingsAction,
 } from "../actions/leagueActions"
 
 // Types
@@ -78,7 +78,7 @@ export function LeagueSettingsTabsCard() {
   async function handleLeagueSubmit(data: LeagueSettings) {
     try {
       // Call the appropriate update function based on the tab
-      await updateLeagueSettings(data, leagueData);
+      await updateLeagueSettingsAction(data, leagueData);
       toast.success("League settings updated successfully");
     } catch (error) {
       console.error("Error updating settings:", error);
@@ -89,7 +89,7 @@ export function LeagueSettingsTabsCard() {
   async function handleDraftSubmit(data: DraftSettings) {
     try {
       // Call the appropriate update function based on the tab
-      await updateDraftSettings(data, leagueData);
+      await updateDraftSettingsAction(data, leagueData);
       toast.success("Draft settings updated successfully");
     } catch (error) {
       console.error("Error updating settings:", error);
@@ -100,7 +100,7 @@ export function LeagueSettingsTabsCard() {
   async function handleTeamSubmit(data: TeamSettings) {
     try {
       // Call the appropriate update function based on the tab
-      await updateTeamSettings(data, leagueData);
+      await updateTeamSettingsAction(data, leagueData);
       toast.success("Team settings updated successfully");
     } catch (error) {
       console.error("Error updating settings:", error);
