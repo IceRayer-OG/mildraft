@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { TeamSettings } from "../utils/team";
+import { type TeamSettings } from "../utils/team";
 import { updateTeamSettingsUseCase, getTeamSettingsUseCase } from "../use_cases/teamSettingsUseCases";
 
 export async function updateTeamSettingsAction(teamData: TeamSettings) {
