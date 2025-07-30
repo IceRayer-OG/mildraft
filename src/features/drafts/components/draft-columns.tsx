@@ -11,7 +11,7 @@ import {
 } from "~/_components/ui/dropdown-menu";
 import  { dbQueuePlayer, dbDraftPlayer } from "~/features/drafts/actions/draftActions";
 import { toast } from "sonner";
-import { type DraftPlayers } from "~/utils/players"; 
+import { type DraftPlayers } from "~/features/players/utils/players"; 
 
 async function queuePlayer(playerToQueue: DraftPlayers) {
   try {

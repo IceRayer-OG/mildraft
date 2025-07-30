@@ -1,7 +1,7 @@
 
 
 import { getFreeAgents } from "~/server/queries";
-import { type Players} from "~/utils/players";
+import { type Players} from "~/features/players/utils/players";
 import { PlayerDataTable } from "~/features/players/components/player-data-table";
 import { playerColumns } from "~/features/players/components/player-columns";
  

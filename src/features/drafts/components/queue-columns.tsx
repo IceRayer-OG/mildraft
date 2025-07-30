@@ -11,7 +11,7 @@ import {
 } from "~/_components/ui/dropdown-menu";
 import { dbRemovePlayerFromQueue, dbDraftPlayer } from "~/features/drafts/actions/draftActions";
 import { toast } from "sonner";
-import { type QueuePlayers } from "~/utils/players";
+import { type QueuePlayers } from "~/features/players/utils/players";
 
 async function removePlayerFromQueue(playerToRemove: QueuePlayers) {
   try {

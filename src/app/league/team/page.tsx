@@ -1,5 +1,5 @@
 // Data types
-import { type teamPlayers } from "~/utils/players";
+import { type teamPlayers } from "~/features/players/utils/players";
 
 // React
 import { Suspense } from "react";

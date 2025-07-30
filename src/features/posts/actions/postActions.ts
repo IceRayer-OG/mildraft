@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createAPost } from "~/server/queries";
-import { type CreatePost } from "~/utils/posts";
+import { type CreatePost } from "~/features/posts/utils/posts";
 
 export async function createAPostAction(formPostData: { title: string; body: string }) {
   const postData = {

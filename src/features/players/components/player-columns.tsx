@@ -11,7 +11,7 @@ import { MoreHorizontal } from "lucide-react";
 import { Button } from "~/_components/ui/button";
 
 // zod schema
-import { type Players } from "~/utils/players";
+import { type Players } from "~/features/players/utils/players";
  
 export const playerColumns: ColumnDef<Players>[] = [
   {

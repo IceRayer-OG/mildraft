@@ -49,7 +49,7 @@ export function LeagueSettingsTabsCard() {
   const leagueData = {
     leagueId: 1, // Example league ID, replace with actual logic to get league ID
     draftId: 1, // Example draft ID, replace with actual logic to get draft ID
-  };
+  } as LeagueData;
 
   const leageForm = useForm({
     defaultValues: {

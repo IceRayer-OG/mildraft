@@ -1,6 +1,6 @@
 'use client';
 
-import { type QueueDraftPick } from "~/utils/draft";
+import { type QueueDraftPick } from "~/features/drafts/utils/draft";
 import { use } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "~/_components/ui/avatar";
 

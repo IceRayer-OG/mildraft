@@ -9,7 +9,7 @@ import {
 } from "~/_components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "~/_components/ui/button";
-import { type teamPlayers } from "~/utils/players";
+import { type teamPlayers } from "~/features/players/utils/players";
 import { dbDropPlayer } from "~/features/team/actions/teamActions";
 import { toast } from "sonner";
  
