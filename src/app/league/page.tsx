@@ -34,7 +34,7 @@ export default async function LeaguePage() {
         <div className="flex gap-4 items-center content-right">
           <SettingDialog />
           <Avatar >
-            <AvatarImage src="/_assets/avatar.png" alt="Avatar" />
+            {/* <AvatarImage src="/_assets/avatar.png" alt="Avatar" /> */}
             <AvatarFallback className="text-black">SV</AvatarFallback>
           </Avatar> 
         </div>

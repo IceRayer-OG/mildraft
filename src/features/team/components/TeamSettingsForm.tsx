@@ -1,7 +1,8 @@
 "use client";
-
+// React
 import { useForm } from "react-hook-form";
 
+// UI Components
 import {
     Dialog,
     DialogContent,
@@ -24,7 +25,11 @@ import {
     FormDescription,
 } from "~/_components/ui/form";
 import { toast } from "sonner";
+
+// Actions
 import { updateTeamSettingsAction } from "../actions/teamSettingsActions";
+
+// Utils
 import { TeamSettings } from "../utils/team";
 
 
