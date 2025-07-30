@@ -116,9 +116,6 @@ export function LeagueSettingsTabsCard() {
             {value.charAt(0).toUpperCase() + value.slice(1)}
           </TabsTrigger>
         ))}
-        {/* <TabsTrigger value="league">League</TabsTrigger>
-        <TabsTrigger value="draft">Draft</TabsTrigger>
-        <TabsTrigger value="team">Team</TabsTrigger> */}
       </TabsList>
       <TabsContent value="league">
         <Card>
