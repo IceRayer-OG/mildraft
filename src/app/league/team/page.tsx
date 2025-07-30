@@ -24,15 +24,18 @@ import { DataTable } from "~/features/team/components/team-data-table";
 
 // Actions
 import { dbGetMyTeam, dbGetMyTeamName } from "~/features/team/actions/teamActions";
+import { getTeamSettingsAction } from "~/features/team/actions/teamSettingsActions";
 
 async function getData(): Promise<teamPlayers[]> {
   // Fetch data
   const players = await dbGetMyTeam() as teamPlayers[];
   return players;
 }
+
  
-export default async function DemoPage() {
+export default async function TeamPage() {
   const data = await getData()
+  const teamSettings = await getTeamSettingsAction();
   const myTeamName = dbGetMyTeamName();
  
   return (
@@ -47,7 +50,7 @@ export default async function DemoPage() {
                 </Avatar>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-2">
-                <TeamSettingsForm />
+                <TeamSettingsForm {...teamSettings}/>
               </PopoverContent>
             </Popover>
           </div>

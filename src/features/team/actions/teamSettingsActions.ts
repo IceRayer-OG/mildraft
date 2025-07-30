@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { TeamSettings } from "../utils/team";
-import { updateTeamSettingsUseCase } from "../use_cases/teamSettingsUseCases";
+import { type TeamSettings } from "../utils/team";
+import { updateTeamSettingsUseCase, getTeamSettingsUseCase } from "../use_cases/teamSettingsUseCases";
 
 export async function updateTeamSettingsAction(teamData: TeamSettings) {
     try {
@@ -14,3 +14,14 @@ export async function updateTeamSettingsAction(teamData: TeamSettings) {
         throw error; // Re-throw the error for further handling if needed
     }
 }
+
+export async function getTeamSettingsAction() {
+    try {
+        // Fetch team settings from the use case
+        const teamSettings = await getTeamSettingsUseCase();
+        return teamSettings;
+    } catch (error) {
+        console.error("Failed to fetch team settings:", error);
+        throw error; // Re-throw the error for further handling if needed
+    }
+}   

@@ -1,7 +1,8 @@
 "use client";
-
+// React
 import { useForm } from "react-hook-form";
 
+// UI Components
 import {
     Dialog,
     DialogContent,
@@ -24,13 +25,23 @@ import {
     FormDescription,
 } from "~/_components/ui/form";
 import { toast } from "sonner";
-import { updateTeamSettingsAction } from "../actions/teamSettingsActions";
+
+// Actions
+import { updateTeamSettingsAction, getTeamSettingsAction } from "../actions/teamSettingsActions";
+
+// Utils
 import { TeamSettings } from "../utils/team";
 
 
-export function TeamSettingsForm() {
+export function TeamSettingsForm(teamSettingsData?: TeamSettings) {
+    
     const teamSettingsForm = useForm({
         defaultValues: {
+            teamName: "",
+            teamAbbreviation: "",
+            teamLogo: "",
+        },
+        values: teamSettingsData ?? {
             teamName: "",
             teamAbbreviation: "",
             teamLogo: "",
@@ -38,10 +49,13 @@ export function TeamSettingsForm() {
     });
 
     async function teamSettingsFormSubmit(formData: TeamSettings) {
-        // Handle form submission logic here
-        await updateTeamSettingsAction(formData);
-        toast.success("Team settings updated successfully!");
-        // You can add your API call or state update logic here
+        try {
+            await updateTeamSettingsAction(formData);
+            toast.success("Team settings updated successfully!");
+        } catch (error) {
+            console.error("Error updating team settings:", error);
+            toast.error("Failed to update team settings. Please try again.");
+        }
     }
 
   return (
@@ -65,7 +79,7 @@ export function TeamSettingsForm() {
                                 <FormItem className="flex items-center justify-between space-y-1">
                                     <FormLabel>Team Name</FormLabel>
                                     <FormControl className="w-[75%]">
-                                        <Input placeholder="Enter team name" {...field} />
+                                        <Input placeholder="Enter team name" className="text-right" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -78,7 +92,7 @@ export function TeamSettingsForm() {
                                 <FormItem className="flex items-center justify-between space-y-1">
                                     <FormLabel>Team Abbreviation</FormLabel>
                                     <FormControl className="w-[75%]">
-                                        <Input placeholder="Enter team abbreviation" {...field} />
+                                        <Input placeholder="Enter team abbreviation" className="text-right" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -91,7 +105,7 @@ export function TeamSettingsForm() {
                                 <FormItem className="flex items-center justify-between space-y-1">
                                     <FormLabel>Team Logo</FormLabel>
                                     <FormControl className="w-[75%]">
-                                        <Input placeholder="Enter team logo URL" {...field} />
+                                        <Input placeholder="Enter team logo URL" className="text-right" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

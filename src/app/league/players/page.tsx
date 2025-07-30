@@ -24,7 +24,7 @@ async function getData(): Promise<Players[]> {
   // ]
 }
  
-export default async function DemoPage() {
+export default async function PlayerPage() {
   const data = await getData()
  
   return (

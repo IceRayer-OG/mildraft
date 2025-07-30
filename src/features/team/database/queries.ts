@@ -14,3 +14,15 @@ export async function updateTeamSettings(teamData: TeamSettings, teamId: string)
     
     return true
 }
+
+export async function getTeamSettings(teamId: string) {
+    const team = await db.query.teams.findFirst({
+        where: eq(teams.ownerId, teamId),
+    });
+    
+    if (!team) {
+        return null; // No team found for the given ID
+    }
+    
+    return team;
+}
