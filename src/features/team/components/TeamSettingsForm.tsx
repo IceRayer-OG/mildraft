@@ -41,7 +41,7 @@ export function TeamSettingsForm(teamSettingsData?: TeamSettings) {
             teamAbbreviation: "",
             teamLogo: "",
         },
-        values: teamSettingsData || {
+        values: teamSettingsData ?? {
             teamName: "",
             teamAbbreviation: "",
             teamLogo: "",
