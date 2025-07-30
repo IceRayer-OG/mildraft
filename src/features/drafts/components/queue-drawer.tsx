@@ -11,7 +11,7 @@ import {
 import { Button } from "~/_components/ui/button";
 import { DataTable } from "../../../_components/data-table";
 import { queueColumns } from "./queue-columns";
-import { type QueuePlayers } from "~/utils/players";
+import { type QueuePlayers } from "~/features/players/utils/players";
 import { getMyQueue } from "~/server/queries";
 
 async function getMyQueueData(): Promise<QueuePlayers[]> {

@@ -25,14 +25,6 @@ export function SettingDialog() {
                     </DialogDescription>
                 </DialogHeader>
                 <LeagueSettingsTabsCard />
-                <DialogFooter>
-                    <DialogClose asChild>
-                        <Button>Save</Button>
-                    </DialogClose>
-                    <DialogClose asChild>
-                        <Button>Cancel</Button>
-                    </DialogClose>
-                </DialogFooter>
             </DialogContent>
         </Dialog>
     )

@@ -10,8 +10,8 @@ import {
   getTeamOwner,
   getLimitedDraftPlayers,
 } from "~/server/queries"
-import { type DraftPlayers, type QueuePlayers } from "~/utils/players";
-import { type QueueDraftPick } from "~/utils/draft";
+import { type DraftPlayers, type QueuePlayers } from "~/features/players/utils/players";
+import { type QueueDraftPick } from "~/features/drafts/utils/draft";
 import { revalidatePath } from "next/cache";
 // import { auth } from "@clerk/nextjs/server";
 

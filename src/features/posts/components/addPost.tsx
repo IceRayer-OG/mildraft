@@ -26,7 +26,7 @@ import {
   FormLabel,
 } from "~/_components/ui/form";
 
-import { createAPostAction } from "../database/postActions";
+import { createAPostAction } from "../actions/postActions";
 
 async function addPost(data: {title: string, body: string}) {
   try {
