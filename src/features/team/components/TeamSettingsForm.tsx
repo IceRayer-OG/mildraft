@@ -33,14 +33,19 @@ import { updateTeamSettingsAction, getTeamSettingsAction } from "../actions/team
 import { TeamSettings } from "../utils/team";
 
 
-export function TeamSettingsForm() {
+export function TeamSettingsForm(teamSettingsData?: TeamSettings) {
     
     const teamSettingsForm = useForm({
         defaultValues: {
             teamName: "",
             teamAbbreviation: "",
             teamLogo: "",
-        }
+        },
+        values: teamSettingsData || {
+            teamName: "",
+            teamAbbreviation: "",
+            teamLogo: "",
+        },
     });
 
     async function teamSettingsFormSubmit(formData: TeamSettings) {
@@ -74,7 +79,7 @@ export function TeamSettingsForm() {
                                 <FormItem className="flex items-center justify-between space-y-1">
                                     <FormLabel>Team Name</FormLabel>
                                     <FormControl className="w-[75%]">
-                                        <Input placeholder="Enter team name" {...field} />
+                                        <Input placeholder="Enter team name" className="text-right" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -87,7 +92,7 @@ export function TeamSettingsForm() {
                                 <FormItem className="flex items-center justify-between space-y-1">
                                     <FormLabel>Team Abbreviation</FormLabel>
                                     <FormControl className="w-[75%]">
-                                        <Input placeholder="Enter team abbreviation" {...field} />
+                                        <Input placeholder="Enter team abbreviation" className="text-right" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -100,7 +105,7 @@ export function TeamSettingsForm() {
                                 <FormItem className="flex items-center justify-between space-y-1">
                                     <FormLabel>Team Logo</FormLabel>
                                     <FormControl className="w-[75%]">
-                                        <Input placeholder="Enter team logo URL" {...field} />
+                                        <Input placeholder="Enter team logo URL" className="text-right" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
