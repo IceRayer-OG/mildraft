@@ -1,43 +1,112 @@
 "use client";
 
+import { useForm } from "react-hook-form";
+
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTrigger,
-  DialogClose,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogTrigger,
+    DialogClose,
+    DialogHeader,
+    DialogTitle,
 } from "~/_components/ui/dialog";
 import { Button } from "~/_components/ui/button";
 import { Input } from "~/_components/ui/input";
+import { 
+    Form,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormControl,
+    FormMessage,
+    FormDescription,
+} from "~/_components/ui/form";
+import { toast } from "sonner";
+import { updateTeamSettingsAction } from "../actions/teamSettingsActions";
+import { TeamSettings } from "../utils/team";
 
 
 export function TeamSettingsForm() {
+    const teamSettingsForm = useForm({
+        defaultValues: {
+            teamName: "",
+            teamAbbreviation: "",
+            teamLogo: "",
+        },
+    });
+
+    async function teamSettingsFormSubmit(formData: TeamSettings) {
+        // Handle form submission logic here
+        await updateTeamSettingsAction(formData);
+        toast.success("Team settings updated successfully!");
+        // You can add your API call or state update logic here
+    }
+
   return (
     <Dialog>
         <DialogTrigger asChild>
             <Button variant="outline">Settings</Button>
         </DialogTrigger>
         <DialogContent>
-            <DialogHeader>
+            <DialogHeader className="items-center">
                 <DialogTitle>Team Settings</DialogTitle>
                 <DialogDescription>
                     Settings for the Team.
                 </DialogDescription>
             </DialogHeader>
-            <Input placeholder="Team Name" />
-            <Input placeholder="Team Abbreviation" />
-            <Input placeholder="Team Logo" />
-            <DialogFooter>
-                <DialogClose asChild>
-                    <Button type="submit" variant="outline">Save</Button>
-                </DialogClose>
-                <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                </DialogClose>
-            </DialogFooter>
+                <Form {...teamSettingsForm}>
+                    <form onSubmit={teamSettingsForm.handleSubmit(teamSettingsFormSubmit)} className="space-y-4">
+                        <FormField
+                            control={teamSettingsForm.control}
+                            name="teamName"
+                            render={({ field }) => (
+                                <FormItem className="flex items-center justify-between space-y-1">
+                                    <FormLabel>Team Name</FormLabel>
+                                    <FormControl className="w-[75%]">
+                                        <Input placeholder="Enter team name" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={teamSettingsForm.control}
+                            name="teamAbbreviation"
+                            render={({ field }) => (
+                                <FormItem className="flex items-center justify-between space-y-1">
+                                    <FormLabel>Team Abbreviation</FormLabel>
+                                    <FormControl className="w-[75%]">
+                                        <Input placeholder="Enter team abbreviation" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={teamSettingsForm.control}
+                            name="teamLogo"
+                            render={({ field }) => (
+                                <FormItem className="flex items-center justify-between space-y-1">
+                                    <FormLabel>Team Logo</FormLabel>
+                                    <FormControl className="w-[75%]">
+                                        <Input placeholder="Enter team logo URL" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    <DialogFooter className="mt-3">
+                        <DialogClose asChild>
+                            <Button type="submit" variant="outline">Save</Button>
+                        </DialogClose>
+                        <DialogClose asChild>
+                            <Button variant="destructive">Cancel</Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </form>
+            </Form>
         </DialogContent>
     </Dialog>
   );
