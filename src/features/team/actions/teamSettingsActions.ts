@@ -19,7 +19,7 @@ export async function getTeamSettingsAction() {
     try {
         // Fetch team settings from the use case
         const teamSettings = await getTeamSettingsUseCase();
-        return teamSettings as TeamSettings;
+        return teamSettings;
     } catch (error) {
         console.error("Failed to fetch team settings:", error);
         throw error; // Re-throw the error for further handling if needed
