@@ -2,7 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { TeamSettings } from "../utils/team";
-import { updateTeamSettings } from "../database/queries";
+import { updateTeamSettings, getTeamSettings } from "../database/queries";
 
 async function checkAuthorization() {
   // Authorization
@@ -24,6 +24,32 @@ export async function updateTeamSettingsUseCase(teamData: TeamSettings) {
         await updateTeamSettings(teamData, teamId);
     } catch (error) {
         console.error("Failed to update team settings:", error);
+        throw error; // Re-throw the error for further handling if needed
+    }
+}
+
+export async function getTeamSettingsUseCase() {
+    // Check auth
+    const user = await checkAuthorization();
+
+    // Is the user the team owner?
+    const teamId: string = user.userId;
+
+    // If not, throw an error or handle accordingly
+    // Fetch team settings from the database
+    try {
+        const teamSettings = await getTeamSettings(teamId);
+        if (!teamSettings) {
+            throw new Error("No team settings found for the user");
+        }
+        const teamSettingsData = {
+            teamName: teamSettings.name,
+            teamAbbreviation: teamSettings.abbreviation,
+            teamLogo: undefined, // Assuming logo is optional
+        } as TeamSettings;
+        return teamSettingsData;
+    } catch (error) {
+        console.error("Failed to fetch team settings:", error);
         throw error; // Re-throw the error for further handling if needed
     }
 }

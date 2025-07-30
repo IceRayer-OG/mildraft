@@ -27,26 +27,30 @@ import {
 import { toast } from "sonner";
 
 // Actions
-import { updateTeamSettingsAction } from "../actions/teamSettingsActions";
+import { updateTeamSettingsAction, getTeamSettingsAction } from "../actions/teamSettingsActions";
 
 // Utils
 import { TeamSettings } from "../utils/team";
 
 
 export function TeamSettingsForm() {
+    
     const teamSettingsForm = useForm({
         defaultValues: {
             teamName: "",
             teamAbbreviation: "",
             teamLogo: "",
-        },
+        }
     });
 
     async function teamSettingsFormSubmit(formData: TeamSettings) {
-        // Handle form submission logic here
-        await updateTeamSettingsAction(formData);
-        toast.success("Team settings updated successfully!");
-        // You can add your API call or state update logic here
+        try {
+            await updateTeamSettingsAction(formData);
+            toast.success("Team settings updated successfully!");
+        } catch (error) {
+            console.error("Error updating team settings:", error);
+            toast.error("Failed to update team settings. Please try again.");
+        }
     }
 
   return (

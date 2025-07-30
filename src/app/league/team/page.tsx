@@ -31,7 +31,7 @@ async function getData(): Promise<teamPlayers[]> {
   return players;
 }
  
-export default async function DemoPage() {
+export default async function TeamPage() {
   const data = await getData()
   const myTeamName = dbGetMyTeamName();
  
