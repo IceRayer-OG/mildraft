@@ -1,5 +1,9 @@
 "use client";
  
+import { type DraftablePlayers } from "../utils/draft";
+
+// Refactor
+// UI Components
 import { type ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "~/_components/ui/button";
@@ -9,13 +13,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/_components/ui/dropdown-menu";
-import  { dbQueuePlayer, dbDraftPlayer } from "~/features/drafts/actions/draftActions";
 import { toast } from "sonner";
-import { type DraftPlayers } from "~/features/players/utils/players"; 
 
-async function queuePlayer(playerToQueue: DraftPlayers) {
+// Actions
+import { addPlayerToQueueAction } from "../actions/queueActions";
+import { draftPlayerAction } from "../actions/draftActions";
+
+// Types
+
+
+async function queuePlayer(playerToQueue: DraftablePlayers) {
   try {
-    await dbQueuePlayer(playerToQueue);
+    // add player to queue action
+    await addPlayerToQueueAction(playerToQueue);
+    
+    // await dbQueuePlayer(playerToQueue);
     toast.success(`${playerToQueue.playerName} has been added to your queue`);
   } catch (error) {
     console.log(error);
@@ -23,9 +35,9 @@ async function queuePlayer(playerToQueue: DraftPlayers) {
   }
 }
 
-async function draftPlayer(playerToDraft: DraftPlayers) {
+async function draftPlayer(playerToDraft: DraftablePlayers) {
   try {
-    await dbDraftPlayer(playerToDraft);
+    // await dbDraftPlayer(playerToDraft);
     toast.success(`${playerToDraft.playerName} has been drafted`);
   } catch (error) {
     console.log(error);
@@ -33,7 +45,7 @@ async function draftPlayer(playerToDraft: DraftPlayers) {
   }
 }
 
-export const draftColumns: ColumnDef<DraftPlayers>[] = [
+export const draftColumns: ColumnDef<DraftablePlayers>[] = [
   {
     accessorKey: "rank",
     header: "Rank",

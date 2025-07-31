@@ -1,10 +1,11 @@
+// Refactoring 
 // React and Next.js imports
 import { Suspense } from "react";
-// Utilities and type definitions
-import { dbGetDraftQueue, dbGetDraftPlayers } from "~/features/drafts/actions/draftActions";
+
 // Global UI components
 import { Separator } from "~/_components/ui/separator";
 import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
+
 // Feature components
 import { WriteInDialog } from "~/features/drafts/components/write-in-dialog";
 import { QueueDrawer } from "~/features/drafts/components/queue-drawer";
@@ -12,12 +13,17 @@ import { draftColumns } from "~/features/drafts/components/draft-columns";
 import { DataTable } from "~/features/drafts/components/draft-data-table";
 import DraftQueueList from "~/features/drafts/components/draft-picks-queue";
 
+// Server actions
+import { getMyQueueAction } from "~/features/drafts/actions/queueActions";
+import { getDraftablePlayersAction, getDraftPicksListAction } from "~/features/drafts/actions/draftActions";
 
-export const dynamic = "force-dynamic";
+
+export const dynamic = "force-dynamic"; 
 
 export default async function DraftPage() {
-  const draftPlayers = await dbGetDraftPlayers();
-  const draftPicks = dbGetDraftQueue();
+  const draftablePlayers = await getDraftablePlayersAction();
+  const userQueue = await getMyQueueAction();
+  const draftPicks = getDraftPicksListAction();
 
   return (
     <main className="flex flex-col w-full min-h-screen gap-4 p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
@@ -40,7 +46,7 @@ export default async function DraftPage() {
         <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
           <div className="w-full overflow-hidden">
             <Suspense fallback={<div className="w-full h-full">Loading...</div>}>
-              <DataTable columns={draftColumns} data={draftPlayers} />
+              <DataTable columns={draftColumns} data={draftablePlayers} />
             </Suspense>
           </div>
           <ScrollBar orientation="horizontal" />

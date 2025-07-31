@@ -14,4 +14,32 @@ const queueDraftPickSchema = z.object({
     })
 });
 
+const draftablePlayersSchema = z.object({
+    id: z.number(),
+    rank: z.number(),
+    playerName: z.string(),
+    position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
+    team: z.string(),
+    age: z.number(),
+    height: z.string(),
+    weight: z.number(),
+    throws: z.enum(["R", "L", "B"]),
+    bats: z.enum(["R", "L", "B"]),
+});
+
+const queuePlayersSchema = z.object({
+    id: z.number(),
+    rank: z.number(),
+    playerName: z.string(),
+    position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
+    team: z.string(),
+    age: z.number(),
+    height: z.string(),
+    weight: z.number(),
+    throws: z.enum(["R", "L", "B"]),
+    bats: z.enum(["R", "L", "B"]),
+});
+
 export type QueueDraftPick = z.infer<typeof queueDraftPickSchema>;
+export type DraftablePlayers = z.infer<typeof draftablePlayersSchema>;
+export type QueuePlayers = z.infer<typeof queuePlayersSchema>;

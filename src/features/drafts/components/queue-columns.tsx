@@ -1,5 +1,6 @@
 "use client";
  
+// UI Components
 import { type ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "~/_components/ui/button";
@@ -9,15 +10,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/_components/ui/dropdown-menu";
-import { dbRemovePlayerFromQueue, dbDraftPlayer } from "~/features/drafts/actions/draftActions";
 import { toast } from "sonner";
-import { type QueuePlayers } from "~/features/players/utils/players";
+
+// Types
+import { type QueuePlayers } from "../utils/draft";
+
+// Actions
+import { removePlayerFromQueueAction } from "../actions/queueActions";
 
 async function removePlayerFromQueue(playerToRemove: QueuePlayers) {
   try {
-    await dbRemovePlayerFromQueue(playerToRemove);
+    await removePlayerFromQueueAction(playerToRemove);
     toast.message('Player Removed from Queue',{
-      description: `${playerToRemove.pros.playerName} has been removed from your queue`
+      description: `${playerToRemove.playerName} has been removed from your queue`
     });
 
   } catch (error) {
@@ -28,8 +33,8 @@ async function removePlayerFromQueue(playerToRemove: QueuePlayers) {
 
 async function draftPlayer(playerToDraft: QueuePlayers) {
   try {
-    await dbDraftPlayer(playerToDraft.pros);
-    toast.success(`${playerToDraft.pros.playerName} has been drafted`);
+    // await dbDraftPlayer(playerToDraft.pros);
+    toast.success(`${playerToDraft.playerName} has been drafted`);
   } catch (error) {
     console.log(error);
   }
@@ -37,35 +42,35 @@ async function draftPlayer(playerToDraft: QueuePlayers) {
 
 export const queueColumns: ColumnDef<QueuePlayers>[] = [
     {
-      accessorKey: "pros.playerName",
+      accessorKey: "playerName",
       header: "Player Name",
     },
     {
-      accessorKey: "pros.position",
+      accessorKey: "position",
       header: "Position",
     },
     { 
-      accessorKey: "pros.team", 
+      accessorKey: "team", 
       header: "Team" 
     },
     {
-      accessorKey: "pros.age",
+      accessorKey: "age",
       header: "Age",
     },
     {
-      accessorKey: "pros.height",
+      accessorKey: "height",
       header: "Height",
     },
     {
-      accessorKey: "pros.weight",
+      accessorKey: "weight",
       header: "Weight",
     },
     {
-      accessorKey: "pros.throws",
+      accessorKey: "throws",
       header: "Throws",
     },
     {
-      accessorKey: "pros.bats",
+      accessorKey: "bats",
       header: "Bats",
     },
     {
