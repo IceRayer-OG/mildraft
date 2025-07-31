@@ -44,8 +44,11 @@ export async function addPlayerToQueueUseCase(playerToQueue: DraftablePlayers) {
     // Check if user is a team owner
 
     // Add player to queue and revalidate the draft path
-    postPlayerToQueue(playerToQueue.id, user.userId)
-    return true;
+    try {
+        await postPlayerToQueue(playerToQueue.id, user.userId)
+    } catch (error) {
+        throw new Error("Error adding player to queue");
+    }
 }
 
 export async function removePlayerFromQueueUseCase(playerToRemove: DraftablePlayers) {
@@ -58,6 +61,9 @@ export async function removePlayerFromQueueUseCase(playerToRemove: DraftablePlay
     // Check if user is a team owner
 
     // Remove player from queue and revalidate the draft path
-    deletePlayerFromQueue(playerToRemove.id, user.userId)
-    
+    try {
+        await  deletePlayerFromQueue(playerToRemove.id, user.userId)
+    } catch (error) {
+        throw new Error("Error removing player from queue");
+    } 
 }
