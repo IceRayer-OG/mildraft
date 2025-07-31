@@ -3,7 +3,6 @@ import {
     Drawer,
     DrawerClose,
     DrawerContent,
-    DrawerDescription,
     DrawerFooter,
     DrawerHeader,
     DrawerTitle,
@@ -22,7 +21,7 @@ import { getMyQueueAction } from "../actions/queueActions";
 
 async function getMyQueueData(): Promise<QueuePlayers[]> {
   // Fetch data from your API here.
-  const myQueueData = await getMyQueueAction() as QueuePlayers[];
+  const myQueueData = await getMyQueueAction();
   return myQueueData;
 }
 
