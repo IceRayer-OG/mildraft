@@ -1,8 +1,8 @@
+// UI Components
 import {
     Drawer,
     DrawerClose,
     DrawerContent,
-    DrawerDescription,
     DrawerFooter,
     DrawerHeader,
     DrawerTitle,
@@ -11,12 +11,17 @@ import {
 import { Button } from "~/_components/ui/button";
 import { DataTable } from "../../../_components/data-table";
 import { queueColumns } from "./queue-columns";
-import { type QueuePlayers } from "~/features/players/utils/players";
-import { getMyQueue } from "~/server/queries";
+
+// Types
+import { type QueuePlayers } from "../utils/draft";
+
+// Server Actions
+import { getMyQueueAction } from "../actions/queueActions";
+
 
 async function getMyQueueData(): Promise<QueuePlayers[]> {
   // Fetch data from your API here.
-  const myQueueData = await getMyQueue() as QueuePlayers[];
+  const myQueueData = await getMyQueueAction();
   return myQueueData;
 }
 

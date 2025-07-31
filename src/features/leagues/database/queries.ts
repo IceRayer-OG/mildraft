@@ -1,6 +1,6 @@
 import "server-only";
 import { db } from "~/server/db";
-import { leagues, drafts, draftSettings, settings } from "~/server/db/schema";
+import { leagues, draftSettings, settings } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
 import { LeagueSettings, DraftSettings, TeamSettings, LeagueData } from "../utils/settings";
 
@@ -10,7 +10,6 @@ export async function updateLeagueSettings(data: LeagueSettings, leagueData: Lea
     console.log("Updating league settings in the database with data:", data, leagueData);
     await db.update(leagues).set({name: data.name, abbreviation: data.abbreviation}).where(eq(leagues.id, leagueData.leagueId));
     return true;
-    // Example: await db.update(leagues).set(data).where(eq(leagues.id, leagueData.leagueId));
 }
 
 export async function updateDraftSettings(data: DraftSettings, leagueData: LeagueData):Promise<boolean> {
@@ -22,7 +21,6 @@ export async function updateDraftSettings(data: DraftSettings, leagueData: Leagu
         pickDuration: data.pickDuration
     }).where(eq(draftSettings.leagueId, leagueData.leagueId));
     return true;
-    // Example: await db.update(drafts).set(data).where(eq(drafts.id, leagueData.draftId));
 }
 
 export async function updateTeamSettings(data: TeamSettings, leagueData: LeagueData):Promise<boolean> {
@@ -31,3 +29,4 @@ export async function updateTeamSettings(data: TeamSettings, leagueData: LeagueD
     await db.update(settings).set({teams: data.teamsAllowed}).where(eq(settings.leagueId, leagueData.leagueId));
     return true;
 }
+
