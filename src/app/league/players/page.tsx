@@ -1,27 +1,18 @@
 
-
 import { getFreeAgents } from "~/server/queries";
-import { type Players} from "~/features/players/utils/players";
+// UI Components
 import { PlayerDataTable } from "~/features/players/components/player-data-table";
 import { playerColumns } from "~/features/players/components/player-columns";
- 
-async function getData(): Promise<Players[]> {
-  // Fetch data from your API here
-  const freeAgents = await getFreeAgents() as Players[];
 
+// Server Actions
+import { getFreeAgentsAction } from "~/features/players/actions/playerActions";
+
+// Types
+import { type Players} from "~/features/players/utils/players";
+
+async function getData() {
+  const freeAgents = await getFreeAgentsAction();
   return freeAgents;
-
-  // Placeholder data for demonstration purposes
-  // return [
-  //   {
-  //     id: 5,
-  //     playerName: "Luke Skywalker",
-  //     position: "P",
-  //     team: "Milwaukee Brewers",
-  //     throws: "R",
-  //     bats: "R",
-  //   },
-  // ]
 }
  
 export default async function PlayerPage() {
