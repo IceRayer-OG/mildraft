@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import { Players } from "../utils/players";
+import { type Players } from "../utils/players";
 import { getFreeAgents } from "../database/queries";
 
 export async function getFreeAgentsUseCase(): Promise<Players[]> {

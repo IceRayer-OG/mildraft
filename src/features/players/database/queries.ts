@@ -23,7 +23,5 @@ export async function getFreeAgents() {
         
     if (freeAgents === null) throw new Error("Error getting free agents"); 
 
-    console.log("Free agents:", freeAgents);
-
     return freeAgents;
 }
