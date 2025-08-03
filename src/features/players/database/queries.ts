@@ -1,3 +1,4 @@
+"server-only";
 import { db } from "~/server/db";
 import { eq, notInArray, and, isNotNull } from "drizzle-orm";
 import { draftPicks, pros, players } from "~/server/db/schema";
@@ -21,7 +22,7 @@ export async function getFreeAgents() {
             )
         );
         
-    // if (freeAgents === null) throw new Error("Error getting free agents"); 
+    if (freeAgents === null) throw new Error("Error getting free agents"); 
 
     return freeAgents;
 }
