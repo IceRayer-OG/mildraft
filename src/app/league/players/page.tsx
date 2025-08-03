@@ -6,6 +6,7 @@ import { playerColumns } from "~/features/players/components/player-columns";
 // Server Actions
 import { getFreeAgentsAction } from "~/features/players/actions/playerActions";
 
+export const dynamic = "force-dynamic";
 
 async function getData() {
   const freeAgents = getFreeAgentsAction();
