@@ -1,6 +1,6 @@
 import { db } from "~/server/db";
-import { eq, notInArray, and, isNotNull, isNull, asc, inArray, or } from "drizzle-orm";
-import { queues, draftPicks, pros, teams, players } from "~/server/db/schema";
+import { eq, notInArray, and, isNotNull } from "drizzle-orm";
+import { draftPicks, pros, players } from "~/server/db/schema";
 
 export async function getFreeAgents() {
     const playersDrafted = db.select({pickedPlayer: draftPicks.playerId}).from(draftPicks)

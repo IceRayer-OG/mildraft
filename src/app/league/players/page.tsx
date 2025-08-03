@@ -1,5 +1,4 @@
 
-import { getFreeAgents } from "~/server/queries";
 // UI Components
 import { PlayerDataTable } from "~/features/players/components/player-data-table";
 import { playerColumns } from "~/features/players/components/player-columns";
@@ -7,8 +6,6 @@ import { playerColumns } from "~/features/players/components/player-columns";
 // Server Actions
 import { getFreeAgentsAction } from "~/features/players/actions/playerActions";
 
-// Types
-import { type Players} from "~/features/players/utils/players";
 
 async function getData() {
   const freeAgents = await getFreeAgentsAction();
