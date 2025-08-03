@@ -40,7 +40,7 @@ import {
 } from "../actions/leagueActions"
 
 // Types
-import { DraftSettings, LeagueSettings, TeamSettings, LeagueData } from "../utils/settings"
+import { type DraftSettings, type LeagueSettings, type TeamSettings, type LeagueData } from "../utils/settings"
 
 export function LeagueSettingsTabsCard() {
   // State for active tab

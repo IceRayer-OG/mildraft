@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { LeagueSettings, TeamSettings, DraftSettings, LeagueData } from "../utils/settings";
+import { type LeagueSettings, type TeamSettings, type DraftSettings, type LeagueData } from "../utils/settings";
 import { updateLeagueSettingsUseCase, updateDraftSettingsUseCase, updateTeamSettingsUseCase } from "../use_cases/leagueUseCases";
 // add queries
 

@@ -8,6 +8,7 @@ import { type QueuePlayers, type DraftablePlayers } from "../utils/draft";
 
 // Queries
 import { postPlayerToQueue, deletePlayerFromQueue, getMyQueuePlayers } from "../database/queries";
+import { error } from "console";
 
 
 
@@ -47,6 +48,7 @@ export async function addPlayerToQueueUseCase(playerToQueue: DraftablePlayers) {
     try {
         await postPlayerToQueue(playerToQueue.id, user.userId)
     } catch (error) {
+        console.log(error)
         throw new Error("Error adding player to queue");
     }
 }
@@ -64,6 +66,7 @@ export async function removePlayerFromQueueUseCase(playerToRemove: DraftablePlay
     try {
         await  deletePlayerFromQueue(playerToRemove.id, user.userId)
     } catch (error) {
+        console.log(error);
         throw new Error("Error removing player from queue");
     } 
 }

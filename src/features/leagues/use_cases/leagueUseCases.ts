@@ -1,5 +1,5 @@
 
-import { LeagueSettings, DraftSettings, TeamSettings, LeagueData } from "../utils/settings";
+import { type LeagueSettings, type DraftSettings, type TeamSettings, type LeagueData } from "../utils/settings";
 import { auth } from "@clerk/nextjs/server";
 import { updateLeagueSettings, updateDraftSettings, updateTeamSettings } from "../database/queries";
 
