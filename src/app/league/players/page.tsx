@@ -13,12 +13,12 @@ async function getData() {
 }
  
 export default async function PlayerPage() {
-  const data = await getData()
+  // const data = await getData()
  
   return (
     <main className="flex flex-col min-h-screen w-full items-center p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
         <div className="grow w-full">
-            <PlayerDataTable columns={playerColumns} data={data} />
+            {/* <PlayerDataTable columns={playerColumns} data={data} /> */}
         </div>
     </main>
   )
