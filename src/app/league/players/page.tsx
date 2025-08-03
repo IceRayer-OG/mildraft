@@ -8,7 +8,7 @@ import { getFreeAgentsAction } from "~/features/players/actions/playerActions";
 
 
 async function getData() {
-  const freeAgents = await getFreeAgentsAction();
+  const freeAgents = getFreeAgentsAction();
   return freeAgents;
 }
  
