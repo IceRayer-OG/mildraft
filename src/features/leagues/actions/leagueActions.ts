@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { type LeagueSettings, type TeamSettings, type DraftSettings, type LeagueData } from "../utils/settings";
 import { updateLeagueSettingsUseCase, updateDraftSettingsUseCase, updateTeamSettingsUseCase } from "../use_cases/leagueUseCases";
-// add queries
 
 export async function updateLeagueSettingsAction(data: LeagueSettings, leagueData: LeagueData) {
   // Persistence layer call to update league settings
@@ -27,4 +26,8 @@ export async function updateTeamSettingsAction(data: TeamSettings, leagueData: L
   // This is a placeholder function, implement the actual DB call
   console.log("Updating team settings with data:", data, leagueData);
   revalidatePath("league");
+}
+
+export async function getLeagueTeamsList() {
+  return true;
 }
