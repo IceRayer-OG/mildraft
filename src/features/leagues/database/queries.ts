@@ -2,7 +2,7 @@ import "server-only";
 import { db } from "~/server/db";
 import { leagues, draftSettings, settings } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
-import { LeagueSettings, DraftSettings, TeamSettings, LeagueData } from "../utils/settings";
+import { type LeagueSettings, type DraftSettings, type TeamSettings, type LeagueData } from "../utils/settings";
 
 
 export async function updateLeagueSettings(data: LeagueSettings, leagueData: LeagueData):Promise<boolean> {

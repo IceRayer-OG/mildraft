@@ -2,9 +2,9 @@
 import "server-only";
 
 import { db } from "./db";
-import { draftPicks, pros, teams, leagues, drafts, queues, posts, players } from "./db/schema";
+import { draftPicks, pros, teams, queues, posts, players } from "./db/schema";
 import { auth } from "@clerk/nextjs/server";
-import { and, asc, eq, isNull, notInArray, isNotNull, not, notExists } from "drizzle-orm";
+import { and, asc, eq, isNull, notExists } from "drizzle-orm";
 import { type Post, type CreatePost } from "../features/posts/utils/posts";
 import { union } from "drizzle-orm/pg-core";
 
@@ -96,32 +96,6 @@ export async function getDraftPlayers(): Promise<unknown> {
 
   return draftPlayers;
 
-}
-
-export async function getLimitedDraftPlayers(): Promise<unknown> {
-  // Authorization
-  const user = await auth();
-  if (!user.userId) throw new Error("Not logged in");
-
-  // Get players on teams
-  const playersOnTeams = db.select().from(pros)
-    .innerJoin(draftPicks, eq(pros.id, draftPicks.playerId))
-  ;
-
-  // const ineligblePlayersIds = await union(dh184g6mwRPS
-  //   playersOnTeams,
-  //   db.select({player_id: draftPicks.playerId}).from(draftPicks)
-  //     .where(and(isNotNull(draftPicks.playerId), eq(draftPicks.draftId, 2)))
-  // )
-
-  // const ineligblePlayers = playersOnTeams.map(p => p.player_id);
- 
-  const draftPlayers = await db.select().from(pros)
-    .where(notExists(playersOnTeams))
-    .orderBy(asc(pros.rank))
-  ;
- 
-  return draftPlayers;
 }
 
 export async function postDraftWriteIn() {

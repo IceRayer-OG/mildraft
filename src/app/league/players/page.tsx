@@ -1,27 +1,16 @@
-
-
-import { getFreeAgents } from "~/server/queries";
-import { type Players} from "~/features/players/utils/players";
+import { Suspense } from "react";
+// UI Components
 import { PlayerDataTable } from "~/features/players/components/player-data-table";
 import { playerColumns } from "~/features/players/components/player-columns";
- 
-async function getData(): Promise<Players[]> {
-  // Fetch data from your API here
-  const freeAgents = await getFreeAgents() as Players[];
 
+// Server Actions
+import { getFreeAgentsAction } from "~/features/players/actions/playerActions";
+
+export const dynamic = "force-dynamic";
+
+async function getData() {
+  const freeAgents = getFreeAgentsAction();
   return freeAgents;
-
-  // Placeholder data for demonstration purposes
-  // return [
-  //   {
-  //     id: 5,
-  //     playerName: "Luke Skywalker",
-  //     position: "P",
-  //     team: "Milwaukee Brewers",
-  //     throws: "R",
-  //     bats: "R",
-  //   },
-  // ]
 }
  
 export default async function PlayerPage() {
@@ -30,7 +19,9 @@ export default async function PlayerPage() {
   return (
     <main className="flex flex-col min-h-screen w-full items-center p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
         <div className="grow w-full">
-            <PlayerDataTable columns={playerColumns} data={data} />
+            <Suspense fallback={<div>...Loading</div>}>
+              <PlayerDataTable columns={playerColumns} data={data} />
+            </Suspense>
         </div>
     </main>
   )

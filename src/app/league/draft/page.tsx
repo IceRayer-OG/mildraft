@@ -22,7 +22,7 @@ export const dynamic = "force-dynamic";
 
 export default async function DraftPage() {
   const draftablePlayers = await getDraftablePlayersAction();
-  const userQueue = await getMyQueueAction();
+  // const userQueue = await getMyQueueAction();
   const draftPicks = getDraftPicksListAction();
 
   return (

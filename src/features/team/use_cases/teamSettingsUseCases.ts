@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import { TeamSettings } from "../utils/team";
+import { type TeamSettings } from "../utils/team";
 import { updateTeamSettings, getTeamSettings } from "../database/queries";
 
 async function checkAuthorization() {
