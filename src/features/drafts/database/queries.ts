@@ -57,10 +57,24 @@ export async function getDraftPicks() {
 }
 
 export async function postDraftPick(teamId: number, draftId: number, pickNumber: number, playerPicked: number) {
+  
   await db.insert(draftPicks).values({
     teamId: teamId,
     draftId: draftId,
     pickNumber: pickNumber,
     playerId: playerPicked,
   });
+
+}
+
+export async function postWriteInDraftPick(teamId: number, draftId: number, pickNumber: number, playerName: string) {
+
+  await db.insert(draftPicks).values({
+    teamId: teamId,
+    draftId: draftId,
+    pickNumber: pickNumber,
+    isWriteIn: true,
+    writeInName: playerName,
+  });
+
 }

@@ -1,6 +1,6 @@
 "use server";
 
-import { draftPlayerUseCase, getDraftablePlayersUseCase, getDraftPicksListUseCase } from "../use_cases/draftUseCases";
+import { draftPlayerUseCase, draftWriteInPlayerUseCase , getDraftablePlayersUseCase, getDraftPicksListUseCase } from "../use_cases/draftUseCases";
 import { type DraftPlayers} from "~/features/players/utils/players";
 import { revalidatePath } from "next/cache";
 
@@ -15,6 +15,11 @@ export async function getDraftablePlayersAction() {
 
 export async function draftPlayerAction(playerToDraft: DraftPlayers) {
   await draftPlayerUseCase(playerToDraft);
+  revalidatePath("league/draft");
+}
+
+export async function draftWriteInPlayerAction(playerToDraft: string) {
+  await draftWriteInPlayerUseCase();
   revalidatePath("league/draft");
 }
 

@@ -2,13 +2,20 @@ import "server-only";
 
 import { auth } from "@clerk/nextjs/server";
 import { type DraftablePlayers, type QueueDraftPick } from "../utils/draft";
-import { getDraftablePlayers, getDraftPicks } from "../database/queries";
+import { getDraftablePlayers, getDraftPicks, postDraftPick } from "../database/queries";
 
 async function checkAuthorization() {
   // Authorization
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");
   return user;
+}
+
+async function getTeamIdData(userId: string) {
+
+  // const team = await getTeamIdByUserId(userId);
+  // return team;
+
 }
 
 export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
@@ -18,12 +25,27 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
   if (!user) {
     throw new Error("User is not authenticated");
   }
+  
   // Check if user is current pick team owner
 
   // Perform the draft operation
   
 
-  // Revalidate the draft path
+}
+
+export async function draftWriteInPlayerUseCase() {
+  const user = await checkAuthorization();
+  if (!user) {
+    throw new Error("User is not authenticated");
+  }
+
+  // check it user is current pick team owner
+
+  // draft write in player
+  // await postDraftPickraft();
+
+  return true;
+
 }
 
 export async function getDraftablePlayersUseCase(): Promise<DraftablePlayers[]> {
