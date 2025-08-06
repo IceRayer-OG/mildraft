@@ -15,11 +15,11 @@ import TeamList from "~/features/team/components/TeamsList";
 import { TeamsLoadingSkeleton } from "~/features/team/components/TeamsLoading";
 
 // Actions
-import { dbGetLeagueTeams } from "~/features/team/actions/teamActions";
+import { getLeagueTeamsAction } from "~/features/team/actions/teamActions";
 
 export default async function LeaguePage() {
   const posts = getLeaguePosts();
-  const leagueTeams = dbGetLeagueTeams();
+  const allLeagueTeams = getLeagueTeamsAction();
 
   return (
     <div className="flex flex-col min-h-screen min-w-screen p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
@@ -54,7 +54,7 @@ export default async function LeaguePage() {
           </div>
           <div>
             <Suspense fallback={TeamsLoadingSkeleton()}>
-              <TeamList teamList={leagueTeams} />
+              <TeamList teamList={allLeagueTeams} />
             </Suspense>
           </div>
         </div>

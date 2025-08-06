@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { type Team } from "~/features/team/utils/team";
+import { type Team } from "../utils/team";
 import { Avatar, AvatarImage,AvatarFallback } from "~/_components/ui/avatar";
 
 export default function TeamList({
