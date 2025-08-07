@@ -5,15 +5,15 @@ import { queues, draftPicks, pros, teams,  } from "~/server/db/schema";
 
 export async function getDraftablePlayers() {
     const draftedPlayers = db.select({pickedPlayer: draftPicks.playerId}).from(draftPicks)
-        .where(
-            and(
-                eq(draftPicks.draftId, 2), 
-                isNotNull(draftPicks.playerId)
-            )
-        );
+      .where(
+        and(
+          eq(draftPicks.draftId, 2), 
+          isNotNull(draftPicks.playerId)
+        )
+      );
     
     const draftablePlayers = await db.select().from(pros)
-        .where(notInArray(pros.id, draftedPlayers));                          
+      .where(notInArray(pros.id, draftedPlayers));                          
 
     if(draftablePlayers === null) throw new Error("Error getting draft players");
 
@@ -57,10 +57,39 @@ export async function getDraftPicks() {
 }
 
 export async function postDraftPick(teamId: number, draftId: number, pickNumber: number, playerPicked: number) {
+  
   await db.insert(draftPicks).values({
     teamId: teamId,
     draftId: draftId,
     pickNumber: pickNumber,
     playerId: playerPicked,
   });
+
+}
+
+export async function postWriteInDraftPick(teamId: number, draftId: number, pickNumber: number, playerName: string) {
+
+  await db.insert(draftPicks).values({
+    teamId: teamId,
+    draftId: draftId,
+    pickNumber: pickNumber,
+    isWriteIn: true,
+    writeInName: playerName,
+  });
+
+}
+
+export async function getDraftedPlayers() {
+  const draftedPicks = db.select({pickedPlayer: draftPicks.playerId}).from(draftPicks)
+    .where(
+        and(
+            eq(draftPicks.draftId, 2), 
+            isNotNull(draftPicks.playerId)
+        )
+    );
+    
+  const draftedPlayers = await db.select().from(pros)
+    .where(inArray(pros.id,draftPicks))
+  
+  return draftedPlayers;
 }

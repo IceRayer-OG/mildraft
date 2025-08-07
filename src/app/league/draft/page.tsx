@@ -1,4 +1,6 @@
-// Refactoring 
+
+import { LucideSettings } from "lucide-react";
+
 // React and Next.js imports
 import { Suspense } from "react";
 
@@ -14,15 +16,15 @@ import { DataTable } from "~/features/drafts/components/draft-data-table";
 import DraftQueueList from "~/features/drafts/components/draft-picks-queue";
 
 // Server actions
-import { getMyQueueAction } from "~/features/drafts/actions/queueActions";
 import { getDraftablePlayersAction, getDraftPicksListAction } from "~/features/drafts/actions/draftActions";
+import { Button } from "~/_components/ui/button";
+import { DraftHistoryDialog } from "~/features/drafts/components/DraftHistory";
 
 
 export const dynamic = "force-dynamic"; 
 
 export default async function DraftPage() {
   const draftablePlayers = await getDraftablePlayersAction();
-  // const userQueue = await getMyQueueAction();
   const draftPicks = getDraftPicksListAction();
 
   return (
@@ -41,6 +43,9 @@ export default async function DraftPage() {
             <DraftQueueList draftQueue={draftPicks} />
           </Suspense>
         </div>
+        <div className="place-content-center">
+          <LucideSettings />
+        </div>
       </div>
       <div>
         <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
@@ -58,6 +63,9 @@ export default async function DraftPage() {
         </div>
         <div>
           <WriteInDialog />
+        </div>
+        <div>
+          <DraftHistoryDialog />
         </div>
       </div>
     </main>

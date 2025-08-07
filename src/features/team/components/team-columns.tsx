@@ -1,5 +1,6 @@
 "use client"
- 
+
+// UI Components
 import { type ColumnDef } from "@tanstack/react-table"
 import { 
   DropdownMenu,
@@ -9,17 +10,20 @@ import {
 } from "~/_components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "~/_components/ui/button";
-import { type teamPlayers } from "~/features/players/utils/players";
-import { dbDropPlayer } from "~/features/team/actions/teamActions";
 import { toast } from "sonner";
- 
-async function dropPlayer(player: teamPlayers) {
-  await dbDropPlayer(player.player.id);
+
+// Types
+import { type TeamPlayers } from "../utils/team";
+
+// Server Actions
+import { dropPlayerFromMyTeamAction } from "~/features/team/actions/teamActions";
+
+async function dropPlayer(player: TeamPlayers) {
+  await dropPlayerFromMyTeamAction(player.player.id);
   toast.success(`${player.pros.playerName} has been removed from your team`);
 }
 
- 
-export const teamColumns: ColumnDef<teamPlayers>[] = [
+export const teamColumns: ColumnDef<TeamPlayers>[] = [
   {
     accessorKey: "pros.playerName",
     header: "Player Name",

@@ -41,7 +41,7 @@ const queuePlayersSchema = z.object({
 const teamPlayersSchema = z.object({
     player: z.object({
         id: z.number(),
-        prosId: z.number(),
+        proId: z.number(),
         teamId: z.number(),
         position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
     }),

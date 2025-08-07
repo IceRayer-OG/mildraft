@@ -10,12 +10,15 @@ import {
 } from "~/_components/ui/dialog"
 import { Button } from "~/_components/ui/button"
 import { LeagueSettingsTabsCard } from "./SettingsCard"
+import { LucideSettings } from "lucide-react"
 
 export function SettingDialog() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="ghost">Settings</Button>
+                <Button variant="ghost">
+                    <LucideSettings/>
+                </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
