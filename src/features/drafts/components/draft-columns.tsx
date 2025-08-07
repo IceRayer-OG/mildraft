@@ -1,7 +1,5 @@
 "use client";
  
-import { type DraftablePlayers } from "../utils/draft";
-
 // Refactor
 // UI Components
 import { type ColumnDef } from "@tanstack/react-table"
@@ -20,7 +18,7 @@ import { addPlayerToQueueAction } from "../actions/queueActions";
 import { draftPlayerAction } from "../actions/draftActions";
 
 // Types
-
+import { type DraftablePlayers } from "../utils/draft";
 
 async function queuePlayer(playerToQueue: DraftablePlayers) {
   try {
@@ -38,6 +36,7 @@ async function queuePlayer(playerToQueue: DraftablePlayers) {
 async function draftPlayer(playerToDraft: DraftablePlayers) {
   try {
     // await dbDraftPlayer(playerToDraft);
+    await draftPlayerAction(playerToDraft);
     toast.success(`${playerToDraft.playerName} has been drafted`);
   } catch (error) {
     console.log(error);

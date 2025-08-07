@@ -2,8 +2,9 @@ import "server-only";
 
 import { auth } from "@clerk/nextjs/server";
 import { type DraftablePlayers, type QueueDraftPick } from "../utils/draft";
-import { getDraftablePlayers, getDraftedPlayers, getDraftPicks, postDraftPick } from "../database/queries";
+import { getDraftablePlayers, getDraftedPlayers, getDraftPicks, postDraftPick, postWriteInDraftPick } from "../database/queries";
 import { TeamPlayers } from "~/features/team/utils/team";
+import { getCurrentDraftPick } from "~/server/queries";
 
 async function checkAuthorization() {
   // Authorization
@@ -28,24 +29,31 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
   }
   
   // Check if user is current pick team owner
+  const currentPick = await getCurrentDraftPick();
+  if(!currentPick) {
+    throw new Error("No pick set")
+  }
 
   // Perform the draft operation
-  
+  await postDraftPick(currentPick.teamId, 2, currentPick.pickNumber, playerToDraft.id);
 
 }
 
-export async function draftWriteInPlayerUseCase() {
+export async function draftWriteInPlayerUseCase(playerToDraft: string) {
   const user = await checkAuthorization();
   if (!user) {
     throw new Error("User is not authenticated");
   }
 
   // check it user is current pick team owner
+  // Check if user is current pick team owner
+  const currentPick = await getCurrentDraftPick();
+  if(!currentPick) {
+    throw new Error("No pick set")
+  }
 
   // draft write in player
-  // await postDraftPickraft();
-
-  return true;
+  await postWriteInDraftPick(currentPick.teamId, 2, currentPick.pickNumber, playerToDraft);
 
 }
 

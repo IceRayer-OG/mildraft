@@ -56,27 +56,55 @@ export async function getDraftPicks() {
   return draftPicksData;
 }
 
+export async function getCurrentDraftPick() {
+    // Check if user is current pick
+    const currentPick = await db.query.draftPicks.findFirst({
+      orderBy: [asc(draftPicks.pickNumber)],
+      where: isNull(draftPicks.playerId),
+    });
+  
+    if(currentPick === null) throw new Error("No current pick found");
+
+    return currentPick;
+}
+
 export async function postDraftPick(teamId: number, draftId: number, pickNumber: number, playerPicked: number) {
   
-  await db.insert(draftPicks).values({
-    teamId: teamId,
-    draftId: draftId,
-    pickNumber: pickNumber,
+  await db.update(draftPicks).set({
     playerId: playerPicked,
-  });
-
+    isWriteIn: false,
+    leagueId: 1
+  })
+  .where(
+    and(
+      eq(
+        draftPicks.pickNumber, pickNumber
+      ),
+      eq(
+        draftPicks.draftId, draftId
+      )
+    )
+  )
 }
 
 export async function postWriteInDraftPick(teamId: number, draftId: number, pickNumber: number, playerName: string) {
 
-  await db.insert(draftPicks).values({
-    teamId: teamId,
-    draftId: draftId,
-    pickNumber: pickNumber,
-    isWriteIn: true,
-    writeInName: playerName,
-  });
-
+  await db.update(draftPicks)
+    .set({
+      leagueId: 1,
+      isWriteIn: true,
+      writeInName: playerName,
+    })
+  .where(
+    and(
+      eq(
+        draftPicks.pickNumber, pickNumber
+      ),
+      eq(
+        draftPicks.draftId, draftId
+      )
+    )
+  );
 }
 
 export async function getDraftedPlayers() {
