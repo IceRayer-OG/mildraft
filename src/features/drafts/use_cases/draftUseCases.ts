@@ -2,7 +2,8 @@ import "server-only";
 
 import { auth } from "@clerk/nextjs/server";
 import { type DraftablePlayers, type QueueDraftPick } from "../utils/draft";
-import { getDraftablePlayers, getDraftPicks, postDraftPick } from "../database/queries";
+import { getDraftablePlayers, getDraftedPlayers, getDraftPicks, postDraftPick } from "../database/queries";
+import { TeamPlayers } from "~/features/team/utils/team";
 
 async function checkAuthorization() {
   // Authorization
@@ -64,4 +65,19 @@ export async function getDraftPicksListUseCase(): Promise<QueueDraftPick[]> {
   }
 
   return draftPickQueueData as QueueDraftPick[];
+}
+
+export async function getDraftedPlayersUseCase(): Promise<DraftablePlayers[]> {
+  const user = await checkAuthorization();
+  if (!user) {
+    throw new Error("User is not authenticated");
+  }
+
+  const draftedPlayers = await getDraftedPlayers();
+
+  if(!draftedPlayers) {
+    throw new Error("No players drafted yet");
+  }
+
+  return draftedPlayers as DraftablePlayers[];
 }

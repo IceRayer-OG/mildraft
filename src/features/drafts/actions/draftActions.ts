@@ -1,6 +1,6 @@
 "use server";
 
-import { draftPlayerUseCase, draftWriteInPlayerUseCase , getDraftablePlayersUseCase, getDraftPicksListUseCase } from "../use_cases/draftUseCases";
+import { draftPlayerUseCase, draftWriteInPlayerUseCase , getDraftablePlayersUseCase, getDraftedPlayersUseCase, getDraftPicksListUseCase } from "../use_cases/draftUseCases";
 import { type DraftPlayers} from "~/features/players/utils/players";
 import { revalidatePath } from "next/cache";
 
@@ -30,4 +30,9 @@ export async function getDraftPicksListAction() {
     throw new Error("Error getting draft pick queue");
   }
   return draftPickQueue;
+}
+
+export async function getDraftedPlayersAction() {
+  const draftedPlayers = await getDraftedPlayersUseCase();
+  return draftedPlayers;
 }
