@@ -2,6 +2,7 @@
 
 import { draftPlayerUseCase, draftWriteInPlayerUseCase , getDraftablePlayersUseCase, getDraftedPlayersUseCase, getDraftPicksListUseCase } from "../use_cases/draftUseCases";
 import { type DraftPlayers} from "~/features/players/utils/players";
+import { type DraftablePlayers } from "../utils/draft";
 import { revalidatePath } from "next/cache";
 
 // Refactored functions
@@ -13,13 +14,13 @@ export async function getDraftablePlayersAction() {
   return draftablePlayers;
 }
 
-export async function draftPlayerAction(playerToDraft: DraftPlayers) {
+export async function draftPlayerAction(playerToDraft: DraftablePlayers) {
   await draftPlayerUseCase(playerToDraft);
   revalidatePath("league/draft");
 }
 
 export async function draftWriteInPlayerAction(playerToDraft: string) {
-  await draftWriteInPlayerUseCase();
+  await draftWriteInPlayerUseCase(playerToDraft);
   revalidatePath("league/draft");
 }
 

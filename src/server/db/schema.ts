@@ -116,11 +116,11 @@ export const draftPicks = createTable(
   "draft_pick",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    pickNumber: integer("pick_number"),
-    leagueId: integer("league_id").references(() => leagues.id),  // Make not null later
-    draftId: integer("draft_id").references(() => drafts.id),     // Make not null later
-    playerId: integer("player_id").references(() => pros.id),     // Make not null later
-    teamId: integer("team_id").references(() => teams.id),        // Make not null later
+    pickNumber: integer("pick_number").notNull(),
+    leagueId: integer("league_id").references(() => leagues.id).notNull(),  
+    draftId: integer("draft_id").references(() => drafts.id).notNull(),     
+    playerId: integer("player_id").references(() => pros.id),
+    teamId: integer("team_id").references(() => teams.id).notNull(),        
     isWriteIn: boolean("is_write_in").default(false),
     writeInName: varchar("write_in", {length: 256}),
     createdAt: timestamp("created_at", { withTimezone: true })

@@ -98,18 +98,6 @@ export async function getDraftPlayers(): Promise<unknown> {
 
 }
 
-export async function postDraftWriteIn() {
-  // Authorization
-  const user = await auth();
-  if (!user.userId) throw new Error("Not logged in");
-  
-  await db.insert(draftPicks).values({
-    playerId: 728,
-    teamId: 728,
-  });
-
-}
-
 export async function getDraftPicks() {
   // Authorization
   const user = await auth();
