@@ -14,6 +14,7 @@ import { QueueDrawer } from "~/features/drafts/components/queue-drawer";
 import { draftColumns } from "~/features/drafts/components/draft-columns";
 import { DataTable } from "~/features/drafts/components/draft-data-table";
 import DraftQueueList from "~/features/drafts/components/draft-picks-queue";
+import { DraftOrderDialog } from "~/features/drafts/components/draftSettingsForm";
 
 // Server actions
 import { getDraftablePlayersAction, getDraftPicksListAction } from "~/features/drafts/actions/draftActions";
@@ -44,7 +45,7 @@ export default async function DraftPage() {
           </Suspense>
         </div>
         <div className="place-content-center">
-          <LucideSettings />
+          <DraftOrderDialog />
         </div>
       </div>
       <div>
