@@ -20,7 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from "~/_components/ui/table"
-import { Input } from "~/_components/ui/input"
 import { Button } from "~/_components/ui/button";
  
 interface DataTableProps<TData, TValue> {
@@ -51,16 +50,6 @@ export function DraftPickTable<TData, TValue>({
   return (
     <div>
       <div className="rounded-md">
-        <div className="flex items-center py-4">
-          <Input
-            placeholder="Filter Positions..."
-            value={(table.getColumn("position")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("position")?.setFilterValue(event.target.value)
-            }
-          className="max-w-sm"
-          />
-      </div>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
