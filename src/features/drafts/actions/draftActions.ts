@@ -41,7 +41,7 @@ export async function getDraftPicksListAction() {
 
 export async function getCompleteDraftPicksAction(): Promise<CompletedDraftPicks[]> {
   const draftedPlayers = await getCompletedDraftPicksUseCase();
-  return draftedPlayers as CompletedDraftPicks[];
+  return draftedPlayers;
 }
 
 export async function undoDraftPickAction(draftPickToUndo: number) {

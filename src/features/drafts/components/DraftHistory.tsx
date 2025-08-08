@@ -17,7 +17,7 @@ import { getCompleteDraftPicksAction } from "../actions/draftActions";
 import { CompletedDraftPicks } from "../utils/draft";
 
 export async function DraftHistoryDialog() {
-    const completedPickInfo = await getCompleteDraftPicksAction() as CompletedDraftPicks[];
+    const completedPickInfo = await getCompleteDraftPicksAction();
 
     return (
         <Dialog>
