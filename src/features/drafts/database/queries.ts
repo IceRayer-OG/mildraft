@@ -63,7 +63,7 @@ export async function getDraftPicks() {
   const draftPicksData = await db
     .select()
     .from(draftPicks)
-    .where(and(isNull(draftPicks.playerId), eq(draftPicks.draftId, 2)))
+    .where(ne(draftPicks.pickMade, true))
     .orderBy(asc(draftPicks.pickNumber))
     .leftJoin(teams, eq(draftPicks.teamId, teams.id));
 
