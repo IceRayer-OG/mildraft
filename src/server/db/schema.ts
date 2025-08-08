@@ -123,6 +123,7 @@ export const draftPicks = createTable(
     teamId: integer("team_id").references(() => teams.id).notNull(),        
     isWriteIn: boolean("is_write_in").default(false),
     writeInName: varchar("write_in", {length: 256}),
+    pickMade: boolean("pick_made").default(false),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

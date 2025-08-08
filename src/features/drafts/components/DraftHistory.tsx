@@ -10,10 +10,15 @@ import {
 } from "~/_components/ui/dialog";
 import { Button } from "~/_components/ui/button";
 import { ScrollArea } from "~/_components/ui/scroll-area";
+import { DraftPickTable } from "./pick-history-data-table";
+import { draftPickColumns } from "./pick-history-columns";
 
-// import { getDraftedPlayersAction } from 
+import { getCompleteDraftPicksAction } from "../actions/draftActions";
+import { CompletedDraftPicks } from "../utils/draft";
 
 export async function DraftHistoryDialog() {
+    const completedPickInfo = await getCompleteDraftPicksAction() as CompletedDraftPicks[];
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -24,6 +29,7 @@ export async function DraftHistoryDialog() {
                 <ScrollArea>
                     <p>Here are the recent picks</p>
                 </ScrollArea>
+                <DraftPickTable columns={draftPickColumns} data={completedPickInfo} />
                 {/* <DialogClose asChild>
                     <Button variant={"outline"}>Close</Button>
                 </DialogClose> */}
