@@ -39,10 +39,15 @@ export default async function DraftPage() {
             <p>4:00:00</p>
           </div>
         </div>
-        <div className="flex grow justify-start items-center">
-          <Suspense fallback={<div>Loading...</div>}>
-            <DraftQueueList draftQueue={draftPicks} />
-          </Suspense>
+        <div className="flex grow justify-start items-center overflow-hidden">
+          <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
+            <div className="w-full overflow-hidden">
+              <Suspense fallback={<div>Loading...</div>}>
+                <DraftQueueList draftQueue={draftPicks} />
+              </Suspense>
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         </div>
         <div className="place-content-center">
           <DraftOrderDialog />
