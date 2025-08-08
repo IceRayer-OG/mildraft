@@ -1,8 +1,14 @@
 "use server";
 
-import { draftPlayerUseCase, draftWriteInPlayerUseCase , getDraftablePlayersUseCase, getDraftedPlayersUseCase, getDraftPicksListUseCase } from "../use_cases/draftUseCases";
+import { draftPlayerUseCase, 
+  draftWriteInPlayerUseCase , 
+  getDraftablePlayersUseCase, 
+  getCompletedDraftPicksUseCase, 
+  getDraftPicksListUseCase,
+  undoDraftPickUseCase
+} from "../use_cases/draftUseCases";
 import { type DraftPlayers} from "~/features/players/utils/players";
-import { type DraftablePlayers } from "../utils/draft";
+import { type CompletedDraftPicks, type DraftablePlayers } from "../utils/draft";
 import { revalidatePath } from "next/cache";
 
 // Refactored functions
@@ -33,7 +39,12 @@ export async function getDraftPicksListAction() {
   return draftPickQueue;
 }
 
-export async function getDraftedPlayersAction() {
-  const draftedPlayers = await getDraftedPlayersUseCase();
+export async function getCompleteDraftPicksAction(): Promise<CompletedDraftPicks[]> {
+  const draftedPlayers = await getCompletedDraftPicksUseCase();
   return draftedPlayers;
+}
+
+export async function undoDraftPickAction(draftPickToUndo: number) {
+  await undoDraftPickUseCase(draftPickToUndo);
+  revalidatePath("league/draft");
 }

@@ -1,8 +1,8 @@
 import "server-only";
 
 import { auth } from "@clerk/nextjs/server";
-import { type DraftablePlayers, type QueueDraftPick } from "../utils/draft";
-import { getDraftablePlayers, getDraftedPlayers, getDraftPicks, postDraftPick, postWriteInDraftPick } from "../database/queries";
+import { type CompletedDraftPicks, type DraftablePlayers, type QueueDraftPick } from "../utils/draft";
+import { getDraftablePlayers, getDraftedPlayers, getDraftPicks, postDraftPick, postWriteInDraftPick, undoDraftPick, getCompletedDraftPicks } from "../database/queries";
 import { TeamPlayers } from "~/features/team/utils/team";
 import { getCurrentDraftPick } from "~/server/queries";
 
@@ -75,17 +75,22 @@ export async function getDraftPicksListUseCase(): Promise<QueueDraftPick[]> {
   return draftPickQueueData as QueueDraftPick[];
 }
 
-export async function getDraftedPlayersUseCase(): Promise<DraftablePlayers[]> {
+export async function getCompletedDraftPicksUseCase(): Promise<CompletedDraftPicks[]> {
   const user = await checkAuthorization();
   if (!user) {
     throw new Error("User is not authenticated");
   }
 
-  const draftedPlayers = await getDraftedPlayers();
+  const draftedPlayers = await getCompletedDraftPicks(2);
 
   if(!draftedPlayers) {
     throw new Error("No players drafted yet");
   }
 
-  return draftedPlayers as DraftablePlayers[];
+  return draftedPlayers as CompletedDraftPicks[];
+}
+
+export async function undoDraftPickUseCase(draftPickToUndo: number) {
+  await undoDraftPick(draftPickToUndo, 2);
+
 }

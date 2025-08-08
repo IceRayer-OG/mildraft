@@ -14,6 +14,13 @@ const queueDraftPickSchema = z.object({
     })
 });
 
+const compeltedDraftPickSchema = z.object({
+    pickNumber: z.number(),
+    playerName: z.string(),
+    position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
+    teamName: z.string(),
+});
+
 const draftablePlayersSchema = z.object({
     id: z.number(),
     rank: z.number(),
@@ -43,3 +50,4 @@ const queuePlayersSchema = z.object({
 export type QueueDraftPick = z.infer<typeof queueDraftPickSchema>;
 export type DraftablePlayers = z.infer<typeof draftablePlayersSchema>;
 export type QueuePlayers = z.infer<typeof queuePlayersSchema>;
+export type CompletedDraftPicks = z.infer<typeof compeltedDraftPickSchema>;
