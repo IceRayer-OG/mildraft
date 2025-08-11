@@ -24,8 +24,6 @@ async function queuePlayer(playerToQueue: DraftablePlayers) {
   try {
     // add player to queue action
     await addPlayerToQueueAction(playerToQueue);
-    
-    // await dbQueuePlayer(playerToQueue);
     toast.success(`${playerToQueue.playerName} has been added to your queue`);
   } catch (error) {
     console.log(error);
@@ -35,7 +33,6 @@ async function queuePlayer(playerToQueue: DraftablePlayers) {
 
 async function draftPlayer(playerToDraft: DraftablePlayers) {
   try {
-    // await dbDraftPlayer(playerToDraft);
     await draftPlayerAction(playerToDraft);
     toast.success(`${playerToDraft.playerName} has been drafted`);
   } catch (error) {

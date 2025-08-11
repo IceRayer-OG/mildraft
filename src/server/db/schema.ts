@@ -4,10 +4,12 @@ import {
   integer,
   pgTableCreator,
   timestamp,
+  time,
   varchar,
   boolean,
   pgEnum,
   unique,
+  date,
 } from "drizzle-orm/pg-core";
 
 export const createTable = pgTableCreator((name) => `mildraft_${name}`);
@@ -142,10 +144,15 @@ export const draftSettings = createTable(
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     leagueId: integer("league_id").notNull().references(() => leagues.id),
     draftId: integer("draft_id").notNull().references(() => drafts.id),
+    draftStartDate: date("darft_start_date", { mode: "date"}),
+    draftStartTime: time("darft_start_time", { withTimezone: true}),
     startDate: timestamp("start_date", { withTimezone: true }),
     draftType: varchar("draft_type", { length: 256 }),
     snakeDraft: boolean("snake_draft").default(false),
     pickDuration: integer("pick_duration"),
+    overnightPauseEnable: boolean("overnight_pause_enable").default(false),
+    pauseStartTime: time("pause_start_time", { withTimezone: true }),
+    pauseEndTime: time("pause_end_time", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
