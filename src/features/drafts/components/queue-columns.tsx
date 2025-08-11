@@ -17,6 +17,7 @@ import { type QueuePlayers } from "../utils/draft";
 
 // Actions
 import { removePlayerFromQueueAction } from "../actions/queueActions";
+import { draftPlayerAction } from "../actions/draftActions";
 
 async function removePlayerFromQueue(playerToRemove: QueuePlayers) {
   try {
@@ -33,7 +34,7 @@ async function removePlayerFromQueue(playerToRemove: QueuePlayers) {
 
 async function draftPlayer(playerToDraft: QueuePlayers) {
   try {
-    // await dbDraftPlayer(playerToDraft.pros);
+    await draftPlayerAction(playerToDraft);
     toast.success(`${playerToDraft.playerName} has been drafted`);
   } catch (error) {
     console.log(error);
