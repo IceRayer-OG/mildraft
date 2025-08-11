@@ -12,9 +12,9 @@ export default function HomePage() {
           <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
             <h3 className="text-2xl font-bold">First Steps →</h3>
             <div className="text-lg">
-              Just the basics - Get Everything scaffolded for league managers
-              Setting up the draft functionality.
-              Make it mobile friendly.
+              Basics are scaffolded for league managers
+              Draf functionality working.
+              Mobile friendly!
             </div>
           </div>
           <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
