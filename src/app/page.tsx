@@ -1,5 +1,8 @@
+import { Suspense } from "react";
+
 import { ClaimTeamDialog } from "~/features/team/components/ClaimTeamDialog";
 import { getLeagueUnclaimedTeamsAction } from "~/features/team/actions/teamActions";
+
 
 export default function HomePage() {
   const unclaimedLeagueTeams = getLeagueUnclaimedTeamsAction();
@@ -28,7 +31,9 @@ export default function HomePage() {
           </div>
         </div>
         <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
-          <ClaimTeamDialog unclaimedLeagueTeams={unclaimedLeagueTeams} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <ClaimTeamDialog unclaimedLeagueTeams={unclaimedLeagueTeams} />
+          </Suspense>
         </div>
       </div>
     </main>
