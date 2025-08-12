@@ -5,7 +5,7 @@ import { getLeaguePosts } from "~/server/queries";
 
 // UI Elements
 import { Separator } from "~/_components/ui/separator";
-import { Avatar, AvatarImage,AvatarFallback } from "~/_components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "~/_components/ui/avatar";
 import Posts from "~/_components/Posts";
 import { PostsLoading } from "~/features/posts/components/PostsLoading";
 import { Skeleton } from "~/_components/ui/skeleton";
@@ -22,26 +22,28 @@ export default async function LeaguePage() {
   const allLeagueTeams = getLeagueTeamsAction();
 
   return (
-    <div className="flex flex-col min-h-screen min-w-screen p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
+    <div className="min-w-screen flex min-h-screen flex-col bg-gradient-to-b from-[#12026d] to-[#15162c] p-4 text-white">
       <div className="flex min-h-20 items-center justify-between gap-4">
         <Avatar>
           <AvatarImage src="/_assets/avatar.png" alt="Avatar" />
           <AvatarFallback className="text-black">SVB</AvatarFallback>
         </Avatar>
         <div>
-          <p className="font-semibold text-xl md:text-4xl">Welcome to SvBaseball!</p>
+          <p className="text-xl font-semibold md:text-4xl">
+            Welcome to SvBaseball!
+          </p>
         </div>
-        <div className="flex gap-4 items-center content-right">
+        <div className="content-right flex items-center gap-4">
           <SettingDialog />
-          <Avatar >
+          <Avatar>
             {/* <AvatarImage src="/_assets/avatar.png" alt="Avatar" /> */}
             <AvatarFallback className="text-black">SV</AvatarFallback>
-          </Avatar> 
+          </Avatar>
         </div>
-      </div>  
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div className="col-span-1 p-2">
-          <div className="flex flex-col gap-4 items-center pb-4">
+          <div className="flex flex-col items-center gap-4 pb-4">
             <p className="text-xl font-semibold">League Posts</p>
             <Suspense fallback={PostsLoading()}>
               <Posts posts={posts} />
@@ -59,7 +61,7 @@ export default async function LeaguePage() {
           </div>
         </div>
         <div className="col-span-3 p-4">
-          <div className="flex flex-col gap-4 p-4 items-center">
+          <div className="flex flex-col items-center gap-4 p-4">
             <p className="text-xl md:text-3xl">Pitcher Stats </p>
             <Separator />
           </div>
@@ -72,7 +74,7 @@ export default async function LeaguePage() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-4 p-4 items-center">
+          <div className="flex flex-col items-center gap-4 p-4">
             <p className="text-xl md:text-3xl">Batter Stats </p>
             <Separator />
           </div>

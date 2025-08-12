@@ -1,9 +1,10 @@
 "use server";
 // Authentication
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 // Types
 import { 
+    UnclaimedTeam,
     type Team, 
     type TeamPlayers 
 } from "../utils/team";
@@ -14,8 +15,12 @@ import {
     getAllTeamsInLeague, 
     getMyTeam, 
     // getTeamIdByUserId, 
-    getTeamSettings 
+    getTeamSettings,
+    getLeagueUnclaimedTeams,
+    postClaimTeam,
 } from "../database/queries";
+import { ifError } from "assert";
+import { RedirectToSignIn } from "@clerk/nextjs";
 
 async function checkAuthentication() {
     const user = await auth();
@@ -66,4 +71,18 @@ export async function getMyTeamInfoUseCase(): Promise<Team> {
     const myTeamInfo = await getTeamSettings(user.userId);
 
     return myTeamInfo as Team;
+}
+
+export async function getLeagueUnclaimedTeamsUseCase() {
+    const unclaimedTeams = await getLeagueUnclaimedTeams();
+
+    return unclaimedTeams as UnclaimedTeam[];
+}
+
+export async function claimTeamUseCase(teamId: number){
+    const { userId , redirectToSignIn }  = await auth();
+
+    if(!userId) return redirectToSignIn();
+
+    await postClaimTeam(teamId, userId);
 }
