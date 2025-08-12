@@ -8,8 +8,6 @@ import { type QueuePlayers, type DraftablePlayers } from "../utils/draft";
 
 // Queries
 import { postPlayerToQueue, deletePlayerFromQueue, getMyQueuePlayers } from "../database/queries";
-import { error } from "console";
-
 
 
 async function checkAuthorization() {

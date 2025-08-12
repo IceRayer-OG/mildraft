@@ -20,6 +20,7 @@ import { DraftOrderDialog } from "~/features/drafts/components/DraftOrderDialog"
 import { getDraftablePlayersAction, getDraftPicksListAction } from "~/features/drafts/actions/draftActions";
 import { Button } from "~/_components/ui/button";
 import { DraftHistoryDialog } from "~/features/drafts/components/DraftHistory";
+import { getLeagueTeamsAction } from "~/features/team/actions/teamActions";
 
 
 export const dynamic = "force-dynamic"; 
@@ -27,6 +28,7 @@ export const dynamic = "force-dynamic";
 export default async function DraftPage() {
   const draftablePlayers = await getDraftablePlayersAction();
   const draftPicks = getDraftPicksListAction();
+  const allTeams = getLeagueTeamsAction();
 
   return (
     <main className="flex flex-col w-full min-h-screen gap-4 p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
@@ -50,7 +52,7 @@ export default async function DraftPage() {
           </ScrollArea>
         </div>
         <div className="place-content-center">
-          <DraftOrderDialog draftOrderList={draftPicks} />
+          <DraftOrderDialog draftOrderList={draftPicks} leagueTeams={allTeams}/>
         </div>
       </div>
       <div>

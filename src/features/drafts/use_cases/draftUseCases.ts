@@ -3,7 +3,7 @@ import "server-only";
 import { auth } from "@clerk/nextjs/server";
 import { type CompletedDraftPicks, type DraftablePlayers, type QueueDraftPick } from "../utils/draft";
 import { getDraftablePlayers, getDraftedPlayers, getDraftPicks, postDraftPick, postWriteInDraftPick, undoDraftPick, getCompletedDraftPicks } from "../database/queries";
-import { TeamPlayers } from "~/features/team/utils/team";
+// import { type TeamPlayers } from "~/features/team/utils/team";
 import { getCurrentDraftPick } from "~/server/queries";
 
 async function checkAuthorization() {
