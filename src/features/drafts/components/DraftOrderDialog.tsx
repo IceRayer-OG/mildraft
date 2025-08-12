@@ -1,41 +1,35 @@
-
-import { Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
-} from "~/_components/ui/form";
-import { Label } from "~/_components/ui/label";
 import { Button } from "~/_components/ui/button";
-import { Dialog,
-    DialogHeader,
-    DialogTrigger,
-    DialogTitle,
-    DialogContent,
-    DialogFooter
+import {
+  Dialog,
+  DialogTrigger,
+  DialogTitle,
+  DialogContent,
+  DialogFooter,
 } from "~/_components/ui/dialog";
 import { LucideSettings } from "lucide-react";
 import DraftOrderList from "./DraftOrderList";
 import { type QueueDraftPick } from "../utils/draft";
+import { TeamSelectList } from "~/features/team/components/TeamSelectList";
+import { Team } from "~/features/team/utils/team";
 
-export function DraftOrderDialog({draftOrderList,
-}: {
-  draftOrderList: Promise<QueueDraftPick[]>;
-}) {
-    return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Button variant={"ghost"}>
-                    <LucideSettings />
-                </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogTitle className="justify-self-center">Draft Order</DialogTitle>
-                <DraftOrderList draftOrderList={draftOrderList} />
-            </DialogContent>
-
-        </Dialog>
-    )
+export function DraftOrderDialog(
+    {draftOrderList, leagueTeams}: {draftOrderList: Promise<QueueDraftPick[]>, leagueTeams: Promise<Team[]>}
+) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant={"ghost"}>
+          <LucideSettings />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogTitle className="justify-self-center">Draft Order</DialogTitle>
+        <DraftOrderList draftOrderList={draftOrderList} />
+        <DialogFooter>
+          <TeamSelectList teamList={leagueTeams} />
+          <Button variant={"default"}>Add Pick</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 }
