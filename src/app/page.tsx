@@ -1,8 +1,10 @@
 import { ClaimTeamDialog } from "~/features/team/components/ClaimTeamDialog";
+import { getLeagueUnclaimedTeamsAction } from "~/features/team/actions/teamActions";
 
 export const dynamic = "force-dynamic";
 
 export default function HomePage() {
+  const unclaimedLeagueTeams = getLeagueUnclaimedTeamsAction();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
@@ -28,7 +30,7 @@ export default function HomePage() {
           </div>
         </div>
         <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
-            <ClaimTeamDialog />
+            <ClaimTeamDialog unclaimedLeagueTeams={unclaimedLeagueTeams} />
         </div>
       </div>
     </main>

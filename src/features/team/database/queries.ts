@@ -107,4 +107,6 @@ export async function getLeagueUnclaimedTeams() {
 export async function postClaimTeam(teamId: number, userId: string) {
   await db.update(teams).set({ownerId: userId}).where(eq(teams.id, teamId))
 
+  return true;
+
 }
