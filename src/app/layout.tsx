@@ -1,10 +1,17 @@
+// import css
 import "~/styles/globals.css";
-import { TopNav } from "../_components/TopNav";
-import { ClerkProvider } from "@clerk/nextjs";
-import { Toaster } from "sonner";
 
+// import Providers
+import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/next"
+
+// import other
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
+
+// import UI Components
+import { TopNav } from "../_components/TopNav";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "SV Baseball",
@@ -23,7 +30,9 @@ export default function RootLayout({
           <TopNav />
           <main>
             {children}
+            <Analytics />
           </main>
+
         </body>
       </ClerkProvider>
     </html>
