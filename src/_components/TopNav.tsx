@@ -30,8 +30,8 @@ export function TopNav() {
                     </Button>
                 </div>
                 <div className="flex gap-4">
-                    <div>Docs</div>
-                    <div>Help</div>
+                    {/* <div>Docs</div>
+                    <div>Help</div> */}
                     <div>
                         <SignedOut>
                             <SignInButton />
