@@ -6,16 +6,18 @@ import { Button } from "~/_components/ui/button";
 import { toast } from "sonner";
 
 // Server Action
-import { claimTeamAction } from "../actions/teamActions"
-
+import { claimTeamAction } from "../actions/teamActions";
 
 async function claimTeam(leagueTeam: UnclaimedTeam) {
   try {
-    await claimTeamAction(leagueTeam.id)
-    toast.success(`${leagueTeam.name} claimed successfully`)
-  } catch(error) {
-    toast.error(`Failed to claim ${leagueTeam.name}`)
-    throw new Error("Claim Failed")
+    const teamClaimed = await claimTeamAction(leagueTeam.id);
+    if (teamClaimed) {
+      toast.success(`${leagueTeam.name} claimed successfully`);
+    }
+  } catch (error) {
+    toast.error(`Failed to claim ${leagueTeam.name}`);
+    throw new Error("Claim Failed");
+  } finally {
   }
 }
 
@@ -30,7 +32,7 @@ export default function ClaimTeamList({
       <ul className="flex grow flex-col gap-2">
         {allTeams.map((leagueTeam) => (
           <li key={leagueTeam.id} className="flex items-center gap-4">
-            <Button onClick={()=>claimTeam(leagueTeam)}>Claim</Button>
+            <Button onClick={() => claimTeam(leagueTeam)}>Claim</Button>
             <p>{leagueTeam.name}</p>
           </li>
         ))}

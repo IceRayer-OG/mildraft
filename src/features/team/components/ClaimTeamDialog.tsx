@@ -11,10 +11,10 @@ import {
 import { Button } from "~/_components/ui/button";
 import ClaimTeamList from "./ClaimTeamsList";
 import { type UnclaimedTeam } from "../utils/team";
-import { getLeagueUnclaimedTeamsAction } from "../actions/teamActions";
 
-export function ClaimTeamDialog() {
-  const unclaimedLeagueTeams = getLeagueUnclaimedTeamsAction();
+
+export function ClaimTeamDialog({unclaimedLeagueTeams,}:{unclaimedLeagueTeams: Promise<UnclaimedTeam[]>}) {
+  
   
 	return (
     <Dialog>

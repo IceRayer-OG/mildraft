@@ -84,5 +84,7 @@ export async function claimTeamUseCase(teamId: number){
 
     if(!userId) return redirectToSignIn();
 
-    await postClaimTeam(teamId, userId);
+    const claimedTeam = await postClaimTeam(teamId, userId);
+
+    return claimedTeam;
 }
