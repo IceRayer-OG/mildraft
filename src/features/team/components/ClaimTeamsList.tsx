@@ -9,9 +9,9 @@ import { toast } from "sonner";
 import { claimTeamAction } from "../actions/teamActions"
 
 
-function claimTeam(leagueTeam: Team) {
+async function claimTeam(leagueTeam: Team) {
   try {
-    claimTeamAction(leagueTeam.id)
+    await claimTeamAction(leagueTeam.id)
     toast.success(`${leagueTeam.name} claimed successfully`)
   } catch(error) {
     toast.error(`Failed to claim ${leagueTeam.name}`)
