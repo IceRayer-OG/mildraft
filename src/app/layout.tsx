@@ -3,7 +3,7 @@ import "~/styles/globals.css";
 
 // import Providers
 import { ClerkProvider } from "@clerk/nextjs";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
 
 // import other
 import { GeistSans } from "geist/font/sans";
@@ -30,9 +30,8 @@ export default function RootLayout({
           <TopNav />
           <main>
             {children}
-            <Analytics />
           </main>
-
+          <Analytics />
         </body>
       </ClerkProvider>
     </html>
