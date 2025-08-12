@@ -17,8 +17,13 @@ import { Dialog,
     DialogFooter
 } from "~/_components/ui/dialog";
 import { LucideSettings } from "lucide-react";
+import DraftOrderList from "./DraftOrderList";
+import { type QueueDraftPick } from "../utils/draft";
 
-export function DraftOrderDialog() {
+export function DraftOrderDialog({draftOrderList,
+}: {
+  draftOrderList: Promise<QueueDraftPick[]>;
+}) {
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -28,7 +33,7 @@ export function DraftOrderDialog() {
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle className="justify-self-center">Draft Order</DialogTitle>
-                <p> Draft Order </p>
+                <DraftOrderList draftOrderList={draftOrderList} />
             </DialogContent>
 
         </Dialog>
