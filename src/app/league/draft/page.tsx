@@ -14,7 +14,7 @@ import { QueueDrawer } from "~/features/drafts/components/queue-drawer";
 import { draftColumns } from "~/features/drafts/components/draft-columns";
 import { DataTable } from "~/features/drafts/components/draft-data-table";
 import DraftQueueList from "~/features/drafts/components/draft-picks-queue";
-import { DraftOrderDialog } from "~/features/drafts/components/draftSettingsForm";
+import { DraftOrderDialog } from "~/features/drafts/components/DraftOrderDialog";
 
 // Server actions
 import { getDraftablePlayersAction, getDraftPicksListAction } from "~/features/drafts/actions/draftActions";
@@ -50,7 +50,7 @@ export default async function DraftPage() {
           </ScrollArea>
         </div>
         <div className="place-content-center">
-          <DraftOrderDialog />
+          <DraftOrderDialog draftOrderList={draftPicks} />
         </div>
       </div>
       <div>
