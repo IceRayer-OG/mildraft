@@ -27,7 +27,3 @@ export async function updateTeamSettingsAction(data: TeamSettings, leagueData: L
   console.log("Updating team settings with data:", data, leagueData);
   revalidatePath("league");
 }
-
-export async function getLeagueTeamsList() {
-  return true;
-}

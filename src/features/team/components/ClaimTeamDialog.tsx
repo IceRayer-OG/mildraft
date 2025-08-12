@@ -10,9 +10,9 @@ import {
 } from "~/_components/ui/dialog";
 import { Button } from "~/_components/ui/button";
 import ClaimTeamList from "./ClaimTeamsList";
-import { type Team } from "../utils/team";
+import { type UnclaimedTeam } from "../utils/team";
 
-export function ClaimTeamDialog({unclaimedLeagueTeams}:{unclaimedLeagueTeams: Promise<Team[]>}) {
+export function ClaimTeamDialog({unclaimedLeagueTeams}:{unclaimedLeagueTeams: Promise<UnclaimedTeam[]>}) {
   
 	return (
     <Dialog>

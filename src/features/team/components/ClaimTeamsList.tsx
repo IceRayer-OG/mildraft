@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { type Team } from "../utils/team";
+import { type UnclaimedTeam } from "../utils/team";
 import { Button } from "~/_components/ui/button";
 import { toast } from "sonner";
 
@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { claimTeamAction } from "../actions/teamActions"
 
 
-async function claimTeam(leagueTeam: Team) {
+async function claimTeam(leagueTeam: UnclaimedTeam) {
   try {
     await claimTeamAction(leagueTeam.id)
     toast.success(`${leagueTeam.name} claimed successfully`)
@@ -22,7 +22,7 @@ async function claimTeam(leagueTeam: Team) {
 export default function ClaimTeamList({
   teamList,
 }: {
-  teamList: Promise<Team[]>;
+  teamList: Promise<UnclaimedTeam[]>;
 }) {
   const allTeams = use(teamList);
   return (

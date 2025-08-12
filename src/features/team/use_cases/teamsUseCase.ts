@@ -4,6 +4,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 
 // Types
 import { 
+    UnclaimedTeam,
     type Team, 
     type TeamPlayers 
 } from "../utils/team";
@@ -75,7 +76,7 @@ export async function getMyTeamInfoUseCase(): Promise<Team> {
 export async function getLeagueUnclaimedTeamsUseCase() {
     const unclaimedTeams = await getLeagueUnclaimedTeams();
 
-    return unclaimedTeams as Team[];
+    return unclaimedTeams as UnclaimedTeam[];
 }
 
 export async function claimTeamUseCase(teamId: number){
@@ -83,5 +84,5 @@ export async function claimTeamUseCase(teamId: number){
 
     if(!userId) return redirectToSignIn();
 
-    const claimedTeam = await postClaimTeam(teamId, userId);
+    await postClaimTeam(teamId, userId);
 }

@@ -44,7 +44,7 @@ export async function getMyTeamInfoAction() {
 }
 
 export async function claimTeamAction(teamId: number) {
-    const team = await claimTeamUseCase(teamId);
+    await claimTeamUseCase(teamId);
     revalidatePath("/");
 
 }

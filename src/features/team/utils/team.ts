@@ -6,6 +6,11 @@ const teamSchema = z.object({
   abbreviation: z.string(),
 });
 
+const unclaimedTeamSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+});
+
 const teamSettingsSchema = z.object({
   teamName: z.string(),
   teamAbbreviation: z.string(),
@@ -41,5 +46,6 @@ const teamPlayersSchema = z.object({
 });
 
 export type Team = z.infer<typeof teamSchema>;
+export type UnclaimedTeam = z.infer<typeof unclaimedTeamSchema>;
 export type TeamSettings = z.infer<typeof teamSettingsSchema>;
 export type TeamPlayers = z.infer<typeof teamPlayersSchema>;
