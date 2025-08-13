@@ -80,7 +80,7 @@ export function DraftOrderDialog({
           <Button
             variant={"default"}
             onClick={() => {
-              addNewDraftPick(selectedTeam);
+              addNewDraftPick(selectedTeam).catch(Error);
             }}
           >
             Add Pick
