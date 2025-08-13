@@ -135,6 +135,7 @@ export const draftPicks = createTable(
   },
   (example) => ({
     nameIndex: index("draft_pick_idx").on(example.id),
+    uniqueDraftIndex: unique("draftPickId").on(example.draftId, example.pickNumber)
   })
 );
 

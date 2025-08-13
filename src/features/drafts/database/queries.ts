@@ -8,6 +8,7 @@ import {
   asc,
   inArray,
   ne,
+  count,
 } from "drizzle-orm";
 import { queues, draftPicks, pros, teams } from "~/server/db/schema";
 
@@ -204,5 +205,35 @@ export async function getCompletedDraftPicks(draftId: number) {
     .leftJoin(teams, eq(draftPicks.teamId, teams.id))
 
   return completedDraftPicks;  
+
+}
+
+export async function insertNewDraftPick( draftId: number, teamName: string ) {
+  // Get the teamId by name
+  const teamId = await db.query.teams.findFirst({
+    columns: {
+      id: true
+    },
+    where: eq(teams.name, teamName)
+  })
+
+  if(teamId === undefined) throw new Error("Team not found")
+
+  // Get the count of draft picks in the current draft
+  const picksInDraft = await db.select({count: count()}).from(draftPicks).where(eq(draftPicks.draftId, draftId));
+  let countOfPicksInDraft = 0;
+  
+  if(picksInDraft[0]?.count === undefined) {
+    countOfPicksInDraft = 0;
+  } else {
+    countOfPicksInDraft = picksInDraft[0].count + 1;
+  }
+
+  await db.insert(draftPicks).values({
+    leagueId: 1,
+    draftId: draftId,
+    teamId: teamId.id,
+    pickNumber: countOfPicksInDraft
+  })
 
 }

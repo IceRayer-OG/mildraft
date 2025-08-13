@@ -1,3 +1,8 @@
+"use client";
+// React imports
+import { use, useState } from "react";
+
+// UI imports
 import { Button } from "~/_components/ui/button";
 import {
   Dialog,
@@ -6,15 +11,42 @@ import {
   DialogContent,
   DialogFooter,
 } from "~/_components/ui/dialog";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "~/_components/ui/select";
 import { LucideSettings } from "lucide-react";
 import DraftOrderList from "./DraftOrderList";
-import { type QueueDraftPick } from "../utils/draft";
-import { TeamSelectList } from "~/features/team/components/TeamSelectList";
-import { Team } from "~/features/team/utils/team";
+// import { TeamSelectList } from "~/features/team/components/TeamSelectList";
 
-export function DraftOrderDialog(
-    {draftOrderList, leagueTeams}: {draftOrderList: Promise<QueueDraftPick[]>, leagueTeams: Promise<Team[]>}
-) {
+// type imports
+import { type QueueDraftPick } from "../utils/draft";
+import { type Team } from "~/features/team/utils/team";
+import { addNewDraftPickAction } from "../actions/draftActions";
+import { toast } from "sonner";
+
+async function addNewDraftPick(teamName: string) {
+  try {
+    await addNewDraftPickAction(teamName);
+    toast.success("Pick Added");
+  } catch (error) {
+    toast.error("Failed to add pick");
+  }
+}
+
+export function DraftOrderDialog({
+  draftOrderList,
+  leagueTeams,
+}: {
+  draftOrderList: Promise<QueueDraftPick[]>;
+  leagueTeams: Promise<Team[]>;
+}) {
+  const [selectedTeam, setSelectedTeam] = useState("");
+  const allTeams = use(leagueTeams);
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -26,8 +58,31 @@ export function DraftOrderDialog(
         <DialogTitle className="justify-self-center">Draft Order</DialogTitle>
         <DraftOrderList draftOrderList={draftOrderList} />
         <DialogFooter>
-          <TeamSelectList teamList={leagueTeams} />
-          <Button variant={"default"}>Add Pick</Button>
+          <Select
+            value={selectedTeam}
+            onValueChange={(value) => {
+              setSelectedTeam(value);
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Team" />
+            </SelectTrigger>
+            <SelectContent>
+              {allTeams.map((leagueTeam) => (
+                <SelectItem key={leagueTeam.id} value={leagueTeam.name}>
+                  {leagueTeam.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            variant={"default"}
+            onClick={() => {
+              addNewDraftPick(selectedTeam);
+            }}
+          >
+            Add Pick
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

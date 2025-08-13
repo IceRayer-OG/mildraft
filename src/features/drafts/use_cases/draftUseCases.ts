@@ -2,7 +2,7 @@ import "server-only";
 
 import { auth } from "@clerk/nextjs/server";
 import { type CompletedDraftPicks, type DraftablePlayers, type QueueDraftPick } from "../utils/draft";
-import { getDraftablePlayers, getDraftedPlayers, getDraftPicks, postDraftPick, postWriteInDraftPick, undoDraftPick, getCompletedDraftPicks } from "../database/queries";
+import { getDraftablePlayers, getDraftedPlayers, getDraftPicks, postDraftPick, postWriteInDraftPick, undoDraftPick, getCompletedDraftPicks, insertNewDraftPick } from "../database/queries";
 // import { type TeamPlayers } from "~/features/team/utils/team";
 import { getCurrentDraftPick } from "~/server/queries";
 
@@ -93,4 +93,13 @@ export async function getCompletedDraftPicksUseCase(): Promise<CompletedDraftPic
 export async function undoDraftPickUseCase(draftPickToUndo: number) {
   await undoDraftPick(draftPickToUndo, 2);
 
+}
+
+export async function addNewDraftPickUseCase(teamName: string) {
+  const user = await checkAuthorization();
+  if (!user) {
+    throw new Error("User is not authenticated");
+  }
+
+  await insertNewDraftPick(2, teamName);
 }
