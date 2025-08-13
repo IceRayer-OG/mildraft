@@ -17,9 +17,9 @@ export default function DraftQueueList({
       {allPicks.map((pick) => (
         <li key={pick.draft_pick.id} className="flex p-2 items-center gap-2">
           <p>{pick.draft_pick.pickNumber}:</p>
-          <Avatar>
+          <Avatar className="w-7 h-7">
             <AvatarImage src="/_assets/avatar.png" alt="Avatar" />
-            <AvatarFallback className="text-black">{pick.team.abbreviation}</AvatarFallback>
+            <AvatarFallback className="text-black text-xs">{pick.team.abbreviation}</AvatarFallback>
           </Avatar>
           <p>{pick.team.name}</p>
         </li>
