@@ -101,5 +101,7 @@ export async function addNewDraftPickUseCase(teamName: string) {
     throw new Error("User is not authenticated");
   }
 
-  await insertNewDraftPick(2, teamName);
+  const teamSelected = await insertNewDraftPick(2, teamName);
+
+  return teamSelected;
 }

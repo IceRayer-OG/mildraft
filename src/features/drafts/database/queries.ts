@@ -244,4 +244,6 @@ export async function insertNewDraftPick( draftId: number, teamName: string ) {
     pickNumber: countOfPicksInDraft
   })
 
+  return teamName;
+
 }

@@ -30,11 +30,12 @@ import { toast } from "sonner";
 
 async function addNewDraftPick(teamName: string) {
   try {
-    await addNewDraftPickAction(teamName);
-    toast.success("Pick Added");
+    const pickAdded = await addNewDraftPickAction(teamName);
+    toast.success(`Pick Added for ${pickAdded}`);
   } catch (error) {
     console.log(error);
     toast.error("Failed to add pick");
+  } finally{
   }
 }
 
