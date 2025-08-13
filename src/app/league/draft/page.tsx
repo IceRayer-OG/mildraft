@@ -43,7 +43,7 @@ export default async function DraftPage() {
         </div>
         <div className="flex grow justify-start items-center overflow-hidden">
           <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
-            <div className="w-full overflow-hidden">
+            <div className="w-full ">
               <Suspense fallback={<div>Loading...</div>}>
                 <DraftQueueList draftQueue={draftPicks} />
               </Suspense>

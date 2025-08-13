@@ -27,6 +27,7 @@ import { type QueueDraftPick } from "../utils/draft";
 import { type Team } from "~/features/team/utils/team";
 import { addNewDraftPickAction } from "../actions/draftActions";
 import { toast } from "sonner";
+import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
 
 async function addNewDraftPick(teamName: string) {
   try {
@@ -56,10 +57,12 @@ export function DraftOrderDialog({
           <LucideSettings />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="h-1/2 lg:h-1/3">
         <DialogTitle className="justify-self-center">Draft Order</DialogTitle>
-        <DraftOrderList draftOrderList={draftOrderList} />
-        <DialogFooter>
+
+          <DraftOrderList draftOrderList={draftOrderList} />
+        
+        <DialogFooter className="gap-2">
           <Select
             value={selectedTeam}
             onValueChange={(value) => {
