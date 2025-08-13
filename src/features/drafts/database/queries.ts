@@ -208,8 +208,8 @@ export async function getCompletedDraftPicks(draftId: number) {
 
 }
 
-export async function insertNewDraftPick( draftId: number, teamName: string ) {
-  // Get the teamId by name
+export async function getTeamIdByName(teamName: string){
+    // Get the teamId by name
   const teamId = await db.query.teams.findFirst({
     columns: {
       id: true
@@ -218,6 +218,14 @@ export async function insertNewDraftPick( draftId: number, teamName: string ) {
   })
 
   if(teamId === undefined) throw new Error("Team not found")
+
+  return teamId.id
+  
+}
+
+export async function insertNewDraftPick( draftId: number, teamName: string ) {
+  // Get the teamId by name
+  const teamId = await getTeamIdByName(teamName)
 
   // Get the count of draft picks in the current draft
   const picksInDraft = await db.select({count: count()}).from(draftPicks).where(eq(draftPicks.draftId, draftId));
@@ -232,7 +240,7 @@ export async function insertNewDraftPick( draftId: number, teamName: string ) {
   await db.insert(draftPicks).values({
     leagueId: 1,
     draftId: draftId,
-    teamId: teamId.id,
+    teamId: teamId,
     pickNumber: countOfPicksInDraft
   })
 
