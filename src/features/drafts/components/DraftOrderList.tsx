@@ -18,8 +18,8 @@ export default function DraftOrderList({
   const draftPicks = use(draftOrderList);
 
   return (
-    <div className="flex grow">
-      <ScrollArea>
+    <div className="flex grow overflow-hidden">
+      <ScrollArea className="w-full whitespace-nowrap overflow-y-auto">
         <ul className="flex grow flex-col gap-2">
           {draftPicks.map((draftPick) => (
             <li key={draftPick.draft_pick.id} className="flex items-center gap-6">
