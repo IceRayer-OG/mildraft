@@ -1,4 +1,6 @@
-import { use } from "react";
+"use client"
+
+import { use, useState } from "react";
 
 import {
   Select,
@@ -10,12 +12,15 @@ import {
 
 import { type Team } from "../utils/team";
 
+
+
 export function TeamSelectList({ teamList }: { teamList: Promise<Team[]> }) {
 	const allTeams = use(teamList);
+  const [selectedTeam, setSelectedTeam] = useState("")
 
   return (
-    <Select>
-      <SelectTrigger>
+    <Select value={selectedTeam} onValueChange={(value) =>{setSelectedTeam(value)}}>
+      <SelectTrigger >
         <SelectValue placeholder="Team" />
       </SelectTrigger>
       <SelectContent>
