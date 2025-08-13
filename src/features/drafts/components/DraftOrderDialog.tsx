@@ -57,7 +57,7 @@ export function DraftOrderDialog({
           <LucideSettings />
         </Button>
       </DialogTrigger>
-      <DialogContent className="h-1/2 lg:h-1/3">
+      <DialogContent className="h-3/4 lg:h-1/3">
         <DialogTitle className="justify-self-center">Draft Order</DialogTitle>
 
           <DraftOrderList draftOrderList={draftOrderList} />
