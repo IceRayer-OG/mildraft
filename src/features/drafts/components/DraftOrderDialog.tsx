@@ -33,6 +33,7 @@ async function addNewDraftPick(teamName: string) {
     await addNewDraftPickAction(teamName);
     toast.success("Pick Added");
   } catch (error) {
+    console.log(error);
     toast.error("Failed to add pick");
   }
 }

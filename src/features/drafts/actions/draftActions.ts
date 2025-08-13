@@ -53,5 +53,4 @@ export async function undoDraftPickAction(draftPickToUndo: number) {
 export async function addNewDraftPickAction(teamName: string) {
   await addNewDraftPickUseCase(teamName);
   revalidatePath("/league/Draft")
-  return true;
 }
