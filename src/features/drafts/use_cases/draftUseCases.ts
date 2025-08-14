@@ -2,7 +2,7 @@ import "server-only";
 
 import { auth } from "@clerk/nextjs/server";
 import { type CompletedDraftPicks, type DraftablePlayers, type QueueDraftPick } from "../utils/draft";
-import { getDraftablePlayers, getDraftedPlayers, getDraftPicks, postDraftPick, postWriteInDraftPick, undoDraftPick, getCompletedDraftPicks, insertNewDraftPick } from "../database/queries";
+import { getDraftablePlayers, getDraftPicks, postDraftPick, postWriteInDraftPick, undoDraftPick, getCompletedDraftPicks, insertNewDraftPick } from "../database/queries";
 // import { type TeamPlayers } from "~/features/team/utils/team";
 import { getCurrentDraftPick } from "~/server/queries";
 
@@ -13,12 +13,12 @@ async function checkAuthorization() {
   return user;
 }
 
-async function getTeamIdData(userId: string) {
+// async function getTeamIdData(userId: string) {
 
-  // const team = await getTeamIdByUserId(userId);
-  // return team;
+//   // const team = await getTeamIdByUserId(userId);
+//   // return team;
 
-}
+// }
 
 export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
   // Use case to draft player

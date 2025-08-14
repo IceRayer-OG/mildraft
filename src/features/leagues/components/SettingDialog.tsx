@@ -2,11 +2,9 @@ import {
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogClose,
 } from "~/_components/ui/dialog"
 import { Button } from "~/_components/ui/button"
 import { LeagueSettingsTabsCard } from "./SettingsCard"

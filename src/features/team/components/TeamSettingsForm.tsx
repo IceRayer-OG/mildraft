@@ -22,15 +22,17 @@ import {
     FormLabel,
     FormControl,
     FormMessage,
-    FormDescription,
 } from "~/_components/ui/form";
 import { toast } from "sonner";
 
 // Actions
-import { updateTeamSettingsAction, getTeamSettingsAction } from "../actions/teamSettingsActions";
+import { 
+    updateTeamSettingsAction, 
+    // getTeamSettingsAction 
+} from "../actions/teamSettingsActions";
 
 // Utils
-import { TeamSettings } from "../utils/team";
+import { type TeamSettings } from "../utils/team";
 
 
 export function TeamSettingsForm({teamSettingsData}: {teamSettingsData: TeamSettings}) {

@@ -1,5 +1,9 @@
 "use server";
 
+// React & Next
+import { revalidatePath } from "next/cache";
+
+// UI Components
 import { draftPlayerUseCase, 
   draftWriteInPlayerUseCase , 
   getDraftablePlayersUseCase, 
@@ -8,11 +12,11 @@ import { draftPlayerUseCase,
   undoDraftPickUseCase,
   addNewDraftPickUseCase
 } from "../use_cases/draftUseCases";
-import { type DraftPlayers} from "~/features/players/utils/players";
-import { type CompletedDraftPicks, type DraftablePlayers } from "../utils/draft";
-import { revalidatePath } from "next/cache";
 
-// Refactored functions
+// Types
+import { type CompletedDraftPicks, type DraftablePlayers } from "../utils/draft";
+
+
 export async function getDraftablePlayersAction() {
   const draftablePlayers = await getDraftablePlayersUseCase();
   if (!draftablePlayers) {
@@ -32,7 +36,6 @@ export async function draftWriteInPlayerAction(playerToDraft: string) {
 }
 
 export async function getDraftPicksListAction() {
-  // Fetch the current draft pick queue
   const draftPickQueue = await getDraftPicksListUseCase();
   if (!draftPickQueue) {
     throw new Error("Error getting draft pick queue");
