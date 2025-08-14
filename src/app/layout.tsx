@@ -4,6 +4,7 @@ import "~/styles/globals.css";
 // import Providers
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 // import other
 import { GeistSans } from "geist/font/sans";
@@ -32,6 +33,7 @@ export default function RootLayout({
             {children}
           </main>
           <Analytics />
+          <SpeedInsights />
         </body>
       </ClerkProvider>
     </html>
