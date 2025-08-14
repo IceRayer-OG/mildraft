@@ -22,8 +22,8 @@ import {
 } from "~/features/team/actions/teamActions";
 import { getTeamSettingsAction } from "~/features/team/actions/teamSettingsActions";
 
+
 export default async function TeamPage() {
-  // const data = await getData();
   const data = await getMyTeamAction();
   const teamSettings = await getTeamSettingsAction();
   const myTeamInfo = await getMyTeamInfoAction();
@@ -40,14 +40,14 @@ export default async function TeamPage() {
               </Avatar>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-2">
-              <TeamSettingsForm {...teamSettings} />
+              <Suspense fallback={<Skeleton className="h-12 w-[200px] bg-slate-800" />}>
+                <TeamSettingsForm teamSettingsData={teamSettings} />
+              </Suspense>
             </PopoverContent>
           </Popover>
         </div>
         <div>
-          <Suspense
-            fallback={<Skeleton className="h-12 w-[500px] bg-slate-800" />}
-          >
+          <Suspense fallback={<Skeleton className="h-12 w-[500px] bg-slate-800" />}>
             <h1 className="text-2xl font-semibold">{myTeamInfo.name}</h1>
           </Suspense>
         </div>

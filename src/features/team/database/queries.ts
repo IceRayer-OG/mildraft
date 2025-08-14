@@ -39,7 +39,9 @@ export async function getTeamIdByUserId(userId: string) {
         }
     });
 
-    if(!teamId) throw new Error("No team found for user")
+    if(!teamId) {
+      throw new Error("No team found for user");
+    }
     
     return teamId;
 }

@@ -15,7 +15,6 @@ import {
 
 export async function getMyTeamAction() {
     const myTeam = await getMyTeamUseCase();
-    console.log(myTeam);
 
     return myTeam;
 }

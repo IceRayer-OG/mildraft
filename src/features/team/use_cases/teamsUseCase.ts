@@ -14,7 +14,7 @@ import {
     dropPlayerFromMyTeam, 
     getAllTeamsInLeague, 
     getMyTeam, 
-    // getTeamIdByUserId, 
+    getTeamIdByUserId, 
     getTeamSettings,
     getLeagueUnclaimedTeams,
     postClaimTeam,
@@ -37,7 +37,7 @@ export async function getMyTeamUseCase() {
     const user = await checkAuthentication();
 
     // Get users team id
-    // const teamId = await getTeamIdByUserId(user.userId);
+    const teamId = await getTeamIdByUserId(user.userId);
 
     const myTeam = await getMyTeam(user.userId);
 

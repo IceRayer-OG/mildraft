@@ -16,6 +16,7 @@ async function claimTeam(leagueTeam: UnclaimedTeam) {
     }
   } catch (error) {
     toast.error(`Failed to claim ${leagueTeam.name}`);
+    console.error("Claim Team Error:", error);
     throw new Error("Claim Failed");
   } finally {
   }

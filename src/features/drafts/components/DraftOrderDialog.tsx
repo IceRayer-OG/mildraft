@@ -27,7 +27,6 @@ import { type QueueDraftPick } from "../utils/draft";
 import { type Team } from "~/features/team/utils/team";
 import { addNewDraftPickAction } from "../actions/draftActions";
 import { toast } from "sonner";
-import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
 
 async function addNewDraftPick(teamName: string) {
   try {
