@@ -33,7 +33,7 @@ import { updateTeamSettingsAction, getTeamSettingsAction } from "../actions/team
 import { TeamSettings } from "../utils/team";
 
 
-export function TeamSettingsForm(teamSettingsData?: TeamSettings) {
+export function TeamSettingsForm({teamSettingsData}: {teamSettingsData: TeamSettings}) {
     
     const teamSettingsForm = useForm({
         defaultValues: {
