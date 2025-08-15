@@ -76,7 +76,7 @@ export function WriteInDialog() {
                             )}
                         />
 
-                        <DialogFooter className="mt-2">
+                        <DialogFooter className="mt-2 gap-4">
                             <DialogClose asChild>
                                 <Button variant="default" type="submit">Submit</Button>
                             </DialogClose>

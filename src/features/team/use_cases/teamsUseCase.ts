@@ -38,6 +38,11 @@ export async function getMyTeamUseCase() {
 
     // Get users team id
     const teamId = await getTeamIdByUserId(user.userId);
+    
+    // If no team id is found, return an empty array
+    if (!teamId) {
+        return [];
+    }
 
     const myTeam = await getMyTeam(user.userId);
 
