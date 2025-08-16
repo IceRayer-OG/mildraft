@@ -7,9 +7,13 @@ import { Button } from "~/_components/ui/button";
 import {
   Dialog,
   DialogTrigger,
+  DialogDescription,
   DialogTitle,
+  DialogPortal,
   DialogContent,
   DialogFooter,
+  DialogOverlay,
+  DialogHeader,
 } from "~/_components/ui/dialog";
 import {
   Select,
@@ -27,6 +31,7 @@ import { type QueueDraftPick } from "../utils/draft";
 import { type Team } from "~/features/team/utils/team";
 import { addNewDraftPickAction } from "../actions/draftActions";
 import { toast } from "sonner";
+import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
 
 async function addNewDraftPick(teamName: string) {
   try {
@@ -50,45 +55,54 @@ export function DraftOrderDialog({
   const allTeams = use(leagueTeams);
 
   return (
-    <Dialog>
+    <Dialog modal={true}>
       <DialogTrigger asChild>
         <Button variant={"ghost"}>
           <LucideSettings />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-3/4 lg:max-h-1/3">
-        <DialogTitle className="justify-self-center">Draft Order</DialogTitle>
-
-          <DraftOrderList draftOrderList={draftOrderList} />
-        
-        <DialogFooter className="gap-2">
-          <Select
-            value={selectedTeam}
-            onValueChange={(value) => {
-              setSelectedTeam(value);
-            }}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Team" />
-            </SelectTrigger>
-            <SelectContent>
-              {allTeams.map((leagueTeam) => (
-                <SelectItem key={leagueTeam.id} value={leagueTeam.name}>
-                  {leagueTeam.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button
-            variant={"default"}
-            onClick={() => {
-              addNewDraftPick(selectedTeam).catch(Error);
-            }}
-          >
-            Add Pick
-          </Button>
-        </DialogFooter>
-      </DialogContent>
+      <DialogPortal>
+        <DialogOverlay />
+        <DialogContent className="max-h-3/4">
+          <DialogHeader>
+            <DialogTitle className="text-center">Draft Order</DialogTitle>
+            <DialogDescription className="text-center">
+              Manage the draft order for your league.
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="h-[300px] overflow-y-hidden">
+            <DraftOrderList draftOrderList={draftOrderList} />
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
+          <DialogFooter className="gap-2">
+            <Select
+              value={selectedTeam}
+              onValueChange={(value) => {
+                setSelectedTeam(value);
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Team" />
+              </SelectTrigger>
+              <SelectContent>
+                {allTeams.map((leagueTeam) => (
+                  <SelectItem key={leagueTeam.id} value={leagueTeam.name}>
+                    {leagueTeam.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button
+              variant={"default"}
+              onClick={() => {
+                addNewDraftPick(selectedTeam).catch(Error);
+              }}
+            >
+              Add Pick
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </DialogPortal>
     </Dialog>
   );
 }

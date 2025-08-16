@@ -29,9 +29,9 @@ export function TeamsTableLoading() {
           </TableRow>
         </TableHeader>
         <TableBody>
-            <TableRow>
-              <Skeleton className="h-1/6 w-full bg-slate-800" />
-            </TableRow>
+          <TableRow>
+            <Skeleton className="h-1/6 w-full bg-slate-800" />
+          </TableRow>
         </TableBody>
       </Table>
       <div className="flex items-center justify-end space-x-2 py-4">
