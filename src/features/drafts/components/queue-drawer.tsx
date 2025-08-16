@@ -1,3 +1,6 @@
+// React and Next.js imports
+import { use } from "react";
+
 // UI Components
 import {
     Drawer,
@@ -12,22 +15,13 @@ import { Button } from "~/_components/ui/button";
 import { DataTable } from "../../../_components/data-table";
 import { queueColumns } from "./queue-columns";
 
-// Types
-import { type QueuePlayers } from "../utils/draft";
-
 // Server Actions
 import { getMyQueueAction } from "../actions/queueActions";
 
 
-async function getMyQueueData(): Promise<QueuePlayers[]> {
-  // Fetch data from your API here.
-  const myQueueData = await getMyQueueAction();
-  return myQueueData;
-}
+export function QueueDrawer() {
 
-export async function QueueDrawer() {
-
-    const data = await getMyQueueData();
+    const data = use(getMyQueueAction());
 
     return (
         <Drawer>

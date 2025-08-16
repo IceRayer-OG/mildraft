@@ -35,7 +35,7 @@ export default async function TeamPage() {
           <Popover>
             <PopoverTrigger className="flex items-center gap-2">
               <Avatar className="h-10 w-10">
-                <AvatarImage src="/_assets/avatar.png" alt="Avatar" />
+                {/* <AvatarImage src="/_assets/avatar.png" alt="Avatar" /> */}
                 <AvatarFallback className="text-black">SV</AvatarFallback>
               </Avatar>
             </PopoverTrigger>

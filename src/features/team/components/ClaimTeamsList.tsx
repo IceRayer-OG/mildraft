@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useActionState } from "react";
 import { type UnclaimedTeam } from "../utils/team";
 import { Button } from "~/_components/ui/button";
 import { toast } from "sonner";
@@ -13,9 +13,10 @@ async function claimTeam(leagueTeam: UnclaimedTeam) {
     const teamClaimed = await claimTeamAction(leagueTeam.id);
     if (teamClaimed) {
       toast.success(`${leagueTeam.name} claimed successfully`);
+    } else {
+      toast.error(`Failed to claim ${leagueTeam.name}`);
     }
   } catch (error) {
-    toast.error(`Failed to claim ${leagueTeam.name}`);
     console.error("Claim Team Error:", error);
     throw new Error("Claim Failed");
   } finally {

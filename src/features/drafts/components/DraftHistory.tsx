@@ -1,3 +1,5 @@
+import { Suspense, use } from "react";
+
 // UI Components
 import {
   Dialog,
@@ -13,8 +15,8 @@ import { draftPickColumns } from "./pick-history-columns";
 // Server Actions
 import { getCompleteDraftPicksAction } from "../actions/draftActions";
 
-export async function DraftHistoryDialog() {
-    const completedPickInfo = await getCompleteDraftPicksAction();
+export function DraftHistoryDialog() {
+    const completedPickInfo = use(getCompleteDraftPicksAction());
 
     return (
         <Dialog>
@@ -26,7 +28,9 @@ export async function DraftHistoryDialog() {
                 <ScrollArea>
                     <p>Here are the recent picks</p>
                 </ScrollArea>
-                <DraftPickTable columns={draftPickColumns} data={completedPickInfo} />
+                <Suspense fallback={<div className="w-full h-full">Loading...</div>}>
+                    <DraftPickTable columns={draftPickColumns} data={completedPickInfo} />
+                </Suspense>
                 {/* <DialogClose asChild>
                     <Button variant={"outline"}>Close</Button>
                 </DialogClose> */}
