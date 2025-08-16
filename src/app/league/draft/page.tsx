@@ -18,12 +18,9 @@ import { DraftOrderDialog } from "~/features/drafts/components/DraftOrderDialog"
 
 // Server actions
 import { getDraftablePlayersAction, getDraftPicksListAction } from "~/features/drafts/actions/draftActions";
-
 import { DraftHistoryDialog } from "~/features/drafts/components/DraftHistory";
 import { getLeagueTeamsAction } from "~/features/team/actions/teamActions";
 
-
-// export const dynamic = "force-dynamic"; 
 
 export default function DraftPage() {
   const draftablePlayers = use(getDraftablePlayersAction());

@@ -1,5 +1,5 @@
 // React
-import { Suspense } from "react";
+import { Suspense, use } from "react";
 
 // UI Elements
 import { Avatar, AvatarImage, AvatarFallback } from "~/_components/ui/avatar";
@@ -23,10 +23,10 @@ import {
 import { getTeamSettingsAction } from "~/features/team/actions/teamSettingsActions";
 
 
-export default async function TeamPage() {
-  const data = await getMyTeamAction();
-  const teamSettings = await getTeamSettingsAction();
-  const myTeamInfo = await getMyTeamInfoAction();
+export default function TeamPage() {
+  const data = use(getMyTeamAction());
+  const teamSettings = use(getTeamSettingsAction());
+  const myTeamInfo = use(getMyTeamInfoAction());
 
   return (
     <main className="flex min-h-screen flex-col bg-gradient-to-b from-[#12026d] to-[#15162c] p-4 text-white">
