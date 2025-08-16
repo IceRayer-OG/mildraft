@@ -33,7 +33,7 @@ export function DraftHistoryDialog() {
                     </Suspense>
                 </ScrollArea>
                 {/* <DialogClose asChild>
-                    <Button variant={"outline"}>Close</Button>
+                    <Button variant={"outline-solid"}>Close</Button>
                 </DialogClose> */}
             </DialogContent>
         </Dialog>

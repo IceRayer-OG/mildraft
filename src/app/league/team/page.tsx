@@ -1,14 +1,22 @@
 // React
-import { Suspense, use } from "react";
+import { 
+  Suspense, 
+  use 
+} from "react";
 
 // UI Elements
-import { Avatar, AvatarImage, AvatarFallback } from "~/_components/ui/avatar";
+import { 
+  Avatar, 
+  AvatarImage, 
+  AvatarFallback 
+} from "~/_components/ui/avatar";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "~/_components/ui/popover";
 import { Skeleton } from "~/_components/ui/skeleton";
+import { TeamsTableLoading } from "~/features/team/components/TeamsLoading";
 
 // Components
 import { TeamSettingsForm } from "~/features/team/components/TeamSettingsForm";
@@ -29,7 +37,7 @@ export default function TeamPage() {
   const myTeamInfo = use(getMyTeamInfoAction());
 
   return (
-    <main className="flex min-h-screen flex-col bg-gradient-to-b from-[#12026d] to-[#15162c] p-4 text-white">
+    <main className="flex min-h-screen flex-col bg-linear-to-b from-[#12026d] to-[#15162c] p-4 text-white">
       <div className="flex items-center justify-start gap-4">
         <div>
           <Popover>
@@ -47,13 +55,15 @@ export default function TeamPage() {
           </Popover>
         </div>
         <div>
-          <Suspense fallback={<Skeleton className="h-12 w-[500px] bg-slate-800" />}>
+          <Suspense fallback={<Skeleton className="h-12 w-[300px] bg-slate-800" />}>
             <h1 className="text-2xl font-semibold">{myTeamInfo.name}</h1>
           </Suspense>
         </div>
       </div>
       <div className="grow p-4">
-        <DataTable columns={teamColumns} data={data} />
+        <Suspense fallback={<TeamsTableLoading />}>
+          <DataTable columns={teamColumns} data={data} />
+        </Suspense>
       </div>
     </main>
   );
