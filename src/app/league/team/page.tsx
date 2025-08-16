@@ -1,14 +1,22 @@
 // React
-import { Suspense, use } from "react";
+import { 
+  Suspense, 
+  use 
+} from "react";
 
 // UI Elements
-import { Avatar, AvatarImage, AvatarFallback } from "~/_components/ui/avatar";
+import { 
+  Avatar, 
+  AvatarImage, 
+  AvatarFallback 
+} from "~/_components/ui/avatar";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "~/_components/ui/popover";
 import { Skeleton } from "~/_components/ui/skeleton";
+import { TeamsTableLoading } from "~/features/team/components/TeamsLoading";
 
 // Components
 import { TeamSettingsForm } from "~/features/team/components/TeamSettingsForm";
@@ -47,13 +55,15 @@ export default function TeamPage() {
           </Popover>
         </div>
         <div>
-          <Suspense fallback={<Skeleton className="h-12 w-[500px] bg-slate-800" />}>
+          <Suspense fallback={<Skeleton className="h-12 w-[300px] bg-slate-800" />}>
             <h1 className="text-2xl font-semibold">{myTeamInfo.name}</h1>
           </Suspense>
         </div>
       </div>
       <div className="grow p-4">
-        <DataTable columns={teamColumns} data={data} />
+        <Suspense fallback={<TeamsTableLoading />}>
+          <DataTable columns={teamColumns} data={data} />
+        </Suspense>
       </div>
     </main>
   );
