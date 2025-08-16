@@ -29,11 +29,9 @@ export function TeamsTableLoading() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Array.from({ length: 5 }).map((_, index) => (
-            <TableRow key={index}>
+            <TableRow>
               <Skeleton className="h-1/6 w-full bg-slate-800" />
             </TableRow>
-          ))}
         </TableBody>
       </Table>
       <div className="flex items-center justify-end space-x-2 py-4">

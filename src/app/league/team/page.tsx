@@ -37,7 +37,7 @@ export default function TeamPage() {
   const myTeamInfo = use(getMyTeamInfoAction());
 
   return (
-    <main className="flex min-h-screen flex-col bg-gradient-to-b from-[#12026d] to-[#15162c] p-4 text-white">
+    <main className="flex min-h-screen flex-col bg-linear-to-b from-[#12026d] to-[#15162c] p-4 text-white">
       <div className="flex items-center justify-start gap-4">
         <div>
           <Popover>

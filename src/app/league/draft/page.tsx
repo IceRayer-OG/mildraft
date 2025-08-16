@@ -28,7 +28,7 @@ export default function DraftPage() {
   const allTeams = getLeagueTeamsAction();
 
   return (
-    <main className="flex flex-col w-full min-h-screen gap-4 p-4 bg-gradient-to-b from-[#12026d] to-[#15162c] text-white">
+    <main className="flex flex-col w-full min-h-screen gap-4 p-4 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
       <div className="flex border p-2 rounded-md">
         <div className="justify-start pr-2">
           <p className="grow content-center">Picks</p>

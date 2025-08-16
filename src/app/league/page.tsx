@@ -22,7 +22,7 @@ export default function LeaguePage() {
   const allLeagueTeams = getLeagueTeamsAction();
 
   return (
-    <div className="min-w-screen flex min-h-screen flex-col bg-gradient-to-b from-[#12026d] to-[#15162c] p-4 text-white">
+    <div className="min-w-screen flex min-h-screen flex-col bg-linear-to-b from-[#12026d] to-[#15162c] p-4 text-white">
       <div className="flex min-h-20 items-center justify-between gap-4">
         <Avatar>
           <AvatarImage src="/_assets/avatar.png" alt="Avatar" />
