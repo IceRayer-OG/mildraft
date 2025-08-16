@@ -2,7 +2,7 @@
 import { LucideSettings } from "lucide-react";
 
 // React and Next.js imports
-import { Suspense } from "react";
+import { Suspense, use } from "react";
 
 // Global UI components
 import { Separator } from "~/_components/ui/separator";
@@ -23,10 +23,10 @@ import { DraftHistoryDialog } from "~/features/drafts/components/DraftHistory";
 import { getLeagueTeamsAction } from "~/features/team/actions/teamActions";
 
 
-export const dynamic = "force-dynamic"; 
+// export const dynamic = "force-dynamic"; 
 
-export default async function DraftPage() {
-  const draftablePlayers = await getDraftablePlayersAction();
+export default function DraftPage() {
+  const draftablePlayers = use(getDraftablePlayersAction());
   const draftPicks = getDraftPicksListAction();
   const allTeams = getLeagueTeamsAction();
 
