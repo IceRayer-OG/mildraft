@@ -17,7 +17,7 @@ import { TeamsLoadingSkeleton } from "~/features/team/components/TeamsLoading";
 // Actions
 import { getLeagueTeamsAction } from "~/features/team/actions/teamActions";
 
-export default async function LeaguePage() {
+export default function LeaguePage() {
   const posts = getLeaguePosts();
   const allLeagueTeams = getLeagueTeamsAction();
 
