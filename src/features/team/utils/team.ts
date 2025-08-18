@@ -45,7 +45,13 @@ const teamPlayersSchema = z.object({
     pros: proSchema,
 });
 
+const appErrorSchema = z.object({
+  message: z.string(),
+  status: z.enum(["error", "success"]),
+});
+
 export type Team = z.infer<typeof teamSchema>;
 export type UnclaimedTeam = z.infer<typeof unclaimedTeamSchema>;
 export type TeamSettings = z.infer<typeof teamSettingsSchema>;
 export type TeamPlayers = z.infer<typeof teamPlayersSchema>;
+export type AppError = z.infer<typeof appErrorSchema>;

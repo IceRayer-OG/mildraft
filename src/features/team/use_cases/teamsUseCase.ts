@@ -84,12 +84,24 @@ export async function getLeagueUnclaimedTeamsUseCase() {
     return unclaimedTeams as UnclaimedTeam[];
 }
 
-export async function claimTeamUseCase(teamId: number){
+export async function claimTeamUseCase(claimedTeam: UnclaimedTeam){
     const { userId , redirectToSignIn }  = await auth();
 
     if(!userId) return redirectToSignIn();
 
-    const claimedTeam = await postClaimTeam(teamId, userId);
+    let response = {
+        message: `${claimedTeam.name} claimed successfully`,
+        status: "success"
+    }
 
-    return claimedTeam;
+    const claimedTeamResult = await postClaimTeam(claimedTeam.id, userId);
+
+    if(!claimedTeamResult) {
+        response.message = `Failed to claim team ${claimedTeam.name}`;
+        response.status = "error";
+    }
+
+    return response;
+
+    
 }

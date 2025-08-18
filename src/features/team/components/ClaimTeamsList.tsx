@@ -1,27 +1,31 @@
 "use client";
 
 import { use, useActionState } from "react";
-import { type UnclaimedTeam } from "../utils/team";
+import { type UnclaimedTeam, type AppError } from "../utils/team";
 import { Button } from "~/_components/ui/button";
 import { toast } from "sonner";
 
 // Server Action
-import { claimTeamAction } from "../actions/teamActions";
+import { claimTeamAction, claimTeamActionTest } from "../actions/teamActions";
+
 
 async function claimTeam(leagueTeam: UnclaimedTeam) {
-  try {
-    const teamClaimed = await claimTeamAction(leagueTeam.id);
-    if (teamClaimed) {
-      toast.success(`${leagueTeam.name} claimed successfully`);
-    } else {
-      toast.error(`Failed to claim ${leagueTeam.name}`);
-    }
-  } catch (error) {
-    console.error("Claim Team Error:", error);
-    throw new Error("Claim Failed");
-  } finally {
+  const response = await claimTeamAction(leagueTeam);
+  if (response.status === "success") {
+    toast.error(`${response.message}`);
+  } else {
+    toast.error(`Failed to claim ${leagueTeam.name}`);
   }
 }
+
+function claimTeamTest(response: AppError) {
+  if(response.status === "error") {
+    toast.error(`${response.message}`);
+  }
+  if(response.status === "success") {
+    toast.success(`${response.message}`);
+  }
+} 
 
 export default function ClaimTeamList({
   teamList,
@@ -29,6 +33,8 @@ export default function ClaimTeamList({
   teamList: Promise<UnclaimedTeam[]>;
 }) {
   const allTeams = use(teamList);
+  // const claimedTeam[error, claimTeamStateAction] = useActionState(claimTeamActionTest, "");  
+
   return (
     <div className="flex grow">
       <ul className="flex grow flex-col gap-2">

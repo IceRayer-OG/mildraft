@@ -15,13 +15,11 @@ import { type UnclaimedTeam } from "../utils/team";
 
 export function ClaimTeamDialog({unclaimedLeagueTeams,}:{unclaimedLeagueTeams: Promise<UnclaimedTeam[]>}) {
   
-  
 	return (
     <Dialog>
       <DialogTrigger asChild>
         <Button variant={"ghost"}>Claim Your Team</Button>
       </DialogTrigger>
-
       <DialogContent>
         <DialogTitle className="justify-self-center">Claim Your Team</DialogTitle>
         <Suspense fallback={<div>Loading...</div>}>

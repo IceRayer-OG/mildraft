@@ -12,44 +12,53 @@ async function checkAuthorization() {
 }
 
 export async function updateTeamSettingsUseCase(teamData: TeamSettings) {
-    // Check auth
-    const user = await checkAuthorization();
+  // Check auth
+  const user = await checkAuthorization();
 
-    // Is the user the team owner?
-    const teamId: string = user.userId;
+  // Is the user the team owner?
+  const teamId: string = user.userId;
 
-    // If not, throw an error or handle accordingly
-   
-    try {
-        await updateTeamSettings(teamData, teamId);
-    } catch (error) {
-        console.error("Failed to update team settings:", error);
-        throw error; // Re-throw the error for further handling if needed
-    }
+  // If not, throw an error or handle accordingly
+
+  try {
+    await updateTeamSettings(teamData, teamId);
+    return {
+      status: "success",
+      message: `Team settings updated successfully.`,
+      data: teamData,
+    };
+  } catch (error) {
+    console.error("Failed to update team settings:", error);
+    return {
+      status: "error",
+      message: "Failed to update team settings.",
+      data: teamData,
+    };
+  }
 }
 
 export async function getTeamSettingsUseCase() {
-    // Check auth
-    const user = await checkAuthorization();
+  // Check auth
+  const user = await checkAuthorization();
 
-    // Is the user the team owner?
-    const teamId: string = user.userId;
+  // Is the user the team owner?
+  const teamId: string = user.userId;
 
-    // If not, throw an error or handle accordingly
-    // Fetch team settings from the database
-    try {
-        const teamSettings = await getTeamSettings(teamId);
-        if (!teamSettings) {
-            throw new Error("No team settings found for the user");
-        }
-        const teamSettingsData = {
-            teamName: teamSettings.name,
-            teamAbbreviation: teamSettings.abbreviation,
-            teamLogo: undefined, // Assuming logo is optional
-        } as TeamSettings;
-        return teamSettingsData;
-    } catch (error) {
-        console.error("Failed to fetch team settings:", error);
-        throw error; // Re-throw the error for further handling if needed
+  // If not, throw an error or handle accordingly
+  // Fetch team settings from the database
+  try {
+    const teamSettings = await getTeamSettings(teamId);
+    if (!teamSettings) {
+      throw new Error("No team settings found for the user");
     }
+    const teamSettingsData = {
+      teamName: teamSettings.name,
+      teamAbbreviation: teamSettings.abbreviation,
+      teamLogo: undefined, // Assuming logo is optional
+    } as TeamSettings;
+    return teamSettingsData;
+  } catch (error) {
+    console.error("Failed to fetch team settings:", error);
+    throw error; // Re-throw the error for further handling if needed
+  }
 }
