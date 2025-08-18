@@ -12,6 +12,7 @@ import {
     getLeagueUnclaimedTeamsUseCase,
     claimTeamUseCase,
 } from "../use_cases/teamsUseCase";
+import { UnclaimedTeam } from "../utils/team";
 
 export async function getMyTeamAction() {
     const myTeam = await getMyTeamUseCase();
@@ -42,9 +43,18 @@ export async function getMyTeamInfoAction() {
     return myTeamInfo;
 }
 
-export async function claimTeamAction(teamId: number) {
-    const claimedTeam = await claimTeamUseCase(teamId);
+export async function claimTeamAction(claimedTeamInfo: UnclaimedTeam) {
+    const claimedTeam = await claimTeamUseCase(claimedTeamInfo);
     revalidatePath("/");
     return claimedTeam;
 
+}
+
+export async function claimTeamActionTest(claimedTeam: UnclaimedTeam) {
+    
+    const response = await claimTeamUseCase(claimedTeam);
+    
+    revalidatePath("/");
+
+    return response;
 }

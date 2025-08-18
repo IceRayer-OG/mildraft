@@ -19,9 +19,9 @@ import { Skeleton } from "~/_components/ui/skeleton";
 import { TeamsTableLoading } from "~/features/team/components/TeamsLoading";
 
 // Components
-import { TeamSettingsForm } from "~/features/team/components/TeamSettingsForm";
 import { teamColumns } from "~/features/team/components/team-columns";
 import { DataTable } from "~/features/team/components/team-data-table";
+import { TeamSettingsDialogForm } from "~/features/team/components/TeamSettingsDialogForm";
 
 // Actions
 import {
@@ -49,7 +49,7 @@ export default function TeamPage() {
             </PopoverTrigger>
             <PopoverContent className="w-auto p-2">
               <Suspense fallback={<Skeleton className="h-12 w-[200px] bg-slate-800" />}>
-                <TeamSettingsForm teamSettingsData={teamSettings} />
+                <TeamSettingsDialogForm teamSettingsData={teamSettings} />
               </Suspense>
             </PopoverContent>
           </Popover>
