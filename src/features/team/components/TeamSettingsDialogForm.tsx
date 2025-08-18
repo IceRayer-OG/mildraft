@@ -2,6 +2,7 @@
 // React
 import { useActionState, useEffect } from "react";
 import Form from "next/form";
+import { PopoverClose } from "@radix-ui/react-popover";
 
 // UI Components
 import {
@@ -27,6 +28,7 @@ import {
 
 // Utils
 import { type TeamSettings } from "../utils/team";
+
 
 export function TeamSettingsDialogForm({
   teamSettingsData,
@@ -124,11 +126,13 @@ export function TeamSettingsDialogForm({
               </Button>
             )}
             <DialogClose asChild>
+              <PopoverClose asChild>
                 {content.status === "success" ? (
                     <Button variant="destructive">Close</Button>
                 ) : (
                     <Button variant="destructive">Cancel</Button>
-                )}              
+                )} 
+              </PopoverClose>             
             </DialogClose>
           </DialogFooter>
         </Form>
