@@ -89,7 +89,7 @@ export async function claimTeamUseCase(claimedTeam: UnclaimedTeam){
 
     if(!userId) return redirectToSignIn();
 
-    let response = {
+    const response = {
         message: `${claimedTeam.name} claimed successfully`,
         status: "success"
     }
