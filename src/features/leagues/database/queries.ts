@@ -74,8 +74,8 @@ export async function getDraftSettings(
   const draftSettingsDataResponse = {
     draftEnabled: leagueSettingsData[0]?.draftsEnabled,
     snakeDraft: draftSettingsData[0]?.snakeDraft,
-    draftStart: draftSettingsData[0]?.draftStartDate?.toISOString(),
-    draftTime: draftSettingsData[0]?.draftStartTime,
+    draftStart: draftSettingsData[0]?.draftStartDate?.toISOString().split("T")[0],
+    draftTime: draftSettingsData[0]?.draftStartTime?.split("+")[0],
     pickDuration: draftSettingsData[0]?.pickDuration,
   } as DraftSettings;
 
