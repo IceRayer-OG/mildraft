@@ -1,7 +1,7 @@
 
 import { type LeagueSettings, type DraftSettings, type TeamSettings, type LeagueData } from "../utils/settings";
 import { auth } from "@clerk/nextjs/server";
-import { updateLeagueSettings, updateDraftSettings, updateTeamSettings } from "../database/queries";
+import { updateLeagueSettings, updateDraftSettings, updateTeamSettings, getLeagueSettings, getLeagueTeamSettings, getDraftSettings } from "../database/queries";
 
 // import database functions here
 
@@ -12,38 +12,100 @@ async function checkAuthorization() {
   return user;
 }
 
+export async function getLeagueSettingsUseCase(leagueData: LeagueData) {
+  const user = await checkAuthorization();
+
+  // Fetch league settings from the database
+  try {
+    const settings = await getLeagueSettings(leagueData);
+    return settings;
+  } catch (error) {
+    console.error("Failed to get league settings:", error);
+    return {name: "", abbreviation: ""};
+  }
+}
+
 export async function updateLeagueSettingsUseCase(data: LeagueSettings, leagueData: LeagueData) {
     const user = await checkAuthorization();
 
-    const settingsUpdated = await updateLeagueSettings(data, leagueData);
-    if (!settingsUpdated) {
-        throw new Error("Failed to update league settings");
+    try{
+        await updateLeagueSettings(data, leagueData);
+        return {
+            status: "success",
+            message: "League settings updated successfully",
+            data: data,
+        };
+    } catch (error) {
+        console.error("Failed to update league settings:", error);
+        return {
+            status: "error",
+            message: "Failed to update league settings",
+            data: data,
+        };
     }
-    
-    console.log("Updating league settings with data:", data, leagueData);
+}
+
+export async function getDraftSettingsUseCase(leagueData: LeagueData) {
+    const user = await checkAuthorization();
+
+    try {
+        const settings = await getDraftSettings(leagueData);
+        return settings;
+    } catch (error) {
+        console.error("Failed to get draft settings:", error);
+        return {draftEnabled: false, snakeDraft: false, draftStart: "", draftTime: "", pickDuration: 4};
+    }
 }
 
 export async function updateDraftSettingsUseCase(data: DraftSettings, leagueData: LeagueData) {
 
     await checkAuthorization();
-    
-    const settingsUpdated = await updateDraftSettings(data, leagueData);
 
-    if (!settingsUpdated) {
-        throw new Error("Failed to update draft settings");
+    try {
+        await updateDraftSettings(data, leagueData);
+        return {
+            status: "success",
+            message: "Draft settings updated successfully",
+            data: data,
+        };
+    } catch (error) {
+        console.error("Failed to update draft settings:", error);
+        return {
+            status: "error",
+            message: "Failed to update draft settings",
+            data: data,
+        };
     }
-
-    console.log("Updating league settings with data:", data, leagueData);
 }
 
-export async function updateTeamSettingsUseCase(data: TeamSettings, leagueData: LeagueData) {
+export async function getTeamSettingsUseCase(leagueData: LeagueData) {
+    const user = await checkAuthorization();
+
+    try {
+        const settings = await getLeagueTeamSettings(leagueData);
+        return settings;
+    } catch (error) {
+        console.error("Failed to get team settings:", error);
+        return {teamsAllowed: 10, logoEnabled: true};
+    }
+}
+
+export async function updateTeamSettingsUseCase(teamData: TeamSettings, leagueData: LeagueData) {
     await checkAuthorization();
 
-    const settingsUpdated = await updateTeamSettings(data, leagueData);
-
-    if (!settingsUpdated) {
-        throw new Error("Failed to update team settings");
+    try {
+        await updateTeamSettings(teamData, leagueData);
+        return {
+            status: "success",
+            message: "Team settings updated successfully",
+            data: teamData,
+        };
+    } catch (error) {
+        console.error("Failed to update team settings:", error);
+        return {
+            status: "error",
+            message: "Failed to update team settings",
+            data: teamData,
+        };
     }
-
-    console.log("Updating league settings with data:", data, leagueData);
 }
