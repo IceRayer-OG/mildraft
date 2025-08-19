@@ -46,11 +46,11 @@ export async function updateDraftSettingsAction(
 ) {
 
   const data: DraftSettings = {
-    draftEnabled: Boolean(formData.get("draftEnabled")) as boolean,
-    snakeDraft: Boolean(formData.get("snakeDraft")) as boolean,
+    draftEnabled: Boolean(formData.get("draftEnabled")),
+    snakeDraft: Boolean(formData.get("snakeDraft")),
     draftStart: formData.get("draftStartDate") as string,
     draftTime: formData.get("draftStartTime") as string,
-    pickDuration: Number(formData.get("pickDuration")) as number,
+    pickDuration: Number(formData.get("pickDuration")),
   };
 
   const response = await updateDraftSettingsUseCase(data, leagueData);
@@ -74,8 +74,8 @@ export async function updateTeamSettingsAction(
 ) {
 
   const data: TeamSettings = {
-    logoEnabled: Boolean(formData.get("teamLogosEnabled")) as boolean,
-    teamsAllowed: Number(formData.get("teamsAllowed")) as number,
+    logoEnabled: Boolean(formData.get("teamLogosEnabled")),
+    teamsAllowed: Number(formData.get("teamsAllowed")),
   };
 
   const response = await updateTeamSettingsUseCase(data, leagueData);
