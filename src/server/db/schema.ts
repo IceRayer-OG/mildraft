@@ -205,6 +205,7 @@ export const settings = createTable(
     primaryColor: varchar("primary_color", { length: 7 }),
     sceondaryColor: varchar("secondary_color", { length: 7 }),
     teams: integer("teams"),
+    teamLogosEnabled: boolean("team_logos_enabled").default(true),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

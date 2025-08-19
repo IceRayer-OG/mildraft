@@ -1,6 +1,3 @@
-
-import { LucideSettings } from "lucide-react";
-
 // React and Next.js imports
 import { Suspense, use } from "react";
 
@@ -20,23 +17,28 @@ import { DraftOrderDialog } from "~/features/drafts/components/DraftOrderDialog"
 import { getDraftablePlayersAction, getDraftPicksListAction } from "~/features/drafts/actions/draftActions";
 import { DraftHistoryDialog } from "~/features/drafts/components/DraftHistory";
 import { getLeagueTeamsAction } from "~/features/team/actions/teamActions";
+import { getDraftSettingsAction } from "~/features/leagues/actions/leagueActions";
 
 
 export default function DraftPage() {
+  const leagueData = { leagueId: 1, draftId: 2}
   const draftablePlayers = use(getDraftablePlayersAction());
   const draftPicks = getDraftPicksListAction();
   const allTeams = getLeagueTeamsAction();
+  const draftDetails = use(getDraftSettingsAction(leagueData))
 
   return (
     <main className="flex flex-col w-full min-h-screen gap-4 p-4 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
-      <div className="flex border p-2 rounded-md">
-        <div className="justify-start pr-2">
-          <p className="grow content-center">Picks</p>
+      <div className="flex w-full h-[40px] justify-center gap-8 rounded-md">
+        <p>Draft Start Date: {draftDetails.draftStart}</p>
+        <p>Draft Start Time: {draftDetails.draftTime}</p>
+
+      </div>
+      <div className="flex border p-1 rounded-md">
+        <div className="justify-start pr-2 space-y-1">
+          <p>Picks</p>
           <Separator />
-          <div className="flex items-center p-2 gap-2">
-            <p className="font-semibold">Clock: </p>
-            <p>4:00:00</p>
-          </div>
+          <p> <span className="font-semibold">Clock:</span> {draftDetails.pickDuration}:00 h</p>
         </div>
         <div className="flex grow justify-start items-center overflow-hidden">
           <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">

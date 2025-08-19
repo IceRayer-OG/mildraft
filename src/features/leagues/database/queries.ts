@@ -1,32 +1,154 @@
 import "server-only";
 import { db } from "~/server/db";
-import { leagues, draftSettings, settings } from "~/server/db/schema";
-import { eq } from "drizzle-orm";
-import { type LeagueSettings, type DraftSettings, type TeamSettings, type LeagueData } from "../utils/settings";
+import { leagues, settings, draftSettings } from "~/server/db/schema";
+import { eq, and } from "drizzle-orm";
+import {
+  type LeagueSettings,
+  type DraftSettings,
+  type TeamSettings,
+  type LeagueData,
+} from "../utils/settings";
 
+export async function getLeagueSettings(
+  leagueData: LeagueData,
+): Promise<LeagueSettings> {
+  // Placeholder for actual database query logic
+  const data = await db
+    .select()
+    .from(settings)
+    .where(eq(settings.leagueId, leagueData.leagueId))
+    .limit(1);
 
-export async function updateLeagueSettings(data: LeagueSettings, leagueData: LeagueData):Promise<boolean> {
-    // Placeholder for actual database update logic
-    console.log("Updating league settings in the database with data:", data, leagueData);
-    await db.update(leagues).set({name: data.name, abbreviation: data.abbreviation}).where(eq(leagues.id, leagueData.leagueId));
-    return true;
+  if (!data) throw new Error("League settings not found");
+
+  const leagueSettings = {
+    name: data[0]?.name,
+    abbreviation: data[0]?.abbreviation,
+  } as LeagueSettings;
+
+  return leagueSettings;
 }
 
-export async function updateDraftSettings(data: DraftSettings, leagueData: LeagueData):Promise<boolean> {
-    // Placeholder for actual database update logic
-    console.log("Updating draft settings in the database with data:", data, leagueData);
-    await db.update(draftSettings).set({
-        snakeDraft: data.snakeDraft,
-        startDate: new Date(data.draftStart),
-        pickDuration: data.pickDuration
-    }).where(eq(draftSettings.leagueId, leagueData.leagueId));
-    return true;
+export async function updateLeagueSettings(
+  data: LeagueSettings,
+  leagueData: LeagueData,
+): Promise<boolean> {
+  // Placeholder for actual database update logic
+  console.log(
+    "Updating league settings in the database with data:",
+    data,
+    leagueData,
+  );
+  await db
+    .update(settings)
+    .set({ name: data.name, abbreviation: data.abbreviation })
+    .where(eq(settings.leagueId, leagueData.leagueId));
+  return true;
 }
 
-export async function updateTeamSettings(data: TeamSettings, leagueData: LeagueData):Promise<boolean> {
-    // Placeholder for actual database update logic
-    console.log("Updating team settings in the database with data:", data, leagueData);
-    await db.update(settings).set({teams: data.teamsAllowed}).where(eq(settings.leagueId, leagueData.leagueId));
-    return true;
+export async function getDraftSettings(
+  leagueData: LeagueData,
+): Promise<DraftSettings> {
+  // Placeholder for actual database query logic
+  const leagueSettingsData = await db
+    .select()
+    .from(settings)
+    .where(eq(settings.leagueId, leagueData.leagueId))
+    .limit(1);
+  if (!leagueSettingsData) throw new Error("League settings not found");
+
+  const draftSettingsData = await db
+    .select()
+    .from(draftSettings)
+    .where(
+      and(
+        eq(draftSettings.leagueId, leagueData.leagueId),
+        eq(draftSettings.draftId, leagueData.draftId)
+      ))
+    .limit(1);
+
+  if (!draftSettingsData) throw new Error("Draft settings not found");
+
+  console.log(draftSettingsData[0])
+
+  const draftSettingsDataResponse = {
+    draftEnabled: leagueSettingsData[0]?.draftsEnabled,
+    snakeDraft: draftSettingsData[0]?.snakeDraft,
+    draftStart: draftSettingsData[0]?.draftStartDate?.toISOString(),
+    draftTime: draftSettingsData[0]?.draftStartTime,
+    pickDuration: draftSettingsData[0]?.pickDuration,
+  } as DraftSettings;
+
+  console.log(draftSettingsDataResponse)
+
+  return draftSettingsDataResponse;
+
 }
 
+export async function updateDraftSettings(
+  data: DraftSettings,
+  leagueData: LeagueData,
+): Promise<boolean> {
+  // Placeholder for actual database update logic
+  console.log(
+    "Updating draft settings in the database with data:",
+    data,
+    leagueData,
+  );
+
+  await db
+    .update(settings)
+    .set({ draftsEnabled: data.draftEnabled })
+    .where(eq(settings.leagueId, leagueData.leagueId)
+  );
+
+  await db
+    .update(draftSettings)
+    .set({
+      snakeDraft: data.snakeDraft,
+      startDate: new Date(data.draftStart + " " + data.draftTime),
+      draftStartDate: new Date(data.draftStart),
+      draftStartTime: data.draftTime,
+      pickDuration: data.pickDuration,
+    })
+    .where(and(eq(draftSettings.leagueId, leagueData.leagueId),eq(draftSettings.id, leagueData.draftId))
+  );
+
+  return true;
+}
+
+export async function getLeagueTeamSettings(
+  leagueData: LeagueData,
+): Promise<TeamSettings> {
+  // Placeholder for actual database query logic
+  const data = await db
+    .select()
+    .from(settings)
+    .where(eq(settings.leagueId, leagueData.leagueId))
+    .limit(1);
+
+  if (!data) throw new Error("League settings not found");
+
+  const teamSettings = {
+    logoEnabled: data[0]?.teamLogosEnabled,
+    teamsAllowed: data[0]?.teams,
+  } as TeamSettings;
+  return teamSettings;
+}
+
+export async function updateTeamSettings(
+  data: TeamSettings,
+  leagueData: LeagueData,
+): Promise<boolean> {
+  // Placeholder for actual database update logic
+  console.log(
+    "Updating team settings in the database with data:",
+    data,
+    leagueData,
+  );
+  await db
+    .update(settings)
+    .set({ teams: data.teamsAllowed, teamLogosEnabled: data.logoEnabled })
+    .where(eq(settings.leagueId, leagueData.leagueId));
+  return true;
+}
