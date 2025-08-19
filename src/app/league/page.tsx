@@ -1,6 +1,6 @@
 // React
 // import Image from "next/image";
-import { Suspense } from "react";
+import { Suspense, use } from "react";
 import { getLeaguePosts } from "~/server/queries";
 
 // UI Elements
@@ -16,10 +16,12 @@ import { TeamsLoadingSkeleton } from "~/features/team/components/TeamsLoading";
 
 // Actions
 import { getLeagueTeamsAction } from "~/features/team/actions/teamActions";
+import { getLeagueSettingsAction } from "~/features/leagues/actions/leagueActions";
 
 export default function LeaguePage() {
   const posts = getLeaguePosts();
   const allLeagueTeams = getLeagueTeamsAction();
+  const leagueSettingsData = use(getLeagueSettingsAction({leagueId: 1, draftId: 2}));
 
   return (
     <div className="min-w-screen flex min-h-screen flex-col bg-linear-to-b from-[#12026d] to-[#15162c] p-4 text-white">
@@ -30,7 +32,7 @@ export default function LeaguePage() {
         </Avatar>
         <div>
           <p className="text-xl font-semibold md:text-4xl">
-            Welcome to SvBaseball!
+            Welcome to {leagueSettingsData.name}!
           </p>
         </div>
         <div className="content-right flex items-center gap-4">
