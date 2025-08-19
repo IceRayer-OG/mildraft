@@ -26,21 +26,19 @@ export default function LeaguePage() {
   return (
     <div className="min-w-screen flex min-h-screen flex-col bg-linear-to-b from-[#12026d] to-[#15162c] p-4 text-white">
       <div className="flex min-h-20 items-center justify-between gap-4">
-        <Avatar>
-          <AvatarImage src="/_assets/avatar.png" alt="Avatar" />
-          <AvatarFallback className="text-black">SVB</AvatarFallback>
-        </Avatar>
+        <div>
+        </div>
         <div>
           <p className="text-xl font-semibold md:text-4xl">
             Welcome to {leagueSettingsData.name}!
           </p>
         </div>
-        <div className="content-right flex items-center gap-4">
+        <div className="content-right pr-4 flex items-center gap-2">
           <SettingDialog />
           <Avatar>
-            {/* <AvatarImage src="/_assets/avatar.png" alt="Avatar" /> */}
-            <AvatarFallback className="text-black">SV</AvatarFallback>
-          </Avatar>
+          {/* <AvatarImage src="/_assets/avatar.png" alt="Avatar" /> */}
+          <AvatarFallback className="text-black text-sm">{leagueSettingsData.abbreviation}</AvatarFallback>
+        </Avatar>
         </div>
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
