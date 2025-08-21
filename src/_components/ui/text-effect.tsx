@@ -247,7 +247,7 @@ export function TextEffect({
 
   const computedVariants = {
     container: createVariantsWithTransition(
-      variants?.container || baseVariants.container,
+      variants?.container ?? baseVariants.container,
       {
         staggerChildren: customStagger ?? stagger,
         delayChildren: customDelay ?? delay,
@@ -258,7 +258,7 @@ export function TextEffect({
         },
       }
     ),
-    item: createVariantsWithTransition(variants?.item || baseVariants.item, {
+    item: createVariantsWithTransition(variants?.item ?? baseVariants.item, {
       duration: baseDuration,
       ...segmentTransition,
     }),
