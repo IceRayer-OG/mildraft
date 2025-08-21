@@ -11,7 +11,6 @@ import {
   DialogTitle,
 } from "~/_components/ui/dialog";
 import { Button } from "~/_components/ui/button";
-import { GlowEffect } from "~/_components/ui/glow-effect";
 import { TextShimmerWave } from "~/_components/ui/text-shimmer-wave";
 import ClaimTeamList from "./ClaimTeamsList";
 
@@ -27,13 +26,6 @@ export function ClaimTeamDialog({
     <Dialog>
       <DialogTrigger asChild>
         <div className="relative">
-          <GlowEffect
-            colors={["#FF5733", "#33FF57", "#3357FF", "#F1C40F"]}
-            mode="colorShift"
-            blur="soft"
-            duration={3}
-            scale={0.9}
-          />
           <Button
             variant={"ghost"}
             className="relative inline-flex items-center gap-1 rounded-md bg-zinc-900 px-2.5 py-1.5"
