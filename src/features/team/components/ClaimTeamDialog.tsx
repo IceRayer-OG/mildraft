@@ -1,7 +1,9 @@
 "use client";
 
+// React imports
 import { Suspense } from "react";
 
+// UI imports
 import {
   Dialog,
   DialogContent,
@@ -12,6 +14,8 @@ import { Button } from "~/_components/ui/button";
 import { GlowEffect } from "~/_components/ui/glow-effect";
 import { TextShimmerWave } from "~/_components/ui/text-shimmer-wave";
 import ClaimTeamList from "./ClaimTeamsList";
+
+// Type imports
 import { type UnclaimedTeam } from "../utils/team";
 
 export function ClaimTeamDialog({
@@ -35,7 +39,7 @@ export function ClaimTeamDialog({
             className="relative inline-flex items-center gap-1 rounded-md bg-zinc-900 px-2.5 py-1.5"
           >
             <TextShimmerWave
-              className="[--base-color:#FFFFFF] [--base-gradient-color:#5EB1EF]"
+              className="[--base-color:#FFFFFF] [--base-gradient-color:#FFFFFF] hover:[--base-color:#000000]"
               duration={1}
               spread={1}
               zDistance={1}
