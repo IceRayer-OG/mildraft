@@ -33,12 +33,7 @@ export async function updateLeagueSettings(
   data: LeagueSettings,
   leagueData: LeagueData,
 ): Promise<boolean> {
-  // Placeholder for actual database update logic
-  console.log(
-    "Updating league settings in the database with data:",
-    data,
-    leagueData,
-  );
+
   await db
     .update(settings)
     .set({ name: data.name, abbreviation: data.abbreviation })
@@ -69,8 +64,6 @@ export async function getDraftSettings(
 
   if (!draftSettingsData) throw new Error("Draft settings not found");
 
-  console.log(draftSettingsData[0])
-
   const draftSettingsDataResponse = {
     draftEnabled: leagueSettingsData[0]?.draftsEnabled,
     snakeDraft: draftSettingsData[0]?.snakeDraft,
@@ -78,8 +71,6 @@ export async function getDraftSettings(
     draftTime: draftSettingsData[0]?.draftStartTime?.split("+")[0],
     pickDuration: draftSettingsData[0]?.pickDuration,
   } as DraftSettings;
-
-  console.log(draftSettingsDataResponse)
 
   return draftSettingsDataResponse;
 
@@ -89,12 +80,6 @@ export async function updateDraftSettings(
   data: DraftSettings,
   leagueData: LeagueData,
 ): Promise<boolean> {
-  // Placeholder for actual database update logic
-  console.log(
-    "Updating draft settings in the database with data:",
-    data,
-    leagueData,
-  );
 
   await db
     .update(settings)
@@ -140,12 +125,7 @@ export async function updateTeamSettings(
   data: TeamSettings,
   leagueData: LeagueData,
 ): Promise<boolean> {
-  // Placeholder for actual database update logic
-  console.log(
-    "Updating team settings in the database with data:",
-    data,
-    leagueData,
-  );
+
   await db
     .update(settings)
     .set({ teams: data.teamsAllowed, teamLogosEnabled: data.logoEnabled })
