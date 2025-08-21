@@ -28,7 +28,7 @@ export function ClaimTeamDialog({
         <div className="relative">
           <Button
             variant={"ghost"}
-            className="relative inline-flex items-center gap-1 rounded-md bg-zinc-900 px-2.5 py-1.5"
+            className="relative inline-flex items-center gap-1 p-4 rounded-md bg-zinc-900"
           >
             <TextShimmerWave
               className="[--base-color:#FFFFFF] [--base-gradient-color:#FFFFFF] hover:[--base-color:#000000]"

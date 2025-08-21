@@ -13,7 +13,7 @@ export default function HomePage() {
           SV Baseball{" "}
           <span className="text-[hsl(280,100%,70%)]">MiL Draft</span> App
         </h1>
-        <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-900/80 p-6">
+        <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 text-white hover:bg-white/20 p-6">
             <ClaimTeamDialog unclaimedLeagueTeams={unclaimedLeagueTeams} />
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
