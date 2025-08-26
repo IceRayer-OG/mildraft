@@ -40,21 +40,39 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
 }
 
 export async function draftWriteInPlayerUseCase(playerToDraft: string) {
-  const user = await checkAuthorization();
-  if (!user) {
-    throw new Error("User is not authenticated");
+  let response = {
+     status: "", 
+     message: "", 
   }
 
-  // check it user is current pick team owner
+  const user = await checkAuthorization();
+  if (!user) {
+    response.status = "Error"
+    response.message = "User is not authenticated"
+    return response
+  }
+
+
   // Check if user is current pick team owner
   const currentPick = await getCurrentDraftPick();
   if(!currentPick) {
-    throw new Error("No pick set")
+    response.status = "Error"
+    response.message = "No Pick Set"
+    return response
   }
 
   // draft write in player
-  await postWriteInDraftPick(currentPick.teamId, 2, currentPick.pickNumber, playerToDraft);
-
+  try{
+    await postWriteInDraftPick(currentPick.teamId, 2, currentPick.pickNumber, playerToDraft);
+    response.status="Success"
+    response.message=`${playerToDraft} drafted successfully`
+    return response
+  } catch(error){
+    console.error("Failed to draft write in player:", error);
+    response.status = "Error"
+    response.message = `Failed to draft ${playerToDraft}`
+    return response
+  }
 }
 
 export async function getDraftablePlayersUseCase(): Promise<DraftablePlayers[]> {

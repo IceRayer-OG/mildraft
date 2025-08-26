@@ -6,7 +6,6 @@ import { updateLeagueSettingsUseCase, updateDraftSettingsUseCase, updateTeamSett
 
 export async function getLeagueSettingsAction(leagueData: LeagueData) {
   const response = await getLeagueSettingsUseCase(leagueData);
-  console.log("League Settings Action Response:", response);
   return response;
 }
 

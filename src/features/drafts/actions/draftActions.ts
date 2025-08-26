@@ -30,9 +30,11 @@ export async function draftPlayerAction(playerToDraft: DraftablePlayers) {
   revalidatePath("league/draft");
 }
 
-export async function draftWriteInPlayerAction(playerToDraft: string) {
-  await draftWriteInPlayerUseCase(playerToDraft);
+export async function draftWriteInPlayerAction(previousState:{status: string, message: string}, formData: FormData) {
+  const playerToDraft = formData.get("writeInPlayerName") as string
+  const response = await draftWriteInPlayerUseCase(playerToDraft)
   revalidatePath("league/draft");
+  return response
 }
 
 export async function getDraftPicksListAction() {

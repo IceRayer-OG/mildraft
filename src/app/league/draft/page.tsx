@@ -38,7 +38,9 @@ export default function DraftPage() {
         <div className="justify-start pr-2 space-y-1">
           <p>Picks</p>
           <Separator />
-          <p> <span className="font-semibold">Clock:</span> {draftDetails.pickDuration}:00 h</p>
+          <div className="flex grow">
+            <p><span className="font-semibold">Clock:</span> {draftDetails.pickDuration}:00 h</p>
+          </div>
         </div>
         <div className="flex grow justify-start items-center overflow-hidden">
           <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
