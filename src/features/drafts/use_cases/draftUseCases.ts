@@ -40,7 +40,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
 }
 
 export async function draftWriteInPlayerUseCase(playerToDraft: string) {
-  let response = {
+  const response = {
      status: "", 
      message: "", 
   }
