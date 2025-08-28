@@ -44,7 +44,7 @@ export default function DraftPage() {
         </div>
         <div className="flex grow justify-start items-center overflow-hidden">
           <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
-            <div className="w-full ">
+            <div>
               <Suspense fallback={<div>Loading...</div>}>
                 <DraftQueueList draftQueue={draftPicks} />
               </Suspense>
@@ -66,8 +66,8 @@ export default function DraftPage() {
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
-      <div className="flex fixed bottom-0 gap-4 justify-center w-full">
-        <div className=" pb-8">
+      <div className="flex fixed bottom-0 gap-4 justify-center w-full pb-8">
+        <div>
           <QueueDrawer />
         </div>
         <div>

@@ -4,21 +4,25 @@
 import { revalidatePath } from "next/cache";
 
 // UI Components
-import { draftPlayerUseCase, 
-  draftWriteInPlayerUseCase , 
-  getDraftablePlayersUseCase, 
-  getCompletedDraftPicksUseCase, 
+import {
+  draftPlayerUseCase,
+  draftWriteInPlayerUseCase,
+  getDraftablePlayersUseCase,
+  getCompletedDraftPicksUseCase,
   getDraftPicksListUseCase,
   undoDraftPickUseCase,
-  addNewDraftPickUseCase
+  addNewDraftPickUseCase,
 } from "../use_cases/draftUseCases";
 
 // Types
-import { type CompletedDraftPicks, type DraftablePlayers } from "../utils/draft";
-
+import {
+  type CompletedDraftPicks,
+  type DraftablePlayers,
+} from "../utils/draft";
 
 export async function getDraftablePlayersAction() {
   const draftablePlayers = await getDraftablePlayersUseCase();
+
   if (!draftablePlayers) {
     throw new Error("Error getting draft players");
   }
@@ -30,11 +34,14 @@ export async function draftPlayerAction(playerToDraft: DraftablePlayers) {
   revalidatePath("league/draft");
 }
 
-export async function draftWriteInPlayerAction(previousState:{status: string, message: string}, formData: FormData) {
-  const playerToDraft = formData.get("writeInPlayerName") as string
-  const response = await draftWriteInPlayerUseCase(playerToDraft)
+export async function draftWriteInPlayerAction(
+  previousState: { status: string; message: string },
+  formData: FormData,
+) {
+  const playerToDraft = formData.get("writeInPlayerName") as string;
+  const response = await draftWriteInPlayerUseCase(playerToDraft);
   revalidatePath("league/draft");
-  return response
+  return response;
 }
 
 export async function getDraftPicksListAction() {
@@ -42,10 +49,13 @@ export async function getDraftPicksListAction() {
   if (!draftPickQueue) {
     throw new Error("Error getting draft pick queue");
   }
+
   return draftPickQueue;
 }
 
-export async function getCompleteDraftPicksAction(): Promise<CompletedDraftPicks[]> {
+export async function getCompleteDraftPicksAction(): Promise<
+  CompletedDraftPicks[]
+> {
   const draftedPlayers = await getCompletedDraftPicksUseCase();
   return draftedPlayers;
 }
@@ -57,6 +67,6 @@ export async function undoDraftPickAction(draftPickToUndo: number) {
 
 export async function addNewDraftPickAction(teamName: string) {
   const teamSelected = await addNewDraftPickUseCase(teamName);
-  revalidatePath("/league/Draft")
+  revalidatePath("/league/Draft");
   return teamSelected;
 }
