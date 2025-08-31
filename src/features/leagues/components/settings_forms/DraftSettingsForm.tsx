@@ -77,7 +77,7 @@ export function DraftSettingsForm({
           />
         </div>
         <div className="flex items-center justify-between">
-          <Label>Draft Date</Label>
+          <Label>Draft Time</Label>
           <Input
             id="draft-start-time"
             name="draftStartTime"

@@ -77,14 +77,14 @@ export async function getDraftSettings(
 }
 
 export async function updateDraftSettings(
-  data: DraftSettings,
+  draftData: DraftSettings,
   leagueData: LeagueData,
 ): Promise<boolean> {
   
   try {
     await db
     .update(settings)
-    .set({ draftsEnabled: data.draftEnabled })
+    .set({ draftsEnabled: draftData.draftEnabled })
     .where(eq(settings.leagueId, leagueData.leagueId)
   );
   } catch(error) {
@@ -95,12 +95,13 @@ export async function updateDraftSettings(
     await db
     .update(draftSettings)
     .set({
-      snakeDraft: data.snakeDraft,
-      draftStartDate: new Date(data.draftStart),
-      draftStartTime: data.draftTime,
-      pickDuration: data.pickDuration,
+      snakeDraft: draftData.snakeDraft,
+      startDate: new Date(draftData.draftStart+" "+draftData.draftTime),
+      draftStartDate: new Date(draftData.draftStart),
+      draftStartTime: draftData.draftTime,
+      pickDuration: draftData.pickDuration,
     })
-    .where(and(eq(draftSettings.leagueId, leagueData.leagueId),eq(draftSettings.id, leagueData.draftId)));
+    .where(and(eq(draftSettings.leagueId, leagueData.leagueId),eq(draftSettings.draftId, leagueData.draftId)));
   } catch(error) {
     console.log("Draft Settings error",error)
   }
