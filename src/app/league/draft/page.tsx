@@ -30,11 +30,12 @@ export default function DraftPage() {
 
   return (
     <main className="flex flex-col w-full min-h-screen gap-4 p-4 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
-      <div className="flex w-full h-[40px] justify-center gap-8 rounded-md">
+      <div className="flex w-full h-[40px] justify-center gap-8 rounded-md items-center">
         <p>Draft Start Date: {draftDetails.draftStart}</p>
         <p>Draft Start Time: {draftDetails.draftTime}</p>
-        <DraftCountdownTimer targetDate={draftDetails.draftDateTime} />
-        
+        <div className="flex">
+          <DraftCountdownTimer targetDate={draftDetails.draftDateTime} />
+        </div>
       </div>
       <div className="flex border p-1 rounded-md">
         <div className="justify-start pr-2 space-y-1">
