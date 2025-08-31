@@ -8,10 +8,9 @@ const leagueSettingsSchema = z.object({
 const draftSettingsSchema = z.object({
   draftEnabled: z.boolean(),
   snakeDraft: z.boolean(),
-  draftStart: z.string(),
-  draftTime: z.string(),
+  draftStart: z.iso.date(),
+  draftTime: z.iso.time(),
   pickDuration: z.number(),
-  draftDateTime: z.date(),
 }); 
 
 const teamSettingsSchema = z.object({
