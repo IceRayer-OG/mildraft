@@ -53,27 +53,33 @@ export async function getDraftSettingsUseCase(leagueData: LeagueData) {
         return settings;
     } catch (error) {
         console.error("Failed to get draft settings:", error);
-        return {draftEnabled: false, snakeDraft: false, draftStart: "", draftTime: "", pickDuration: 4, draftDateTime: new Date()};
+        return {
+            draftEnabled: false, 
+            snakeDraft: false, 
+            draftStart: "", 
+            draftTime: "", 
+            pickDuration: 4
+        };
     }
 }
 
-export async function updateDraftSettingsUseCase(data: DraftSettings, leagueData: LeagueData) {
+export async function updateDraftSettingsUseCase(draftData: DraftSettings, leagueData: LeagueData) {
 
     await checkAuthorization();
 
     try {
-        await updateDraftSettings(data, leagueData);
+        await updateDraftSettings(draftData, leagueData);
         return {
             status: "success",
             message: "Draft settings updated successfully",
-            data: data,
+            data: draftData,
         };
     } catch (error) {
         console.error("Failed to update draft settings:", error);
         return {
             status: "error",
             message: "Failed to update draft settings",
-            data: data,
+            data: draftData,
         };
     }
 }
