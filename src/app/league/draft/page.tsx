@@ -12,6 +12,7 @@ import { draftColumns } from "~/features/drafts/components/draft-columns";
 import { DataTable } from "~/features/drafts/components/draft-data-table";
 import DraftQueueList from "~/features/drafts/components/draft-picks-queue";
 import { DraftOrderDialog } from "~/features/drafts/components/DraftOrderDialog";
+import DraftCountdownTimer from "~/features/drafts/components/PickClockTimer"
 
 // Server actions
 import { getDraftablePlayersAction, getDraftPicksListAction } from "~/features/drafts/actions/draftActions";
@@ -32,17 +33,20 @@ export default function DraftPage() {
       <div className="flex w-full h-[40px] justify-center gap-8 rounded-md">
         <p>Draft Start Date: {draftDetails.draftStart}</p>
         <p>Draft Start Time: {draftDetails.draftTime}</p>
-
+        <DraftCountdownTimer targetDate={draftDetails.draftDateTime} />
+        
       </div>
       <div className="flex border p-1 rounded-md">
         <div className="justify-start pr-2 space-y-1">
           <p>Picks</p>
           <Separator />
-          <p> <span className="font-semibold">Clock:</span> {draftDetails.pickDuration}:00 h</p>
+          <div className="flex grow">
+            <p><span className="font-semibold">Clock:</span> {draftDetails.pickDuration}:00 h</p>
+          </div>
         </div>
         <div className="flex grow justify-start items-center overflow-hidden">
           <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
-            <div className="w-full ">
+            <div className="h-[100px]">
               <Suspense fallback={<div>Loading...</div>}>
                 <DraftQueueList draftQueue={draftPicks} />
               </Suspense>
@@ -64,8 +68,8 @@ export default function DraftPage() {
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
-      <div className="flex fixed bottom-0 gap-4 justify-center w-full">
-        <div className=" pb-8">
+      <div className="flex fixed bottom-0 gap-4 justify-center w-full pb-8">
+        <div>
           <QueueDrawer />
         </div>
         <div>

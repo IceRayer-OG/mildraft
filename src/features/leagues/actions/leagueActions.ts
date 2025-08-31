@@ -6,7 +6,6 @@ import { updateLeagueSettingsUseCase, updateDraftSettingsUseCase, updateTeamSett
 
 export async function getLeagueSettingsAction(leagueData: LeagueData) {
   const response = await getLeagueSettingsUseCase(leagueData);
-  console.log("League Settings Action Response:", response);
   return response;
 }
 
@@ -51,6 +50,7 @@ export async function updateDraftSettingsAction(
     draftStart: formData.get("draftStartDate") as string,
     draftTime: formData.get("draftStartTime") as string,
     pickDuration: Number(formData.get("pickDuration")),
+    draftDateTime: new Date("draftStart" + " " + "draftTime"),
   };
 
   const response = await updateDraftSettingsUseCase(data, leagueData);

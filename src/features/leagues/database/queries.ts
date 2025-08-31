@@ -67,9 +67,11 @@ export async function getDraftSettings(
   const draftSettingsDataResponse = {
     draftEnabled: leagueSettingsData[0]?.draftsEnabled,
     snakeDraft: draftSettingsData[0]?.snakeDraft,
+    // draftStart: draftSettingsData[0]?.draftStartDate,
     draftStart: draftSettingsData[0]?.draftStartDate?.toISOString().split("T")[0],
     draftTime: draftSettingsData[0]?.draftStartTime?.split("+")[0],
     pickDuration: draftSettingsData[0]?.pickDuration,
+    draftDateTime: draftSettingsData[0]?.startDate,
   } as DraftSettings;
 
   return draftSettingsDataResponse;
@@ -81,13 +83,20 @@ export async function updateDraftSettings(
   leagueData: LeagueData,
 ): Promise<boolean> {
 
-  await db
+  console.log(new Date(data.draftStart + " " + data.draftTime))
+  
+  try {
+    await db
     .update(settings)
     .set({ draftsEnabled: data.draftEnabled })
     .where(eq(settings.leagueId, leagueData.leagueId)
   );
-
-  await db
+  } catch(error) {
+    console.log("Draft Enable error",error)
+  }
+  
+  try {
+    await db
     .update(draftSettings)
     .set({
       snakeDraft: data.snakeDraft,
@@ -98,7 +107,10 @@ export async function updateDraftSettings(
     })
     .where(and(eq(draftSettings.leagueId, leagueData.leagueId),eq(draftSettings.id, leagueData.draftId))
   );
-
+  } catch(error) {
+    console.log("Draft Settings error",error)
+  }
+  
   return true;
 }
 

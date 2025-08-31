@@ -11,6 +11,7 @@ const draftSettingsSchema = z.object({
   draftStart: z.string(),
   draftTime: z.string(),
   pickDuration: z.number(),
+  draftDateTime: z.date(),
 }); 
 
 const teamSettingsSchema = z.object({

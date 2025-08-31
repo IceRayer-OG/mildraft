@@ -1,8 +1,15 @@
 'use client';
-
-import { type QueueDraftPick } from "~/features/drafts/utils/draft";
+// import React & Nextjs
 import { use } from "react";
+
+// import UI
 import { Avatar, AvatarImage, AvatarFallback } from "~/_components/ui/avatar";
+
+// import Server Actions
+
+// import Types
+import { type QueueDraftPick } from "~/features/drafts/utils/draft";
+
 
 export default function DraftQueueList({
   draftQueue,
@@ -10,6 +17,7 @@ export default function DraftQueueList({
   draftQueue: Promise<QueueDraftPick[]>;
 }) {
   const allPicks = use(draftQueue);
+  // Add useActionState to determine on the clock
   
   return (
   <div className="flex grow">
@@ -22,6 +30,7 @@ export default function DraftQueueList({
             <AvatarFallback className="text-black text-xs">{pick.team.abbreviation}</AvatarFallback>
           </Avatar>
           <p>{pick.team.name}</p>
+          {/* Add On the Clock Option */}
         </li>
       ))} 
     </ul>

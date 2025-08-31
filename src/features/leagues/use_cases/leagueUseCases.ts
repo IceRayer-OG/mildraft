@@ -53,7 +53,7 @@ export async function getDraftSettingsUseCase(leagueData: LeagueData) {
         return settings;
     } catch (error) {
         console.error("Failed to get draft settings:", error);
-        return {draftEnabled: false, snakeDraft: false, draftStart: "", draftTime: "", pickDuration: 4};
+        return {draftEnabled: false, snakeDraft: false, draftStart: "", draftTime: "", pickDuration: 4, draftDateTime: new Date()};
     }
 }
 

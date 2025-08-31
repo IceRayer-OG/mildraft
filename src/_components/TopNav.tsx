@@ -30,8 +30,6 @@ export function TopNav() {
                     </Button>
                 </div>
                 <div className="flex gap-4">
-                    {/* <div>Docs</div>
-                    <div>Help</div> */}
                     <div>
                         <SignedOut>
                             <SignInButton />
@@ -58,23 +56,19 @@ export function TopNav() {
                     </SignedIn>
                 </div>
             </div>
-            <div className={`${isOpen 
-                ? "items-center w-full p-4 gap-4" 
-                : "hidden"
-                } md:hidden`
-                }>
+            <div className={`${isOpen ? "items-center w-full p-4 gap-4" : "hidden"} md:hidden`}>
                 <div className="w-full">
                     <div className="block">
-                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-l">
+                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-md">
                             <Link href="/league">League</Link>
                         </Button>
-                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-l">
+                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-md">
                             <Link href="/league/team">Team</Link>
                         </Button>
-                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-l">
+                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-md">
                             <Link href="/league/players">Players</Link>
                         </Button>
-                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-l">
+                        <Button asChild variant="ghost" className="hover:bg-white/20 font-semibold text-md">
                             <Link href="/league/draft">Draft</Link>
                         </Button>
                     </div>
