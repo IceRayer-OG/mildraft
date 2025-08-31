@@ -11,11 +11,11 @@ interface CountdownTimerProps {
 }
 
 export default function DraftCountdownTimer({ targetDate }: CountdownTimerProps) {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(targetDate.toISOString()));
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(targetDate));
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setTimeLeft(calculateTimeLeft(targetDate.toISOString()));
+      setTimeLeft(calculateTimeLeft(targetDate));
     }, 1000);
 
     // Clean up the timer when the component unmounts
