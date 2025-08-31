@@ -6,13 +6,13 @@ import { getLeaguePosts } from "~/server/queries";
 // UI Elements
 import { Separator } from "~/_components/ui/separator";
 import { Avatar, AvatarImage, AvatarFallback } from "~/_components/ui/avatar";
-import Posts from "~/_components/Posts";
 import { PostsLoading } from "~/features/posts/components/PostsLoading";
 import { Skeleton } from "~/_components/ui/skeleton";
+import { TeamsLoadingSkeleton } from "~/features/team/components/TeamsLoading";
 import { AddPostDialog } from "~/features/posts/components/addPost";
 import { SettingDialog } from "~/features/leagues/components/SettingDialog";
 import TeamList from "~/features/team/components/TeamsList";
-import { TeamsLoadingSkeleton } from "~/features/team/components/TeamsLoading";
+import Posts from "~/_components/Posts";
 
 // Actions
 import { getLeagueTeamsAction } from "~/features/team/actions/teamActions";
@@ -36,7 +36,7 @@ export default function LeaguePage() {
         <div className="content-right pr-4 flex items-center gap-2">
           <SettingDialog />
           <Avatar>
-          {/* <AvatarImage src="/_assets/avatar.png" alt="Avatar" /> */}
+          <AvatarImage src="https://fantasy-media.cbssports.com/baseball/siliconvalley/ealsm1LqkKSOqPRQ.jpg" alt="Avatar" />
           <AvatarFallback className="text-black text-sm">{leagueSettingsData.abbreviation}</AvatarFallback>
         </Avatar>
         </div>

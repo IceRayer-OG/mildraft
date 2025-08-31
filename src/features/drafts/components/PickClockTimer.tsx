@@ -1,20 +1,41 @@
-"use client";
+'use client';
 
-// React Components
-import { useEffect, use } from "react";
+// import React & Next components
+import { useState, useEffect } from 'react';
 
-// UI Components
+// A utility function to format the remaining time
+import { calculateTimeLeft } from '../utils/draft';
 
-// Server Actions
+interface CountdownTimerProps {
+  targetDate: Date;
+}
 
-// Types
+export default function DraftCountdownTimer({ targetDate }: CountdownTimerProps) {
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(targetDate.toISOString()));
 
-export function DraftPickClockTimer(draftPick: number) {
-  // Add useActionState and useEffect to control clock
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(calculateTimeLeft(targetDate.toISOString()));
+    }, 1000);
+
+    // Clean up the timer when the component unmounts
+    return () => clearTimeout(timer);
+  });
+
+  const timerComponents = Object.entries(timeLeft).map(([unit, value]) => {
+    if (!value) {
+      return null;
+    }
+    return (
+      <span key={unit} className="mx-2">
+        {`${value} ${unit}`}
+      </span>
+    );
+  });
 
   return (
-    <div className="p-1">
-      <p>4:00:00</p>
-    </div>
+    <p>
+      {timerComponents.length ? timerComponents : <span>Time's up!</span>}
+    </p>
   );
 }
