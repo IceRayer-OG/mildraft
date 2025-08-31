@@ -50,19 +50,23 @@ const queuePlayersSchema = z.object({
 export const calculateTimeLeft = (targetDate: Date) => {
   const difference = +targetDate - +new Date();
   const timeLeft = {
+    state: {
     active: false,
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
+    },
+    dateData: {
+    Days: 0,
+    Hours: 0,
+    Minutes: 0,
+    Seconds: 0,
+    }
   };
 
   if (difference > 0) {
-    timeLeft.active = true;
-    timeLeft.days = Math.floor(difference / (1000 * 60 * 60 * 24));
-    timeLeft.hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-    timeLeft.minutes = Math.floor((difference / 1000 / 60) % 60);
-    timeLeft.seconds = Math.floor((difference / 1000) % 60);
+    timeLeft.state.active = true;
+    timeLeft.dateData.Days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    timeLeft.dateData.Hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+    timeLeft.dateData.Minutes = Math.floor((difference / 1000 / 60) % 60);
+    timeLeft.dateData.Seconds = Math.floor((difference / 1000) % 60);
   }
 
   return timeLeft;
