@@ -35,7 +35,7 @@ export default function DraftCountdownTimer({ targetDate }: CountdownTimerProps)
 
   return (
     <p>
-      {timerComponents.length ? timerComponents : <span>Time's up!</span>}
+      {timerComponents.length ? timerComponents : <span>Time`&apos;`s up!</span>}
     </p>
   );
 }
