@@ -34,7 +34,7 @@ export default function DraftPage() {
         <p>Draft Start Date: {draftDetails.draftStart}</p>
         <p>Draft Start Time: {draftDetails.draftTime}</p>
         <div className="flex">
-          <DraftCountdownTimer targetDate={draftDetails.draftDateTime} />
+          <DraftCountdownTimer targetDate={new Date(draftDetails.draftStart+" "+draftDetails.draftTime)} />
         </div>
       </div>
       <div className="flex border p-1 rounded-md">
