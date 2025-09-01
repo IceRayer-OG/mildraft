@@ -9,7 +9,7 @@ export async function updateTeamSettings(
   teamId: string,
 ): Promise<boolean> {
   await db
-    .update(settings)
+    .update(teams)
     .set({
       name: teamData.teamName,
       abbreviation: teamData.teamAbbreviation,
