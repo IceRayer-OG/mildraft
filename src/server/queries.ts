@@ -5,7 +5,7 @@ import { db } from "./db";
 import { draftPicks, pros, teams, queues, posts, players } from "./db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { and, asc, eq, isNull, notExists } from "drizzle-orm";
-import { type Post, type CreatePost } from "../features/posts/utils/posts";
+import { type Post, type CreatePost } from "../app/_features/posts/utils/posts";
 import { union } from "drizzle-orm/pg-core";
 
 async function checkAuthorization() {
