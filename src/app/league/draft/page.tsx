@@ -50,7 +50,7 @@ export default function DraftPage() {
         <div>
           <Separator orientation="vertical" decorative={true} />
         </div>
-        <div className="flex h-16 p-2 items-center overflow-hidden">
+        <div className="flex grow h-16 p-2 items-center overflow-hidden">
           <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
             <div>
               <Suspense fallback={<div>Loading...</div>}>
@@ -63,7 +63,7 @@ export default function DraftPage() {
         <div>
           <Separator orientation="vertical" decorative={true} />
         </div>
-        <div className="p-0 place-content-center">
+        <div className=" p-0 place-content-center">
           <Suspense>
             <DraftOrderDialog draftOrderList={draftPicks} leagueTeams={allTeams}/>
           </Suspense>

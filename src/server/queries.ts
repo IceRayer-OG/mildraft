@@ -111,7 +111,7 @@ export async function getCurrentDraftPick() {
     // Check if user is current pick
     const currentPick = await db.query.draftPicks.findFirst({
       orderBy: [asc(draftPicks.pickNumber)],
-      where: isNull(draftPicks.playerId),
+      where: eq(draftPicks.pickMade, false),
     });
   
     if(currentPick === null) throw new Error("No current pick found");
