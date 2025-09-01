@@ -201,7 +201,7 @@ export const settings = createTable(
     leagueId: integer("league_id").notNull().references(() => leagues.id),
     draftsEnabled: boolean("drafts_enabled").default(false),
     name: varchar("name", { length: 256 }),
-    abbreviation: varchar("abbreviation", { length: 10 }),
+    abbreviation: varchar("abbreviation", { length: 5 }),
     primaryColor: varchar("primary_color", { length: 7 }),
     sceondaryColor: varchar("secondary_color", { length: 7 }),
     teams: integer("teams"),
