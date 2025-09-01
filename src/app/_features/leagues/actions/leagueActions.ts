@@ -14,7 +14,7 @@ export async function updateLeagueSettingsAction(
   previousState: { 
     status: string; 
     message: string; 
-    data: LeagueSettings ;
+    data: LeagueSettings;
   }, 
   formData: FormData,
 ) {
@@ -39,7 +39,7 @@ export async function updateDraftSettingsAction(
   previousState: { 
     status: string; 
     message: string; 
-    data: DraftSettings ;
+    data: DraftSettings;
   }, 
   formData: FormData,
 ) {
@@ -70,7 +70,7 @@ export async function updateTeamSettingsAction(
   previousState: { 
     status: string; 
     message: string; 
-    data: TeamSettings ;
+    data: TeamSettings;
   }, 
   formData: FormData,
 ) {
