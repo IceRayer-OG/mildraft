@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react";
+import { useState } from "react";
  
 import {
   type ColumnDef,
@@ -34,6 +35,10 @@ export function DraftPickTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
+  const [pagination, setPagination] = useState({
+  pageIndex: 0, //initial page index
+  pageSize: 5, //default page size
+});
 
   const table = useReactTable({
     data,
@@ -42,8 +47,10 @@ export function DraftPickTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
     state: {
       columnFilters,
+      pagination,
     },
   });
  

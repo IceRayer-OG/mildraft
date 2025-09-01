@@ -203,9 +203,9 @@ export async function getCompletedDraftPicks(draftId: number) {
     .where(and(eq(draftPicks.pickMade, true),eq(draftPicks.draftId, draftId)))
     .leftJoin(pros, eq(draftPicks.playerId, pros.id))
     .leftJoin(teams, eq(draftPicks.teamId, teams.id))
+    .orderBy(asc(draftPicks.pickNumber))
 
   return completedDraftPicks;  
-
 }
 
 export async function getTeamIdByName(teamName: string){
