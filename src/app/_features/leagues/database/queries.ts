@@ -45,7 +45,6 @@ export async function updateLeagueSettings(
 export async function getDraftSettings(
   leagueData: LeagueData,
 ): Promise<DraftSettings> {
-  'use cache'
   // Placeholder for actual database query logic
   const leagueSettingsData = await db
     .select()

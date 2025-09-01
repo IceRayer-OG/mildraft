@@ -200,7 +200,7 @@ export async function getCompletedDraftPicks(draftId: number) {
     position: pros.position,
     teamName: teams.name,
   }).from(draftPicks)
-    .where(and(ne(draftPicks.pickMade, false),eq(draftPicks.draftId, draftId)))
+    .where(and(eq(draftPicks.pickMade, true),eq(draftPicks.draftId, draftId)))
     .leftJoin(pros, eq(draftPicks.playerId, pros.id))
     .leftJoin(teams, eq(draftPicks.teamId, teams.id))
 
