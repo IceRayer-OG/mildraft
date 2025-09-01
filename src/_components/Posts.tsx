@@ -1,6 +1,6 @@
 'use client';
 
-import { type Post } from "~/features/posts/utils/posts";
+import { type Post } from "~/app/_features/posts/utils/posts";
 import { use } from "react";
 import { Separator } from "~/_components/ui/separator";
 

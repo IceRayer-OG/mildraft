@@ -1,10 +1,10 @@
 import { Suspense, use } from "react";
 // UI Components
-import { PlayerDataTable } from "~/features/players/components/player-data-table";
-import { playerColumns } from "~/features/players/components/player-columns";
+import { PlayerDataTable } from "~/app/_features/players/components/player-data-table";
+import { playerColumns } from "~/app/_features/players/components/player-columns";
 
 // Server Actions
-import { getFreeAgentsAction } from "~/features/players/actions/playerActions";
+import { getFreeAgentsAction } from "~/app/_features/players/actions/playerActions";
  
 export default function PlayerPage() {
   const data = use(getFreeAgentsAction());

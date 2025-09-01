@@ -6,17 +6,18 @@ import { getLeaguePosts } from "~/server/queries";
 // UI Elements
 import { Separator } from "~/_components/ui/separator";
 import { Avatar, AvatarImage, AvatarFallback } from "~/_components/ui/avatar";
-import { PostsLoading } from "~/features/posts/components/PostsLoading";
+import { PostsLoading } from "~/app/_features/posts/components/PostsLoading";
 import { Skeleton } from "~/_components/ui/skeleton";
-import { TeamsLoadingSkeleton } from "~/features/team/components/TeamsLoading";
-import { AddPostDialog } from "~/features/posts/components/addPost";
-import { SettingDialog } from "~/features/leagues/components/SettingDialog";
-import TeamList from "~/features/team/components/TeamsList";
+import { TeamsLoadingSkeleton } from "~/app/_features/team/components/TeamsLoading";
+import { AddPostDialog } from "~/app/_features/posts/components/addPost";
+import { SettingDialog } from "~/app/_features/leagues/components/SettingDialog";
+import TeamList from "~/app/_features/team/components/TeamsList";
 import Posts from "~/_components/Posts";
 
 // Actions
-import { getLeagueTeamsAction } from "~/features/team/actions/teamActions";
-import { getLeagueSettingsAction } from "~/features/leagues/actions/leagueActions";
+import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
+import { getLeagueSettingsAction } from "~/app/_features/leagues/actions/leagueActions"; 
+
 
 export default function LeaguePage() {
   const posts = getLeaguePosts();

@@ -8,7 +8,8 @@
 const config = {
 experimental: {
     // ppr: 'incremental',
-    useCache: true,
+    // useCache: true,
+    // cacheComponents: true,
   },
 };
 

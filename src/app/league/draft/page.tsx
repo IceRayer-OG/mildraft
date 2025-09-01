@@ -6,19 +6,19 @@ import { Separator } from "~/_components/ui/separator";
 import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
 
 // Feature components
-import { WriteInDialog } from "~/features/drafts/components/write-in-dialog";
-import { QueueDrawer } from "~/features/drafts/components/queue-drawer";
-import { draftColumns } from "~/features/drafts/components/draft-columns";
-import { DataTable } from "~/features/drafts/components/draft-data-table";
-import DraftQueueList from "~/features/drafts/components/draft-picks-queue";
-import { DraftOrderDialog } from "~/features/drafts/components/DraftOrderDialog";
-import DraftCountdownTimer from "~/features/drafts/components/PickClockTimer"
+import { WriteInDialog } from "~/app/_features/drafts/components/write-in-dialog";
+import { QueueDrawer } from "~/app/_features/drafts/components/queue-drawer";
+import { draftColumns } from "~/app/_features/drafts/components/draft-columns";
+import { DataTable } from "~/app/_features/drafts/components/draft-data-table";
+import DraftQueueList from "~/app/_features/drafts/components/draft-picks-queue";
+import { DraftOrderDialog } from "~/app/_features/drafts/components/DraftOrderDialog";
+import DraftCountdownTimer from "~/app/_features/drafts/components/PickClockTimer"
 
 // Server actions
-import { getDraftablePlayersAction, getDraftPicksListAction } from "~/features/drafts/actions/draftActions";
-import { DraftHistoryDialog } from "~/features/drafts/components/DraftHistory";
-import { getLeagueTeamsAction } from "~/features/team/actions/teamActions";
-import { getDraftSettingsAction } from "~/features/leagues/actions/leagueActions";
+import { getDraftablePlayersAction, getDraftPicksListAction } from "~/app/_features/drafts/actions/draftActions";
+import { DraftHistoryDialog } from "~/app/_features/drafts/components/DraftHistory";
+import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
+import { getDraftSettingsAction } from "~/app/_features/leagues/actions/leagueActions";
 
 
 export default function DraftPage() {
@@ -34,20 +34,25 @@ export default function DraftPage() {
         <p>Draft Start Date: {draftDetails.draftStart}</p>
         <p>Draft Start Time: {draftDetails.draftTime}</p>
         <div className="flex">
-          <DraftCountdownTimer targetDate={new Date(draftDetails.draftStart+" "+draftDetails.draftTime)} />
+          <Suspense>
+            <DraftCountdownTimer targetDate={new Date(draftDetails.draftStart+" "+draftDetails.draftTime)} />
+          </Suspense>
         </div>
       </div>
-      <div className="flex border p-1 rounded-md">
-        <div className="justify-start pr-2 space-y-1">
-          <p>Picks</p>
-          <Separator />
-          <div className="flex grow">
-            <p><span className="font-semibold">Clock:</span> {draftDetails.pickDuration}:00 h</p>
+      <div className="flex border rounded-md">
+        <div className="flex flex-col">
+          <p className="p-1">Picks</p>
+          <Separator decorative={true} />
+          <div className="p-1 whitespace-nowrap">
+            <p>Clock: {draftDetails.pickDuration}:00 h</p>
           </div>
         </div>
-        <div className="flex grow justify-start items-center overflow-hidden">
+        <div>
+          <Separator orientation="vertical" decorative={true} />
+        </div>
+        <div className="flex h-16 p-2 items-center overflow-hidden">
           <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
-            <div className="h-[100px]">
+            <div>
               <Suspense fallback={<div>Loading...</div>}>
                 <DraftQueueList draftQueue={draftPicks} />
               </Suspense>
@@ -55,8 +60,13 @@ export default function DraftPage() {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>
-        <div className="place-content-center">
-          <DraftOrderDialog draftOrderList={draftPicks} leagueTeams={allTeams}/>
+        <div>
+          <Separator orientation="vertical" decorative={true} />
+        </div>
+        <div className="p-0 place-content-center">
+          <Suspense>
+            <DraftOrderDialog draftOrderList={draftPicks} leagueTeams={allTeams}/>
+          </Suspense>
         </div>
       </div>
       <div>
