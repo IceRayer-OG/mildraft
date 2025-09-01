@@ -60,7 +60,7 @@ export function LeagueSettingsForm({
           <Label>Abbreviation</Label>
           <Input
             type="text"
-            id="leage-abbreviation"
+            id="league-abbreviation"
             name="leagueAbbreviation"
             maxLength={4}
             defaultValue={content?.data.abbreviation}
