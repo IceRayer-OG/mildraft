@@ -29,7 +29,7 @@ export default function DraftQueueList({
             <AvatarImage src="/_assets/avatar.png" alt="Avatar" />
             <AvatarFallback className="text-black text-xs">{pick.team.abbreviation}</AvatarFallback>
           </Avatar>
-          <p>{pick.team.name}</p>
+          <p className="text-s">{pick.team.name}</p>
           {/* Add On the Clock Option */}
         </li>
       ))} 

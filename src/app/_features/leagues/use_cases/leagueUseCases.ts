@@ -26,22 +26,22 @@ export async function getLeagueSettingsUseCase(leagueData: LeagueData) {
   }
 }
 
-export async function updateLeagueSettingsUseCase(data: LeagueSettings, leagueData: LeagueData) {
+export async function updateLeagueSettingsUseCase(leagueSettingsData: LeagueSettings, leagueData: LeagueData) {
     const user = await checkAuthorization();
 
     try{
-        await updateLeagueSettings(data, leagueData);
+        await updateLeagueSettings(leagueSettingsData, leagueData);
         return {
             status: "success",
             message: "League settings updated successfully",
-            data: data,
+            data: leagueSettingsData,
         };
     } catch (error) {
         console.error("Failed to update league settings:", error);
         return {
             status: "error",
             message: "Failed to update league settings",
-            data: data,
+            data: leagueSettingsData,
         };
     }
 }
@@ -68,12 +68,10 @@ export async function getDraftSettingsUseCase(leagueData: LeagueData) {
 }
 
 export async function updateDraftSettingsUseCase(draftData: DraftSettings, leagueData: LeagueData) {
-
     await checkAuthorization();
 
     try {
         await updateDraftSettings(draftData, leagueData);
-        revalidatePath("/league")
         return {
             status: "success",
             message: "Draft settings updated successfully",

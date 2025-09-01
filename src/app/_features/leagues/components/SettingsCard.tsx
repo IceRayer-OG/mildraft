@@ -61,10 +61,7 @@ export function LeagueSettingsTabsCard({
             <Separator />
           </CardHeader>
           <Suspense>
-            <LeagueSettingsForm
-              leagueSettingsData={leagueSettingsData}
-              leagueDetailsData={leagueData}
-            />
+            <LeagueSettingsForm leagueSettingsData={leagueSettingsData} leagueDetailsData={leagueData} />
           </Suspense>
         </Card>
       </TabsContent>

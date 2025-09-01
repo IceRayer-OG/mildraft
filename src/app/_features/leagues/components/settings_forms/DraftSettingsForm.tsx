@@ -62,16 +62,7 @@ export function DraftSettingsForm({
       <ScrollArea className="h-[200px] w-full whitespace-nowrap">
         <div className="flex flex-col gap-2 overflow-y-hidden p-4">
           <div className="flex items-center justify-between">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <Label>Draft Enabled</Label>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Enbale your League&apos;s Draft</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Label>Draft Enabled</Label>  
             <Checkbox
               id="draft-enabled"
               name="draftEnabled"

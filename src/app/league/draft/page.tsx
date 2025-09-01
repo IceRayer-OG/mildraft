@@ -39,17 +39,20 @@ export default function DraftPage() {
           </Suspense>
         </div>
       </div>
-      <div className="flex border p-1 rounded-md">
-        <div className="justify-start pr-2 space-y-1">
-          <p>Picks</p>
-          <Separator />
-          <div className="flex grow">
-            <p><span className="font-semibold">Clock:</span> {draftDetails.pickDuration}:00 h</p>
+      <div className="flex border rounded-md">
+        <div className="flex flex-col">
+          <p className="p-1">Picks</p>
+          <Separator decorative={true} />
+          <div className="p-1 whitespace-nowrap">
+            <p>Clock: {draftDetails.pickDuration}:00 h</p>
           </div>
         </div>
-        <div className="flex grow justify-start items-center overflow-hidden">
+        <div>
+          <Separator orientation="vertical" decorative={true} />
+        </div>
+        <div className="flex h-16 p-2 items-center overflow-hidden">
           <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
-            <div className="h-[75px]">
+            <div>
               <Suspense fallback={<div>Loading...</div>}>
                 <DraftQueueList draftQueue={draftPicks} />
               </Suspense>
@@ -57,7 +60,10 @@ export default function DraftPage() {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>
-        <div className="place-content-center">
+        <div>
+          <Separator orientation="vertical" decorative={true} />
+        </div>
+        <div className="p-0 place-content-center">
           <Suspense>
             <DraftOrderDialog draftOrderList={draftPicks} leagueTeams={allTeams}/>
           </Suspense>
