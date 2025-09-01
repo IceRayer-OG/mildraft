@@ -95,7 +95,6 @@ export async function getLeagueUnclaimedTeams() {
     columns: {
       id: true,
       name: true,
-      abbreviation: true,
     },
     where: and(eq(teams.leagueId, 1),isNull(teams.ownerId))
   });
