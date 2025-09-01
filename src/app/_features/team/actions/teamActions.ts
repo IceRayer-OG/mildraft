@@ -12,7 +12,7 @@ import {
     getLeagueUnclaimedTeamsUseCase,
     claimTeamUseCase,
 } from "../use_cases/teamsUseCase";
-import { UnclaimedTeam } from "../utils/team";
+import { type UnclaimedTeam } from "../utils/team";
 
 export async function getMyTeamAction() {
     const myTeam = await getMyTeamUseCase();
@@ -23,7 +23,7 @@ export async function getMyTeamAction() {
 export async function dropPlayerFromMyTeamAction(playerId: number) {
     const dropPlayer = await dropPlayerFromMyTeamUseCase(playerId);
     revalidatePath("/league/team")
-    return;
+    return dropPlayer;
 }
 
 export async function getLeagueTeamsAction() {

@@ -1,7 +1,7 @@
 "use client";
 
 // React imports
-import { Suspense, use } from "react";
+import { Suspense } from "react";
 
 // UI imports
 import {

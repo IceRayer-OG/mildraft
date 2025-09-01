@@ -1,12 +1,12 @@
 "use client";
 
-import { use, useActionState } from "react";
-import { type UnclaimedTeam, type AppError } from "../utils/team";
+import { use } from "react";
+import { type UnclaimedTeam } from "../utils/team";
 import { Button } from "~/_components/ui/button";
 import { toast } from "sonner";
 
 // Server Action
-import { claimTeamAction, claimTeamActionTest } from "../actions/teamActions";
+import { claimTeamAction } from "../actions/teamActions";
 
 
 async function claimTeam(leagueTeam: UnclaimedTeam) {
@@ -18,14 +18,6 @@ async function claimTeam(leagueTeam: UnclaimedTeam) {
   }
 }
 
-function claimTeamTest(response: AppError) {
-  if(response.status === "error") {
-    toast.error(`${response.message}`);
-  }
-  if(response.status === "success") {
-    toast.success(`${response.message}`);
-  }
-} 
 
 export default function ClaimTeamList({
   teamList,

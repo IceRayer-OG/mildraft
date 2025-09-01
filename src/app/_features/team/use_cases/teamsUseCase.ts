@@ -1,10 +1,10 @@
 "use server";
 // Authentication
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 
 // Types
 import { 
-    UnclaimedTeam,
+    type UnclaimedTeam,
     type Team, 
     type TeamPlayers 
 } from "../utils/team";

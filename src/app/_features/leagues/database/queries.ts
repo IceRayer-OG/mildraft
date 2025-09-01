@@ -2,7 +2,6 @@ import "server-only";
 import { db } from "~/server/db";
 import { leagues, settings, draftSettings } from "~/server/db/schema";
 import { eq, and } from "drizzle-orm";
-import { unstable_cache as cache } from "next/cache";
 import {
   type LeagueSettings,
   type DraftSettings,
