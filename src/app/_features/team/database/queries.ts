@@ -1,6 +1,6 @@
 import "server-only";
 import { db } from "~/server/db";
-import { teams, players, pros } from "~/server/db/schema";
+import { teams, players, pros, settings } from "~/server/db/schema";
 import { eq, and, isNull } from "drizzle-orm";
 import { TeamSettings } from "../utils/team";
 
@@ -9,7 +9,7 @@ export async function updateTeamSettings(
   teamId: string,
 ): Promise<boolean> {
   await db
-    .update(teams)
+    .update(settings)
     .set({
       name: teamData.teamName,
       abbreviation: teamData.teamAbbreviation,
