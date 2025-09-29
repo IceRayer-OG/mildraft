@@ -32,9 +32,9 @@ import { getTeamSettingsAction } from "~/app/_features/team/actions/teamSettings
 
 
 export default function TeamPage() {
-  const data = use(getMyTeamAction());
-  const teamSettings = use(getTeamSettingsAction());
-  const myTeamInfo = use(getMyTeamInfoAction());
+  const data = getMyTeamAction();
+  const teamSettings = getTeamSettingsAction();
+  const myTeamInfo = getMyTeamInfoAction();
 
   return (
     <main className="flex min-h-screen flex-col bg-linear-to-b from-[#12026d] to-[#15162c] p-4 text-white">
@@ -49,20 +49,20 @@ export default function TeamPage() {
             </PopoverTrigger>
             <PopoverContent className="w-auto p-2">
               <Suspense fallback={<Skeleton className="h-12 w-[200px] bg-slate-800" />}>
-                <TeamSettingsDialogForm teamSettingsData={teamSettings} />
+                <TeamSettingsDialogForm teamSettingsData={use(teamSettings)} />
               </Suspense>
             </PopoverContent>
           </Popover>
         </div>
         <div>
           <Suspense fallback={<Skeleton className="h-12 w-[300px] bg-slate-800" />}>
-            <h1 className="text-2xl font-semibold">{myTeamInfo.name}</h1>
+            <h1 className="text-2xl font-semibold">{use(myTeamInfo).name}</h1>
           </Suspense>
         </div>
       </div>
       <div className="grow p-4">
         <Suspense fallback={<TeamsTableLoading />}>
-          <DataTable columns={teamColumns} data={data} />
+          <DataTable columns={teamColumns} data={use(data)} />
         </Suspense>
       </div>
     </main>
