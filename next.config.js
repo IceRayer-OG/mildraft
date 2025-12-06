@@ -9,7 +9,6 @@ const config = {
   cacheComponents: true,
   experimental: {
     // ppr: 'incremental',
-    useCache: true,
     
   },
 };
