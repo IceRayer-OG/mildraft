@@ -10,6 +10,7 @@ import {
   pgEnum,
   unique,
   date,
+  text,
 } from "drizzle-orm/pg-core";
 
 export const createTable = pgTableCreator((name) => `mildraft_${name}`);
@@ -23,6 +24,7 @@ export const posts = createTable(
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     title: varchar("title", { length: 256 }),
     body: varchar("body", { length: 1024 }),
+    textBody: text("text_body"),
     leagueId: integer("league_id").references(() => leagues.id), // Make not null later
     ownerId: varchar("owner_id", { length: 256 }),                                // Make not null later         
     createdAt: timestamp("created_at", { withTimezone: true })

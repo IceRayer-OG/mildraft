@@ -16,12 +16,6 @@ import { DialogClose } from "~/_components/ui/dialog";
 import { DatePicker } from "~/_components/DatePicker";
 import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
 import { Separator } from "~/_components/ui/separator";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipProvider,
-} from "~/_components/ui/tooltip";
 
 // Actions
 import { updateDraftSettingsAction } from "../../actions/leagueActions";

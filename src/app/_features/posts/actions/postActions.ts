@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createAPost } from "~/server/queries";
-import { type CreatePost } from "~/app/_features/posts/utils/posts";
+import { type CreatePost, type Post } from "~/app/_features/posts/utils/posts";
 
 export async function createAPostAction(formPostData: { title: string; body: string }) {
   const postData = {
@@ -13,6 +13,28 @@ export async function createAPostAction(formPostData: { title: string; body: str
 
   await createAPost(postData);
   revalidatePath("league");
+
+}
+
+export async function createPostAction(
+  previousState: {
+    status: string,
+    message: string,
+    data: CreatePost,
+  },
+  formPostData: FormData
+){
+  
+  const postData: CreatePost = {
+    title: formPostData.get('title') as string,
+    body: formPostData.get('body') as string,
+    // text: formPostData.get("text") as string,
+    leagueId: 1,
+  };
+
+  await createAPost(postData);
+  revalidatePath("league");
+  return;
 
 }
 

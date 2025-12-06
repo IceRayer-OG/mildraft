@@ -17,6 +17,7 @@ export async function updateLeagueSettingsAction(
     data: LeagueSettings;
   }, 
   formData: FormData,
+  
 ) {
 
   const data: LeagueSettings = {
@@ -75,12 +76,12 @@ export async function updateTeamSettingsAction(
   formData: FormData,
 ) {
 
-  const data: TeamSettings = {
+  const teamSettingsData: TeamSettings = {
     logoEnabled: Boolean(formData.get("teamLogosEnabled")),
     teamsAllowed: Number(formData.get("teamsAllowed")),
   };
 
-  const response = await updateTeamSettingsUseCase(data, leagueData);
+  const response = await updateTeamSettingsUseCase(teamSettingsData, leagueData);
   revalidatePath("league");
   return response;
 }
