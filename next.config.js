@@ -6,7 +6,7 @@
 
 /** @type {import("next").NextConfig} */
 const config = {
-  cacheComponents: true,
+  // cacheComponents: true,
   experimental: {
     // ppr: 'incremental',
     
