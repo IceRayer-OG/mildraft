@@ -21,7 +21,7 @@ import { getMyQueueAction } from "../actions/queueActions";
 
 export function QueueDrawer() {
 
-    const data = use(getMyQueueAction());
+    const data = getMyQueueAction();
 
     return (
         <Drawer>

@@ -1,4 +1,4 @@
-import { Suspense, use } from "react";
+import { Suspense } from "react";
 
 // UI Components
 import {
@@ -17,7 +17,7 @@ import { draftPickColumns } from "./pick-history-columns";
 import { getCompleteDraftPicksAction } from "../actions/draftActions";
 
 export function DraftHistoryDialog() {
-  const completedPickInfo = use(getCompleteDraftPicksAction());
+  const completedPickInfo = getCompleteDraftPicksAction();
 
   return (
     <Dialog>

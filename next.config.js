@@ -6,10 +6,10 @@
 
 /** @type {import("next").NextConfig} */
 const config = {
-experimental: {
+  // cacheComponents: true,
+  experimental: {
     // ppr: 'incremental',
-    // useCache: true,
-    // cacheComponents: true,
+    
   },
 };
 
