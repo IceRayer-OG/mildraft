@@ -1,6 +1,5 @@
 "use client"
-
-import * as React from "react";
+import { useState, use } from "react";
  
 import {
   type ColumnDef,
@@ -25,19 +24,19 @@ import { Button } from "~/_components/ui/button";
  
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  data: Promise<TData[]>
 }
  
 export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     []
   )
 
   const table = useReactTable({
-    data,
+    data: use(data),
     columns,
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
