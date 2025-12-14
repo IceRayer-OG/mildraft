@@ -46,7 +46,7 @@ export function LeagueSettingsForm({
   return (
     <Form action={updateLeagueSettings}>
       <div className="flex flex-col gap-2 p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1 justify-between">
           <Label>League Name</Label>
           <Input
             type="text"
@@ -56,7 +56,7 @@ export function LeagueSettingsForm({
             className="md:w-[250px] text-right"
           />
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1 justify-between">
           <Label>Abbreviation</Label>
           <Input
             type="text"

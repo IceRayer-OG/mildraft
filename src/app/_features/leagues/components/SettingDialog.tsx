@@ -25,11 +25,11 @@ export function SettingDialog() {
   const leagueData = {
     leagueId: 1, // Example league ID, replace with actual logic to get league ID
     draftId: 2, // Example draft ID, replace with actual logic to get draft ID
-  } as LeagueData;
+  };
 
-  const teamData = use(getTeamSettingsAction(leagueData));
-  const leagueSettingsData = use(getLeagueSettingsAction(leagueData));
-  const draftSettingsData = use(getDraftSettingsAction(leagueData));
+  const teamData = getTeamSettingsAction(leagueData);
+  const leagueSettingsData = getLeagueSettingsAction(leagueData);
+  const draftSettingsData = getDraftSettingsAction(leagueData);
 
   return (
     <Dialog>

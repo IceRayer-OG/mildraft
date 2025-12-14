@@ -1,7 +1,7 @@
 "use client";
 
 // React Components
-import { useState, Suspense } from "react";
+import { useState, Suspense, use } from "react";
 
 // UI Components
 import {
@@ -35,14 +35,18 @@ export function LeagueSettingsTabsCard({
   draftSettingsData,
   leagueData,
 }: {
-  leagueSettingsData: LeagueSettings;
-  teamSettingsData: TeamSettings;
-  draftSettingsData: DraftSettings;
+  leagueSettingsData: Promise<LeagueSettings>;
+  teamSettingsData: Promise<TeamSettings>;
+  draftSettingsData: Promise<DraftSettings>;
   leagueData: LeagueData;
 }) {
   // State for active tab
   const tabs = ["league", "draft", "team"];
   const [activeTab, setActiveTab] = useState(tabs[0]);
+  const leagueInfo = leagueData;
+  const leagueSettingsInfo = use(leagueSettingsData);
+  const draftSettingsInfo = use(draftSettingsData);
+  const teamSettingsInfo = use(teamSettingsData);
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="container">
@@ -61,7 +65,7 @@ export function LeagueSettingsTabsCard({
             <Separator />
           </CardHeader>
           <Suspense>
-            <LeagueSettingsForm leagueSettingsData={leagueSettingsData} leagueDetailsData={leagueData} />
+            <LeagueSettingsForm leagueSettingsData={leagueSettingsInfo} leagueDetailsData={leagueInfo} />
           </Suspense>
         </Card>
       </TabsContent>
@@ -72,7 +76,7 @@ export function LeagueSettingsTabsCard({
             <CardDescription>Settings for the mil Draft.</CardDescription>
           </CardHeader>
           <Suspense>
-            <DraftSettingsForm draftSettingsData={draftSettingsData} leagueSettingsData={leagueData} />
+            <DraftSettingsForm draftSettingsData={draftSettingsInfo} leagueSettingsData={leagueInfo} />
           </Suspense>
         </Card>
       </TabsContent>
@@ -83,7 +87,7 @@ export function LeagueSettingsTabsCard({
             <CardDescription>Settings for the Teams.</CardDescription>
           </CardHeader>
           <Suspense>
-            <TeamSettingsForm teamSettingsData={teamSettingsData} leagueSettingsData={leagueData} />
+            <TeamSettingsForm teamSettingsData={teamSettingsInfo} leagueSettingsData={leagueInfo} />
           </Suspense>
         </Card>
       </TabsContent>
