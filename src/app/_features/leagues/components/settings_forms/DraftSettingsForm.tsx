@@ -71,7 +71,7 @@ export function DraftSettingsForm({
               defaultChecked={content?.data.snakeDraft}
             />
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1 justify-between">
             <Label>Draft Date</Label>
             <Input
               id="draft-start-date"
@@ -81,7 +81,7 @@ export function DraftSettingsForm({
               className="md:w-[250px]"
             />
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1 justify-between">
             <Label>Draft Time</Label>
             <Input
               id="draft-start-time"
@@ -91,7 +91,7 @@ export function DraftSettingsForm({
               className="md:w-[250px]"
             />
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1 justify-between">
             <Label>Pick Duration (hours)</Label>
             <Input
               id="pick-duration"
@@ -116,17 +116,17 @@ export function DraftSettingsForm({
               defaultChecked={content?.data.draftPauseEnabled}
             />
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1 justify-between">
             <Label>Pause Start Time</Label>
             <Input
               id="draft-pause-start-time"
               name="draftPauseStartTime"
               type="time"
               defaultValue={content?.data.draftPauseStartTime}
-              className="md:w-[250px]"
+              className="md:w-[250px] text-right"
             />
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1 justify-between">
             <Label>Pause End Time</Label>
             <Input
               id="draft-pause-end-time"
