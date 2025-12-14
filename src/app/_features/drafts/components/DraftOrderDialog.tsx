@@ -52,7 +52,7 @@ export function DraftOrderDialog({
   leagueTeams: Promise<Team[]>;
 }) {
   const [selectedTeam, setSelectedTeam] = useState("");
-  const allTeams = leagueTeams;
+  const allTeams = use(leagueTeams);
 
   return (
     <Dialog modal={true}>
@@ -85,7 +85,7 @@ export function DraftOrderDialog({
                 <SelectValue placeholder="Team" />
               </SelectTrigger>
               <SelectContent>
-                {use(allTeams).map((leagueTeam) => (
+                {allTeams.map((leagueTeam) => (
                   <SelectItem key={leagueTeam.id} value={leagueTeam.name}>
                     {leagueTeam.name}
                   </SelectItem>

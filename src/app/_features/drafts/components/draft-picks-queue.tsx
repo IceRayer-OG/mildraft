@@ -16,13 +16,13 @@ export default function DraftQueueList({
 }: {
   draftQueue: Promise<QueueDraftPick[]>;
 }) {
-  const allPicks = draftQueue;
+  const allPicks = use(draftQueue);
   // Add useActionState to determine on the clock
   
   return (
   <div className="flex grow">
     <ul className="flex">
-      {use(allPicks).map((pick) => (
+      {allPicks.map((pick) => (
         <li key={pick.draft_pick.id} className="flex p-2 items-center gap-2">
           <p>{pick.draft_pick.pickNumber}:</p>
           <Avatar className="w-7 h-7">

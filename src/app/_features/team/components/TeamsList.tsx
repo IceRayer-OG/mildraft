@@ -10,6 +10,7 @@ export default function TeamList({
     teamList: Promise<Team[]>;
     }) {
     const allTeams = use(teamList);
+    
     return (
         <div className="flex grow">
             <ul className="flex flex-col gap-2">
