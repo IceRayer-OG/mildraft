@@ -78,7 +78,7 @@ export function DraftSettingsForm({
               name="draftStartDate"
               type="date"
               defaultValue={content?.data.draftStart}
-              className="w-[250px]"
+              className="md:w-[250px]"
             />
           </div>
           <div className="flex items-center justify-between">
@@ -88,7 +88,7 @@ export function DraftSettingsForm({
               name="draftStartTime"
               type="time"
               defaultValue={content?.data.draftTime}
-              className="w-[250px]"
+              className="md:w-[250px]"
             />
           </div>
           <div className="flex items-center justify-between">
@@ -98,7 +98,7 @@ export function DraftSettingsForm({
               name="pickDuration"
               type="number"
               defaultValue={content?.data.pickDuration}
-              className="w-[100px]"
+              className="md:w-[100px]"
             />
           </div>
           <Separator />
@@ -123,7 +123,7 @@ export function DraftSettingsForm({
               name="draftPauseStartTime"
               type="time"
               defaultValue={content?.data.draftPauseStartTime}
-              className="w-[250px]"
+              className="md:w-[250px]"
             />
           </div>
           <div className="flex items-center justify-between">
@@ -133,7 +133,7 @@ export function DraftSettingsForm({
               name="draftPauseEndTime"
               type="time"
               defaultValue={content?.data.draftPauseEndTime}
-              className="w-[250px] text-right"
+              className="md:w-[250px] text-right"
             />
           </div>
         </div>
