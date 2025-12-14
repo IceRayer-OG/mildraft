@@ -1,4 +1,4 @@
-import { Suspense, use } from "react";
+import { Suspense } from "react";
 // UI Components
 import { PlayerDataTable } from "~/app/_features/players/components/player-data-table";
 import { playerColumns } from "~/app/_features/players/components/player-columns";
@@ -7,7 +7,7 @@ import { playerColumns } from "~/app/_features/players/components/player-columns
 import { getFreeAgentsAction } from "~/app/_features/players/actions/playerActions";
  
 export default function PlayerPage() {
-  const data = use(getFreeAgentsAction());
+  const data = getFreeAgentsAction();
  
   return (
     <main className="flex flex-col min-h-screen w-full items-center p-4 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
