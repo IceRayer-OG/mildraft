@@ -32,10 +32,9 @@ export default function DraftCountdownTimer({
     ([unit, value]) => {
       return (
         <div key={unit} className="flex flex-col items-center">
-          <p className="mx-2">
-            {`${unit}:`}
+          <p>
+            {`${unit}: ${value.toString().padStart(2,"0")}`} &nbsp;
           </p>
-          <p>{`${value}`}</p>
         </div>
       );
     },
