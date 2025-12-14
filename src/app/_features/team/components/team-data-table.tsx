@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react";
+
+import { use } from "react";
  
 import {
   type ColumnDef,
@@ -25,7 +27,7 @@ import { Button } from "~/_components/ui/button";
  
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  data: Promise<TData[]>
 }
  
 export function DataTable<TData, TValue>({
@@ -37,7 +39,7 @@ export function DataTable<TData, TValue>({
   )
 
   const table = useReactTable({
-    data,
+    data: use(data),
     columns,
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,

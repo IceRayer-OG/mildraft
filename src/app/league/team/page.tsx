@@ -1,8 +1,5 @@
 // React
-import { 
-  Suspense, 
-  use 
-} from "react";
+import { Suspense, use } from "react";
 
 // UI Elements
 import { 
@@ -49,7 +46,7 @@ export default function TeamPage() {
             </PopoverTrigger>
             <PopoverContent className="w-auto p-2">
               <Suspense fallback={<Skeleton className="h-12 w-[200px] bg-slate-800" />}>
-                <TeamSettingsDialogForm teamSettingsData={use(teamSettings)} />
+                <TeamSettingsDialogForm teamSettingsData={teamSettings} />
               </Suspense>
             </PopoverContent>
           </Popover>
@@ -62,7 +59,7 @@ export default function TeamPage() {
       </div>
       <div className="grow p-4">
         <Suspense fallback={<TeamsTableLoading />}>
-          <DataTable columns={teamColumns} data={use(data)} />
+          <DataTable columns={teamColumns} data={data} />
         </Suspense>
       </div>
     </main>

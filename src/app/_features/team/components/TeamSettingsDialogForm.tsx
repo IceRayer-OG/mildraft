@@ -1,6 +1,6 @@
 "use client";
 // React
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, use } from "react";
 import Form from "next/form";
 import { PopoverClose } from "@radix-ui/react-popover";
 
@@ -33,12 +33,12 @@ import { type TeamSettings } from "../utils/team";
 export function TeamSettingsDialogForm({
   teamSettingsData,
 }: {
-  teamSettingsData: TeamSettings;
+  teamSettingsData: Promise<TeamSettings>;
 }) {
   // useActionState
   const [content, updateTeamSettings, isPending] = useActionState(
     updateTeamSettingsAction,
-    { status: "", message: "", data: teamSettingsData },
+    { status: "", message: "", data: use(teamSettingsData) },
   );
 
   useEffect(() => { 

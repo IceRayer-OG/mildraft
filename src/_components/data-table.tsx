@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { use } from "react"
  
 import {
   Table,
@@ -18,7 +19,7 @@ import {
  
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  data: Promise<TData[]>
 }
  
 export function DataTable<TData, TValue>({
@@ -26,7 +27,7 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
-    data,
+    data: use(data),
     columns,
     getCoreRowModel: getCoreRowModel(),
   })
