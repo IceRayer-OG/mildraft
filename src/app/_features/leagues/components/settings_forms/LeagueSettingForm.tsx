@@ -53,7 +53,7 @@ export function LeagueSettingsForm({
             id="league-name"
             name="leagueName"
             defaultValue={content?.data.name}
-            className="w-[250px] text-right"
+            className="md:w-[250px] text-right"
           />
         </div>
         <div className="flex items-center justify-between">
@@ -64,7 +64,7 @@ export function LeagueSettingsForm({
             name="leagueAbbreviation"
             maxLength={4}
             defaultValue={content?.data.abbreviation}
-            className="w-[250px] text-right"
+            className="md:w-[250px] text-right"
           />
         </div>
         <CardFooter className="flex justify-end gap-2 p-4">
