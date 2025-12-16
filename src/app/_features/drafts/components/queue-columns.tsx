@@ -22,7 +22,7 @@ import { draftPlayerAction } from "../actions/draftActions";
 async function removePlayerFromQueue(playerToRemove: QueuePlayers) {
   try {
     await removePlayerFromQueueAction(playerToRemove);
-    toast.message('Player Removed from Queue',{
+    toast.success('Player Removed from Queue',{
       description: `${playerToRemove.playerName} has been removed from your queue`
     });
 

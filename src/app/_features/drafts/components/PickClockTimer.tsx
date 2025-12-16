@@ -31,9 +31,9 @@ export default function DraftCountdownTimer({
   const timerComponents = Object.entries(timeLeft.dateData).map(
     ([unit, value]) => {
       return (
-        <div key={unit} className="flex flex-col items-center">
+        <div key={unit} className="flex items-center">
           <p>
-            {`${unit}: ${value.toString().padStart(2,"0")}`} &nbsp;
+            {`${value.toString().padStart(2,"0")}${unit.toLowerCase()}`}
           </p>
         </div>
       );
@@ -41,7 +41,7 @@ export default function DraftCountdownTimer({
   );
 
   return (
-    <div className="flex">
+    <div className="flex gap-1">
       {timerComponents.length ? (
         timerComponents
       ) : (
