@@ -68,10 +68,10 @@ export default function LeaguePage() {
           </div>
           <div className="flex flex-wrap gap-4">
             <div className="flex flex-col space-y-3">
-              <Skeleton className="h-[125px] w-[250px] rounded-xl bg-slate-800" />
+              <Skeleton className="h-31.25 w-62.5 rounded-xl bg-slate-800" />
               <div className="space-y-2">
-                <Skeleton className="h-4 w-[250px] bg-slate-800" />
-                <Skeleton className="h-4 w-[200px] bg-slate-800" />
+                <Skeleton className="h-4 w-62.5 bg-slate-800" />
+                <Skeleton className="h-4 w-50 bg-slate-800" />
               </div>
             </div>
           </div>
@@ -81,10 +81,10 @@ export default function LeaguePage() {
           </div>
           <div className="flex flex-wrap gap-4">
             <div className="flex flex-col space-y-3">
-              <Skeleton className="h-[125px] w-[250px] rounded-xl bg-slate-800" />
+              <Skeleton className="h-31.25 w-62.5 rounded-xl bg-slate-800" />
               <div className="space-y-2">
-                <Skeleton className="h-4 w-[250px] bg-slate-800" />
-                <Skeleton className="h-4 w-[200px] bg-slate-800" />
+                <Skeleton className="h-4 w-62.5 bg-slate-800" />
+                <Skeleton className="h-4 w-50 bg-slate-800" />
               </div>
             </div>
           </div>

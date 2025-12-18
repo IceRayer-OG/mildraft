@@ -31,7 +31,7 @@ import { getTeamSettingsAction } from "~/app/_features/team/actions/teamSettings
 export default function TeamPage() {
   const data = getMyTeamAction();
   const teamSettings = getTeamSettingsAction();
-  const myTeamInfo = getMyTeamInfoAction();
+  const myTeamInfo = use(getMyTeamInfoAction());
 
   return (
     <main className="flex min-h-screen flex-col bg-linear-to-b from-[#12026d] to-[#15162c] p-4 text-white">
@@ -45,15 +45,15 @@ export default function TeamPage() {
               </Avatar>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-2">
-              <Suspense fallback={<Skeleton className="h-12 w-[200px] bg-slate-800" />}>
+              <Suspense fallback={<p className="h-12 w-75 bg-slate-800">Loading...</p>}>
                 <TeamSettingsDialogForm teamSettingsData={teamSettings} />
               </Suspense>
             </PopoverContent>
           </Popover>
         </div>
         <div>
-          <Suspense fallback={<Skeleton className="h-12 w-[300px] bg-slate-800" />}>
-            <h1 className="text-2xl font-semibold">{use(myTeamInfo).name}</h1>
+          <Suspense fallback={<p className="h-12 w-75 bg-slate-800">Loading...</p>}>
+            <h1 className="text-2xl font-semibold">{myTeamInfo.name}</h1>
           </Suspense>
         </div>
       </div>

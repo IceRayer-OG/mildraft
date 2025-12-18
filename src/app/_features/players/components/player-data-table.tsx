@@ -1,7 +1,9 @@
 "use client"
 
+// Import React
 import { useState, use } from "react";
- 
+
+// Import TanStack Table
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -11,7 +13,8 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table"
- 
+
+// Import UI Components
 import {
   Table,
   TableBody,
@@ -21,13 +24,17 @@ import {
   TableRow,
 } from "~/_components/ui/table"
 import { Input } from "~/_components/ui/input"
-import { Button } from "~/_components/ui/button";
- 
+import { Button } from "~/_components/ui/button"
+
+// Import Components
+import { PlayerLoadingDialog } from "./PlayerLoadingDialog";
+
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: Promise<TData[]>
 }
- 
+
 export function PlayerDataTable<TData, TValue>({
   columns,
   data,
@@ -51,16 +58,17 @@ export function PlayerDataTable<TData, TValue>({
   return (
     <div>
       <div className="rounded-md">
-        <div className="flex items-center py-4">
+        <div className="flex items-center justify-between py-4">
           <Input
             placeholder="Filter Positions..."
             value={(table.getColumn("position")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("position")?.setFilterValue(event.target.value)
             }
-          className="max-w-sm"
+            className="max-w-sm"
           />
-      </div>
+          <PlayerLoadingDialog />
+        </div>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

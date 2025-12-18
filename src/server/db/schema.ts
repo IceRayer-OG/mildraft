@@ -11,15 +11,17 @@ import {
   unique,
   date,
   text,
+  pgTable,
 } from "drizzle-orm/pg-core";
 
-export const createTable = pgTableCreator((name) => `mildraft_${name}`);
+export const namespace = "mildraft_";
+// export const createTable = pgTableCreator((name) => `mildraft_${name}`);
 export const positions = pgEnum('positions', ['P', 'C', '1B', '2B', '3B', 'SS', 'OF', 'CI', 'MI']);
 export const throws = pgEnum("throws", ["R", "L", "B"]);
 export const bats = pgEnum("bats", ["R", "L", "B"]);
 
-export const posts = createTable(
-  "post",
+export const posts = pgTable(
+  `${namespace}post`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     title: varchar("title", { length: 256 }),
@@ -34,13 +36,13 @@ export const posts = createTable(
       () => new Date()
     ),
   },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.title),
-  })
+  (example) => [
+    index("name_idx").on(example.title),
+  ]
 );
 
-export const leagues = createTable(
-  "league",
+export const leagues = pgTable(
+  `${namespace}league`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
@@ -54,13 +56,13 @@ export const leagues = createTable(
       () => new Date()
     ),
   },
-  (example) => ({
-    nameIndex: index("league_idx").on(example.name),
-  })
+  (example) => [
+    index("league_idx").on(example.name),
+  ]
 );
 
-export const teams = createTable(
-  "team",
+export const teams = pgTable(
+  `${namespace}team`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
@@ -74,13 +76,13 @@ export const teams = createTable(
       () => new Date()
     ),
   },
-  (example) => ({
-    nameIndex: index("team_idx").on(example.name),
-  })
+  (example) => [
+    index("team_idx").on(example.name),
+  ]
 );
 
-export const players = createTable(
-  "player",
+export const players = pgTable(
+  `${namespace}player`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
@@ -95,14 +97,14 @@ export const players = createTable(
       () => new Date()
     ),
   },
-  (example) => ({
-    nameIndex: index("player_idx").on(example.name),
-    uniquePlayerIndex: unique("playerProId").on(example.proId, example.leagueId),
-  })
+  (example) => [
+    index("player_idx").on(example.name),
+    unique("playerProId").on(example.proId, example.leagueId),
+  ]
 );
 
-export const drafts = createTable(
-  "draft",
+export const drafts = pgTable(
+  `${namespace}draft`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     leagueId: integer("league_id").references(() => leagues.id),  // Make not null later
@@ -116,8 +118,8 @@ export const drafts = createTable(
   },
 );
 
-export const draftPicks = createTable(
-  "draft_pick",
+export const draftPicks = pgTable(
+  `${namespace}draft_pick`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     pickNumber: integer("pick_number").notNull(),
@@ -135,14 +137,14 @@ export const draftPicks = createTable(
       () => new Date()
     ),
   },
-  (example) => ({
-    nameIndex: index("draft_pick_idx").on(example.id),
-    uniqueDraftIndex: unique("draftPickId").on(example.draftId, example.pickNumber)
-  })
+  (example) => [
+    index("draft_pick_idx").on(example.id),
+    unique("draftPickId").on(example.draftId, example.pickNumber)
+  ]
 );
 
-export const draftSettings = createTable(
-  "draft_settings",
+export const draftSettings = pgTable(
+  `${namespace}draft_settings`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     leagueId: integer("league_id").notNull().references(() => leagues.id),
@@ -163,13 +165,13 @@ export const draftSettings = createTable(
       () => new Date()
     ),
   },
-  (example) => ({
-    nameIndex: index("draft_settings_idx").on(example.id),
-  })
+  (example) => [
+    index("draft_settings_idx").on(example.id),
+  ]
 );
 
-export const pros = createTable(
-  "pros",
+export const pros = pgTable(
+  `${namespace}pros`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     playerNumber: integer("player_number"),
@@ -184,6 +186,7 @@ export const pros = createTable(
     throws: throws("throws"),
     bats: bats("bats"),
     rank: integer("rank"),
+    eta: integer("eta"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -191,13 +194,13 @@ export const pros = createTable(
       () => new Date()
     ),
   },
-  (example) => ({
-    nameIndex: index("pros_idx").on(example.id),
-  })
+  (example) => [
+    index("pros_idx").on(example.id),
+  ]
 );
 
-export const settings = createTable(
-  "settings",
+export const settings = pgTable(
+  `${namespace}settings`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     leagueId: integer("league_id").notNull().references(() => leagues.id),
@@ -215,13 +218,13 @@ export const settings = createTable(
       () => new Date()
     ),
   },
-  (example) => ({
-    nameIndex: index("settings_idx").on(example.id),
-  })
+  (example) => [
+    index("settings_idx").on(example.id),
+  ]
 );
 
-export const queues = createTable(
-  "queue",
+export const queues = pgTable(
+  `${namespace}queue`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     leagueId: integer("league_id").references(() => leagues.id),  // Make not null later
@@ -237,8 +240,8 @@ export const queues = createTable(
       () => new Date()
     ),
   },
-  (example) => ({
-    nameIndex: index("queue_idx").on(example.playerId),
-    uniqueNameIndex: unique("inQueue").on(example.playerId, example.userId),
-  })
+  (example) => [
+    index("queue_idx").on(example.playerId),
+    unique("inQueue").on(example.playerId, example.userId),
+  ]
 );

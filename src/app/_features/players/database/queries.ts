@@ -26,3 +26,9 @@ export async function getFreeAgents() {
 
     return freeAgents;
 }
+
+export async function loadDraftablePlayers(draftablePlayers: unknown) {
+
+
+
+}

@@ -70,7 +70,7 @@ export function DraftOrderDialog({
               Manage the draft order for your league.
             </DialogDescription>
           </DialogHeader>
-          <ScrollArea className="h-[300px] overflow-y-hidden">
+          <ScrollArea className="h-75 overflow-y-hidden">
             <DraftOrderList draftOrderList={draftOrderList} />
             <ScrollBar orientation="vertical" />
           </ScrollArea>
