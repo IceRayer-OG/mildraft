@@ -14,14 +14,14 @@ import {
   pgTable,
 } from "drizzle-orm/pg-core";
 
-export const namespace = "mildraft_";
-// export const createTable = pgTableCreator((name) => `mildraft_${name}`);
+// export const namespace = "mildraft_";
+export const createTable = pgTableCreator((name) => `mildraft_${name}`);
 export const positions = pgEnum('positions', ['P', 'C', '1B', '2B', '3B', 'SS', 'OF', 'CI', 'MI']);
 export const throws = pgEnum("throws", ["R", "L", "B"]);
 export const bats = pgEnum("bats", ["R", "L", "B"]);
 
-export const posts = pgTable(
-  `${namespace}post`,
+export const posts = createTable(
+  `post`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     title: varchar("title", { length: 256 }),
@@ -41,8 +41,8 @@ export const posts = pgTable(
   ]
 );
 
-export const leagues = pgTable(
-  `${namespace}league`,
+export const leagues = createTable(
+  `league`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
@@ -61,8 +61,8 @@ export const leagues = pgTable(
   ]
 );
 
-export const teams = pgTable(
-  `${namespace}team`,
+export const teams = createTable(
+  `team`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
@@ -81,8 +81,8 @@ export const teams = pgTable(
   ]
 );
 
-export const players = pgTable(
-  `${namespace}player`,
+export const players = createTable(
+  `player`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
@@ -103,8 +103,8 @@ export const players = pgTable(
   ]
 );
 
-export const drafts = pgTable(
-  `${namespace}draft`,
+export const drafts = createTable(
+  `draft`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     leagueId: integer("league_id").references(() => leagues.id),  // Make not null later
@@ -118,8 +118,8 @@ export const drafts = pgTable(
   },
 );
 
-export const draftPicks = pgTable(
-  `${namespace}draft_pick`,
+export const draftPicks = createTable(
+  `draft_pick`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     pickNumber: integer("pick_number").notNull(),
@@ -143,8 +143,8 @@ export const draftPicks = pgTable(
   ]
 );
 
-export const draftSettings = pgTable(
-  `${namespace}draft_settings`,
+export const draftSettings = createTable(
+  `draft_settings`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     leagueId: integer("league_id").notNull().references(() => leagues.id),
@@ -170,8 +170,8 @@ export const draftSettings = pgTable(
   ]
 );
 
-export const pros = pgTable(
-  `${namespace}pros`,
+export const pros = createTable(
+  `pros`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     playerNumber: integer("player_number"),
@@ -199,8 +199,8 @@ export const pros = pgTable(
   ]
 );
 
-export const settings = pgTable(
-  `${namespace}settings`,
+export const settings = createTable(
+  `settings`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     leagueId: integer("league_id").notNull().references(() => leagues.id),
@@ -223,8 +223,8 @@ export const settings = pgTable(
   ]
 );
 
-export const queues = pgTable(
-  `${namespace}queue`,
+export const queues = createTable(
+  `queue`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     leagueId: integer("league_id").references(() => leagues.id),  // Make not null later
