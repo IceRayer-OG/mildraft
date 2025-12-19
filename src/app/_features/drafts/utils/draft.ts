@@ -1,12 +1,12 @@
 import z from "zod";
 
 const queueDraftPickSchema = z.object({
-  team: z.object({
+  mildraft_team: z.object({
     id: z.number(),
     name: z.string(),
     abbreviation: z.string(),
   }),
-  draft_pick: z.object({
+  mildraft_draft_pick: z.object({
     id: z.number(),
     pickNumber: z.number(),
     leagueId: z.number(),

@@ -8,6 +8,13 @@
       "when": 1753814251142,
       "tag": "0000_green_lucky_pierre",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1766092747252,
+      "tag": "0001_redundant_overlord",
+      "breakpoints": true
     }
   ]
 }
