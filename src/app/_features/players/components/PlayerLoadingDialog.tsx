@@ -31,7 +31,7 @@ export function PlayerLoadingDialog() {
           <LucideSettings />
         </Button>
       </DialogTrigger>
-      <DialogOverlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+      <DialogOverlay className="fixed inset-0 bg-black/50 backdrop-blur-xs" />
       <DialogPortal>
         <DialogContent className="fixed top-1/2 left-1/2 w-[90vw] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg p-6 shadow-lg">
           <Form action={async () => {}}>
