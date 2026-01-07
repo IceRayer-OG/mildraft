@@ -29,7 +29,7 @@ const pitchSpeedData = [
 const chartConfig = {
   stat: {
     label: "Speed",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
 } satisfies ChartConfig
 
@@ -45,7 +45,7 @@ export function BatterRadarChart() {
       <CardContent className="pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-2 aspect-square max-h-[250px]"
+          className="mx-2 aspect-square max-h-62.5"
         >
           <RadarChart data={pitchSpeedData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
@@ -61,7 +61,7 @@ export function BatterRadarChart() {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Power up 5.2% from last season <TrendingUp className="h-4 w-4" />
+          Power up 5.2% from last season <TrendingUp className="size-4" />
         </div>
         <div className="flex items-center gap-2 leading-none text-muted-foreground">
           January - June 2024
