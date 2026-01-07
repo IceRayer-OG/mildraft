@@ -1,8 +1,7 @@
 "use client";
 
-import Form from "next/form";
-
 // React and NextJS Imports
+import Form from "next/form";
 import { useActionState, useEffect } from "react";
 
 // UI Components
@@ -53,7 +52,7 @@ export function DraftSettingsForm({
   return (
     <Form action={updateLeagueDraftSettings}>
       <Separator />
-      <ScrollArea className="h-[200px] w-full whitespace-nowrap">
+      <ScrollArea className="h-50 w-full whitespace-nowrap">
         <div className="flex flex-col gap-2 overflow-y-hidden p-4">
           <div className="flex items-center justify-between">
             <Label>Draft Enabled</Label>  
@@ -78,7 +77,7 @@ export function DraftSettingsForm({
               name="draftStartDate"
               type="date"
               defaultValue={content?.data.draftStart}
-              className="md:w-[250px]"
+              className="md:w-62.5"
             />
           </div>
           <div className="flex items-center gap-1 justify-between">
@@ -88,7 +87,7 @@ export function DraftSettingsForm({
               name="draftStartTime"
               type="time"
               defaultValue={content?.data.draftTime}
-              className="md:w-[250px]"
+              className="md:w-62.5"
             />
           </div>
           <div className="flex items-center gap-1 justify-between">
@@ -98,7 +97,7 @@ export function DraftSettingsForm({
               name="pickDuration"
               type="number"
               defaultValue={content?.data.pickDuration}
-              className="md:w-[100px]"
+              className="md:w-25"
             />
           </div>
           <Separator />
@@ -123,7 +122,7 @@ export function DraftSettingsForm({
               name="draftPauseStartTime"
               type="time"
               defaultValue={content?.data.draftPauseStartTime}
-              className="md:w-[250px] text-right"
+              className="md:w-62.5 text-right"
             />
           </div>
           <div className="flex items-center gap-1 justify-between">
@@ -133,7 +132,7 @@ export function DraftSettingsForm({
               name="draftPauseEndTime"
               type="time"
               defaultValue={content?.data.draftPauseEndTime}
-              className="md:w-[250px] text-right"
+              className="md:w-62.5 text-right"
             />
           </div>
         </div>

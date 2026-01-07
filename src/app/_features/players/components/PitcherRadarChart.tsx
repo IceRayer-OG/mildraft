@@ -33,7 +33,7 @@ const chartConfig = {
   },
   percent: {
     label: "Percent",
-    color: "hsl(var(--chart-2))",
+    color: "var(--chart-2)",
   }
 } satisfies ChartConfig
 
@@ -49,7 +49,7 @@ export function PitcherRadarChart() {
       <CardContent className="pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-2 aspect-square max-h-[250px]"
+          className="mx-2 aspect-square max-h-62.5"
         >
           <RadarChart data={pitchSpeedData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
@@ -65,7 +65,7 @@ export function PitcherRadarChart() {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+          Trending up by 5.2% this month <TrendingUp className="size-4" />
         </div>
         <div className="flex items-center gap-2 leading-none text-muted-foreground">
           January - June 2024

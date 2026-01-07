@@ -1,5 +1,6 @@
 import "server-only";
 
+
 import { auth } from "@clerk/nextjs/server";
 import {
   type CompletedDraftPicks,
@@ -16,6 +17,7 @@ import {
   insertNewDraftPick,
 } from "../database/queries";
 import { getCurrentDraftPick } from "~/server/queries";
+import { removePlayerFromQueueUseCase } from "./queueUseCases";
 
 async function checkAuthorization() {
   // Authorization
@@ -51,6 +53,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
   // Perform the draft operation
   try {
     await postDraftPick(currentPick.teamId,2,currentPick.pickNumber,playerToDraft.id,);
+    // await removePlayerFromQueues(playerToDraft.id);
     // response.status = "Success";
     // response.message = `${playerToDraft.playerName} selected`;
     // return response

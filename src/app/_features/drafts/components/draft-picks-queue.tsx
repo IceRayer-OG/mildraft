@@ -27,7 +27,7 @@ export default function DraftQueueList({
           <p>{pick.draft_pick.pickNumber}:</p>
           <Avatar className="w-7 h-7">
             <AvatarImage src="/_assets/avatar.png" alt="Avatar" />
-            <AvatarFallback className="text-black text-xs">{pick.team.abbreviation}</AvatarFallback>
+            <AvatarFallback className="bg-white text-black text-xs">{pick.team.abbreviation}</AvatarFallback>
           </Avatar>
           <p className="text-s">{pick.team.name}</p>
           {/* Add On the Clock Option */}

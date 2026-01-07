@@ -54,19 +54,19 @@ export const calculateTimeLeft = (targetDate: Date) => {
     active: false,
     },
     dateData: {
-    Days: 0,
-    Hours: 0,
-    Minutes: 0,
-    Seconds: 0,
+    D: 0,
+    H: 0,
+    M: 0,
+    S: 0,
     }
   };
 
   if (difference > 0) {
     timeLeft.state.active = true;
-    timeLeft.dateData.Days = Math.floor(difference / (1000 * 60 * 60 * 24));
-    timeLeft.dateData.Hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-    timeLeft.dateData.Minutes = Math.floor((difference / 1000 / 60) % 60);
-    timeLeft.dateData.Seconds = Math.floor((difference / 1000) % 60);
+    timeLeft.dateData.D = Math.floor(difference / (1000 * 60 * 60 * 24));
+    timeLeft.dateData.H = Math.floor((difference / (1000 * 60 * 60)) % 24);
+    timeLeft.dateData.M = Math.floor((difference / 1000 / 60) % 60);
+    timeLeft.dateData.S = Math.floor((difference / 1000) % 60);
   }
 
   return timeLeft;

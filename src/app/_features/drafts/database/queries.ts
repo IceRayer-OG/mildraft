@@ -50,7 +50,7 @@ export async function postPlayerToQueue(prosId: number, userId: string) {
     userId: userId,
     // teamId: teams.id,
     // leagueId: leagues.id,
-    // draftId: drafts.id,
+    draftId: 2,
   });
 }
 
@@ -69,6 +69,12 @@ export async function getDraftPicks() {
     .leftJoin(teams, eq(draftPicks.teamId, teams.id));
 
   return draftPicksData;
+}
+
+export async function deletePlayerFromQueues(playerId: number) {
+  await db
+    .delete(queues)
+    .where(and(eq(queues.playerId, playerId), eq(queues.draftId, 2)));
 }
 
 export async function getCurrentDraftPick() {

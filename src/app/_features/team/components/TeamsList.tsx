@@ -18,7 +18,7 @@ export default function TeamList({
                 <li key={leagueTeam.id} className="flex items-center gap-4">
                     <Avatar>
                         <AvatarImage src="/_assets/avatar.png" alt="Avatar" />
-                        <AvatarFallback className="text-black">{leagueTeam.abbreviation}</AvatarFallback>
+                        <AvatarFallback className="bg-white text-black">{leagueTeam.abbreviation}</AvatarFallback>
                     </Avatar>
                     <p>{leagueTeam.name}</p>
                 </li>
