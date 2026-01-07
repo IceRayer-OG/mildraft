@@ -39,7 +39,7 @@ export default function TeamPage() {
         <div>
           <Popover>
             <PopoverTrigger className="flex items-center gap-2">
-              <Avatar className="h-10 w-10">
+              <Avatar className="size-10">
                 {/* <AvatarImage src="/_assets/avatar.png" alt="Avatar" /> */}
                 <AvatarFallback className="text-black">SV</AvatarFallback>
               </Avatar>
