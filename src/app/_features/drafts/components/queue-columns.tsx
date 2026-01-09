@@ -33,11 +33,17 @@ async function removePlayerFromQueue(playerToRemove: QueuePlayers) {
 }
 
 async function draftPlayer(playerToDraft: QueuePlayers) {
-  try {
-    await draftPlayerAction(playerToDraft);
-    toast.success(`${playerToDraft.playerName} has been drafted`);
-  } catch (error) {
-    console.log(error);
+  const content = {
+    status: "",
+    message: ""
+  }
+
+  const response = await draftPlayerAction(content, playerToDraft);
+  
+  if (response.status === "Success") {
+    toast.success(response.message);
+  } else if (response.status === "Error") {
+    toast.error(response.message);
   }
 }
 
@@ -88,7 +94,7 @@ export const queueColumns: ColumnDef<QueuePlayers>[] = [
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent className="bg-white" align="end">
               <DropdownMenuItem onClick={() => draftPlayer(player)}>
                 Draft
               </DropdownMenuItem>

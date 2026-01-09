@@ -1,6 +1,8 @@
 "use client";
  
 // Refactor
+// React and Next.js imports
+import { useEffect, useState } from "react";
 // UI Components
 import { type ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react";
@@ -31,14 +33,27 @@ async function queuePlayer(playerToQueue: DraftablePlayers) {
   }
 }
 
-async function draftPlayer(playerToDraft: DraftablePlayers) {
-  try {
-    await draftPlayerAction(playerToDraft);
-    toast.success(`${playerToDraft.playerName} has been drafted`);
-  } catch (error) {
-    console.log(error);
-    toast.error('Error drafting player');
-  }
+async function draftPlayer(playerToDraft: DraftablePlayers) {  
+    const content = {
+      status: "",
+      message: ""
+    }
+    
+    const response = await draftPlayerAction(content, playerToDraft);
+
+    if (response.status === "Success") {
+      toast.success(response.message);
+    } else if (response.status === "Error") {
+      toast.error(response.message);
+    }  
+
+  // try {
+  //   await draftPlayerAction(playerToDraft);
+  //   toast.success(`${playerToDraft.playerName} has been drafted`);
+  // } catch (error) {
+  //   console.log(error);
+  //   toast.error('Error drafting player');
+  // }
 }
 
 export const draftColumns: ColumnDef<DraftablePlayers>[] = [
@@ -87,12 +102,12 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="size-8 p-0">
               <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="bg-white">
             <DropdownMenuItem onClick={() => draftPlayer(player)}>
               Draft
             </DropdownMenuItem>

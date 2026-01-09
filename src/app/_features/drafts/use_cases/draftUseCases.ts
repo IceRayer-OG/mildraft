@@ -35,32 +35,30 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
   // Check if user is authenticated
   const user = await checkAuthorization();
   if (!user) {
-    throw new Error("User is not authenticated");
-    // response.status = "Error";
-    // response.message = "User is not authenticated";
-    // return response
+    response.status = "Error";
+    response.message = "User is not authenticated";
+    return response
   }
 
   // Check if user is current pick team owner
   const currentPick = await getCurrentDraftPick();
   if (!currentPick) {
-    throw new Error("No pick set");
-    // response.status = "Error";
-    // response.message = "Not the current pick";
-    // return response
+    response.status = "Error";
+    response.message = "Not the current pick";
+    return response
   }
 
   // Perform the draft operation
   try {
     await postDraftPick(currentPick.teamId,2,currentPick.pickNumber,playerToDraft.id,);
     // await removePlayerFromQueues(playerToDraft.id);
-    // response.status = "Success";
-    // response.message = `${playerToDraft.playerName} selected`;
-    // return response
+    response.status = "Success";
+    response.message = `${playerToDraft.playerName} selected`;
+    return response
   } catch (error) {
-    // response.status = "Error";
-    // response.message = "Error making pick";
-    // return response
+    response.status = "Error";
+    response.message = "Error making pick";
+    return response
   }
 }
 
