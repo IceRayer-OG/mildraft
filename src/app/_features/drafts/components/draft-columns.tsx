@@ -34,26 +34,21 @@ async function queuePlayer(playerToQueue: DraftablePlayers) {
 }
 
 async function draftPlayer(playerToDraft: DraftablePlayers) {  
-    const content = {
-      status: "",
-      message: ""
-    }
-    
-    const response = await draftPlayerAction(content, playerToDraft);
+  // setup initial content
+  const content = {
+    status: "",
+    message: ""
+  }
 
-    if (response.status === "Success") {
-      toast.success(response.message);
-    } else if (response.status === "Error") {
-      toast.error(response.message);
-    }  
+  // get response from draft action
+  const response = await draftPlayerAction(content, playerToDraft);
 
-  // try {
-  //   await draftPlayerAction(playerToDraft);
-  //   toast.success(`${playerToDraft.playerName} has been drafted`);
-  // } catch (error) {
-  //   console.log(error);
-  //   toast.error('Error drafting player');
-  // }
+  // toast response message
+  if (response.status === "Success") {
+    toast.success(response.message);
+  } else if (response.status === "Error") {
+    toast.error(response.message);
+  }
 }
 
 export const draftColumns: ColumnDef<DraftablePlayers>[] = [

@@ -18,6 +18,7 @@ import {
 } from "../database/queries";
 import { getCurrentDraftPick } from "~/server/queries";
 import { removePlayerFromQueueUseCase } from "./queueUseCases";
+import DraftPickEmail from "~/emails/draft_pick";
 
 async function checkAuthorization() {
   // Authorization
@@ -88,13 +89,21 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
     await postWriteInDraftPick(currentPick.teamId, 2, currentPick.pickNumber, playerToDraft);
     response.status = "Success";
     response.message = `${playerToDraft} drafted successfully`;
-    return response;
   } catch (error) {
     console.error("Failed to draft write in player:", error);
     response.status = "Error";
     response.message = `Failed to draft ${playerToDraft}`;
-    return response;
   }
+
+  // Send Draft Pick Email
+  // DraftPickEmail({
+  //   pickNumber: currentPick.pickNumber,
+  //   teamName: currentPick.teamId.toString(),
+  //   playerName: playerToDraft,
+  //   pickingTeam: currentPick.teamId.toString(),
+  // });
+
+  return response; // Return response
 }
 
 export async function getDraftablePlayersUseCase(): Promise<
