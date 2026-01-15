@@ -34,6 +34,14 @@ export async function draftPlayerAction(
   playerToDraft: DraftablePlayers
 ) {
   const response = await draftPlayerUseCase(playerToDraft);
+
+  if (response.status === "Success") {
+    // send email notification here
+  } else if (response.status === "Error") {
+    revalidatePath("league/draft");
+    return response;
+  }
+  
   revalidatePath("league/draft");
   return response;
 }

@@ -9,6 +9,8 @@ import {
   inArray,
   ne,
   count,
+  or,
+  sql
 } from "drizzle-orm";
 import { queues, draftPicks, pros, teams } from "~/server/db/schema";
 
@@ -72,9 +74,7 @@ export async function getDraftPicks() {
 }
 
 export async function deletePlayerFromQueues(playerId: number) {
-  await db
-    .delete(queues)
-    .where(and(eq(queues.playerId, playerId), eq(queues.draftId, 2)));
+  await db.delete(queues).where(and(eq(queues.playerId, playerId), eq(queues.draftId, 2)));
 }
 
 export async function getCurrentDraftPick() {
@@ -131,6 +131,15 @@ export async function postWriteInDraftPick(
         eq(draftPicks.draftId, draftId),
       ),
     );
+}
+
+export async function getDraftPickEmails() {
+  const draftPickEmails = await db
+    .select({ teamEmail: teams.email, teamName: teams.name })
+    .from(teams)
+    .where(and(eq(teams.leagueId, 1),or(eq(teams.id,2),eq(teams.id,5),eq(teams.id,8),eq(teams.id,14))));
+
+  return draftPickEmails;
 }
 
 export async function getDraftedPlayers() {
@@ -202,7 +211,7 @@ export async function undoDraftPick(draftPick: number, draftId: number) {
 export async function getCompletedDraftPicks(draftId: number) {
   const completedDraftPicks = await db.select({
     pickNumber: draftPicks.pickNumber,
-    playerName: pros.playerName,
+    playerName: sql<string>`COALESCE(${pros.playerName}, ${draftPicks.writeInName})`.as('player_name'),
     position: pros.position,
     teamName: teams.name,
   }).from(draftPicks)

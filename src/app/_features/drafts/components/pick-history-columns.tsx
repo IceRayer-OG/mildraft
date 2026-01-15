@@ -59,7 +59,7 @@ export const draftPickColumns: ColumnDef<CompletedDraftPicks>[] = [
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent className="bg-red-400" align="end">
             <DropdownMenuItem onClick={() => undoDraftPick(pick)}>
               Undo
             </DropdownMenuItem>

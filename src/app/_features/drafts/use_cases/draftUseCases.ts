@@ -1,12 +1,16 @@
 import "server-only";
 
-
+// Clerk Import
 import { auth } from "@clerk/nextjs/server";
+
+// Types
 import {
   type CompletedDraftPicks,
   type DraftablePlayers,
   type QueueDraftPick,
 } from "../utils/draft";
+
+// Database Queries
 import {
   getDraftablePlayers,
   getDraftPicks,
@@ -15,10 +19,17 @@ import {
   undoDraftPick,
   getCompletedDraftPicks,
   insertNewDraftPick,
+  getDraftPickEmails,
+  deletePlayerFromQueues,
 } from "../database/queries";
-import { getCurrentDraftPick } from "~/server/queries";
+import { getCurrentDraftPick, getNextDraftPick } from "~/server/queries";
 import { removePlayerFromQueueUseCase } from "./queueUseCases";
+
+// Email Imports
+import { Resend } from "resend";
 import DraftPickEmail from "~/emails/draft_pick";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function checkAuthorization() {
   // Authorization
@@ -43,24 +54,71 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
 
   // Check if user is current pick team owner
   const currentPick = await getCurrentDraftPick();
-  if (!currentPick) {
+  if (!currentPick[0]?.draft_pick) {
     response.status = "Error";
     response.message = "Not the current pick";
+    return response
+  }
+    if (!currentPick[0]?.team) {
+    response.status = "Error";
+    response.message = "No team data";
     return response
   }
 
   // Perform the draft operation
   try {
-    await postDraftPick(currentPick.teamId,2,currentPick.pickNumber,playerToDraft.id,);
-    // await removePlayerFromQueues(playerToDraft.id);
+    await postDraftPick(currentPick[0]?.draft_pick.teamId,2,currentPick[0]?.draft_pick.pickNumber,playerToDraft.id,);
+    
+    // Attempt to remove player from queues
+    try { 
+      await deletePlayerFromQueues(playerToDraft.id);
+    } catch (error) {
+      console.error("Error removing player from queues:", error);
+    }
+    
+    // Draft operation successful
     response.status = "Success";
     response.message = `${playerToDraft.playerName} selected`;
-    return response
   } catch (error) {
+    // Draft operation failed
     response.status = "Error";
     response.message = "Error making pick";
-    return response
+    console.error("Drafting player failed:", error);
   }
+  
+  // If draft operation was successful, send emails
+  if (response.status === "Success") {
+    // Get needed info for email
+    const draftPickEmails = await getDraftPickEmails();
+    const nextPick = await getNextDraftPick();
+    const emails = draftPickEmails.map(email => `${email.teamName} <${email.teamEmail}>`);
+    // console.log("Draft Pick Emails:", emails);
+
+    // Validate next pick data is not Null
+    if (!nextPick[0]?.teamName) {
+      response.status = "Error";
+      response.message = "No Next Pick Team Data";
+      return response;
+    }
+
+    // Send Draft Pick Email
+    const emailprops = {
+      pickNumber: currentPick[0]?.draft_pick.pickNumber,
+      teamName: currentPick[0]?.team.name || "Unknown Team",
+      playerName: playerToDraft.playerName,
+      pickingTeam: nextPick[0]?.teamName,
+    };
+
+    const { data, error } = await resend.emails.send({
+      from: 'No-Reply <no-reply@siliconvalleybaseball.com>',
+      // to: emails, // Distro list
+      to: ['Slump Busters <matthew.dowling3@gmail.com>'],  // Used for testing
+      subject: 'TEST - Draft Pick Completed',
+      react: DraftPickEmail(emailprops),
+    });
+  }
+
+  return response;
 }
 
 export async function draftWriteInPlayerUseCase(playerToDraft: string) {
@@ -78,15 +136,20 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
 
   // Check if user is current pick team owner
   const currentPick = await getCurrentDraftPick();
-  if (!currentPick) {
+  if (!currentPick[0]?.draft_pick) {
     response.status = "Error";
     response.message = "No Pick Set";
+    return response;
+  }
+  if (!currentPick[0]?.team) {
+    response.status = "Error";
+    response.message = "No Team Data";
     return response;
   }
 
   // draft write in player
   try {
-    await postWriteInDraftPick(currentPick.teamId, 2, currentPick.pickNumber, playerToDraft);
+    await postWriteInDraftPick(currentPick[0]?.draft_pick.teamId, 2, currentPick[0]?.draft_pick.pickNumber, playerToDraft);
     response.status = "Success";
     response.message = `${playerToDraft} drafted successfully`;
   } catch (error) {
@@ -95,13 +158,36 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
     response.message = `Failed to draft ${playerToDraft}`;
   }
 
-  // Send Draft Pick Email
-  // DraftPickEmail({
-  //   pickNumber: currentPick.pickNumber,
-  //   teamName: currentPick.teamId.toString(),
-  //   playerName: playerToDraft,
-  //   pickingTeam: currentPick.teamId.toString(),
-  // });
+  if (response.status === "Success") {
+    const draftPickEmails = await getDraftPickEmails();
+    const nextPick = await getNextDraftPick();
+    const emails = draftPickEmails.map(email => `${email.teamName} <${email.teamEmail}>`);
+    console.log("Draft Pick Emails:", emails);
+
+    if (!nextPick[0]?.teamName) {
+      response.status = "Error";
+      response.message = "No Next Pick Team Data";
+      return response;
+    }
+
+    // Send Draft Pick Email
+    const emailprops = {
+      pickNumber: currentPick[0]?.draft_pick.pickNumber,
+      teamName: currentPick[0]?.team.name || "Unknown Team",
+      playerName: playerToDraft,
+      pickingTeam: nextPick[0]?.teamName,
+    };
+
+    const { data, error } = await resend.emails.send({
+          from: 'No-Reply <no-reply@siliconvalleybaseball.com>',
+          // to: emails,
+          to: ['Slump Busters <matthew.dowling3@gmail.com>'],
+          subject: 'TEST - Draft Pick Completed',
+          react: DraftPickEmail(emailprops),
+        });
+  }
+
+ 
 
   return response; // Return response
 }
