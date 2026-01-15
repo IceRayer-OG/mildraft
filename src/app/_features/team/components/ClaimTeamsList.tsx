@@ -32,7 +32,7 @@ export default function ClaimTeamList({
       <ul className="flex grow flex-col gap-2">
         {allTeams.map((leagueTeam) => (
           <li key={leagueTeam.id} className="flex items-center gap-4">
-            <Button onClick={() => claimTeam(leagueTeam)}>Claim</Button>
+            <Button className="bg-black text-white" onClick={() => claimTeam(leagueTeam)}>Claim</Button>
             <p>{leagueTeam.name}</p>
           </li>
         ))}

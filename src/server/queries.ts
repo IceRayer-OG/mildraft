@@ -78,6 +78,12 @@ export async function deletePlayerFromQueue(queueId: number) {
 
 }
 
+export async function removePlayerFromQueues(playerId: number) {
+
+  await db.delete(queues).where(eq(queues.playerId, playerId));
+  
+}
+
 export async function getDraftPlayers(): Promise<unknown> {
   // Authorization
   const user = await auth();
@@ -103,20 +109,33 @@ export async function getDraftPicks() {
   return draftPicksData;
 }
 
-export async function getCurrentDraftPick() {
-    // Authorization
-    const user = await auth();
-    if (!user.userId) throw new Error("Not logged in");
-  
+export async function getCurrentDraftPick() {  
     // Check if user is current pick
-    const currentPick = await db.query.draftPicks.findFirst({
-      orderBy: [asc(draftPicks.pickNumber)],
-      where: eq(draftPicks.pickMade, false),
-    });
+    const currentPick = await db.select().from(draftPicks)
+      .where(eq(draftPicks.pickMade, false))
+      .orderBy(asc(draftPicks.pickNumber))
+      .limit(1)
+      .leftJoin(teams, eq(draftPicks.teamId, teams.id));
   
     if(currentPick === null) throw new Error("No current pick found");
 
     return currentPick;
+}
+export async function getNextDraftPick() {  
+    // Check if user is current pick
+    const nextPick = await db.select({
+        teamName: teams.name
+      })
+      .from(draftPicks)
+      .where(eq(draftPicks.pickMade, false))
+      .orderBy(asc(draftPicks.pickNumber))
+      .offset(1)
+      .limit(1)
+      .leftJoin(teams, eq(draftPicks.teamId, teams.id));
+  
+    if(nextPick === null) throw new Error("No current pick found");
+
+    return nextPick;
 }
 
 export async function postDraftPick(playerDrafted: number, draftingPick: number) {  

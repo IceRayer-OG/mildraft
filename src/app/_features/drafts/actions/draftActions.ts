@@ -29,9 +29,21 @@ export async function getDraftablePlayersAction() {
   return draftablePlayers;
 }
 
-export async function draftPlayerAction(playerToDraft: DraftablePlayers) {
-  await draftPlayerUseCase(playerToDraft);
+export async function draftPlayerAction(
+  previousState: { status: string; message: string },
+  playerToDraft: DraftablePlayers
+) {
+  const response = await draftPlayerUseCase(playerToDraft);
+
+  if (response.status === "Success") {
+    // send email notification here
+  } else if (response.status === "Error") {
+    revalidatePath("league/draft");
+    return response;
+  }
+  
   revalidatePath("league/draft");
+  return response;
 }
 
 export async function draftWriteInPlayerAction(
