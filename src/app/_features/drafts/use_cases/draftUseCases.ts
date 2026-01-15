@@ -92,7 +92,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
     const draftPickEmails = await getDraftPickEmails();
     const nextPick = await getNextDraftPick();
     const emails = draftPickEmails.map(email => `${email.teamName} <${email.teamEmail}>`);
-    // console.log("Draft Pick Emails:", emails);
+    // console.log("Draft Pick Emails:", emails); // Debug email string
 
     // Validate next pick data is not Null
     if (!nextPick[0]?.teamName) {
