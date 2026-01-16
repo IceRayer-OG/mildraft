@@ -1,11 +1,13 @@
 import z from "zod";
 
+const positions = z.enum(["RHP", "LHP", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "INF", "DH"]);
+
 const draftPlayersSchema = z.object({
     id: z.number(),
     rank: z.number(),
     playerName: z.string(),
     userId: z.string(),
-    position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
+    position: positions.array(),
     team: z.string(),
     age: z.number(),
     height: z.string(),
@@ -14,13 +16,26 @@ const draftPlayersSchema = z.object({
     bats: z.enum(["R", "L", "B"]),
 });
 
+const proPlayersSchema = z.object({
+    rank: z.number().nullable(),
+    playerName: z.string(),
+    position: positions.array(),
+    team: z.string(),
+    level: z.string(),
+    age: z.number().nullable(),
+    height: z.string(),
+    weight: z.number().nullable(),
+    throws: z.enum(["R", "L", "B", "S"]),
+    bats: z.enum(["R", "L", "B", "S"])
+});
+
 const queuePlayersSchema = z.object({
     pros: z.object({
         id: z.number(),
         rank: z.number(),
         playerName: z.string(),
         userId: z.string(),
-        position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
+        position: positions.array(),
         team: z.string(),
         age: z.number(),
         height: z.string(),
@@ -43,7 +58,7 @@ const teamPlayersSchema = z.object({
         id: z.number(),
         proId: z.number(),
         teamId: z.number(),
-        position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
+        position: positions.array(),
     }),
     pros: z.object({
         id: z.number(),
@@ -52,7 +67,7 @@ const teamPlayersSchema = z.object({
         playerLastName: z.string(),
         playerName: z.string(),
         team: z.string(),
-        position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
+        position: positions.array(),
         age: z.number(),
         height: z.string(),
         weight: z.number(),
@@ -65,7 +80,7 @@ const teamPlayersSchema = z.object({
 const PlayersSchema = z.object({
     id: z.number(),
     playerName: z.string(),
-    position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
+    position: positions.array(),
     team: z.string(),
     throws: z.enum(["R", "L", "B"]),
     bats: z.enum(["R", "L", "B"]),
@@ -75,3 +90,4 @@ export type DraftPlayers = z.infer<typeof draftPlayersSchema>;
 export type QueuePlayers = z.infer<typeof queuePlayersSchema>;
 export type teamPlayers = z.infer<typeof teamPlayersSchema>;
 export type Players = z.infer<typeof PlayersSchema>;
+export type ProPlayers = z.infer<typeof proPlayersSchema>;

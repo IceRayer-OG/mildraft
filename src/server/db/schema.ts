@@ -16,9 +16,9 @@ import {
 
 // export const namespace = "mildraft_";
 export const createTable = pgTableCreator((name) => `mildraft_${name}`);
-export const positions = pgEnum('positions', ['P', 'C', '1B', '2B', '3B', 'SS', 'OF', 'CI', 'MI']);
-export const throws = pgEnum("throws", ["R", "L", "B"]);
-export const bats = pgEnum("bats", ["R", "L", "B"]);
+export const positions = pgEnum('positions', ['RHP', 'LHP', 'C', '1B', '2B', '3B', 'SS', 'OF', 'CI', 'MI', "INF", "DH"]);
+export const throws = pgEnum("throws", ["R", "L", "B", "S"]);
+export const bats = pgEnum("bats", ["R", "L", "B", "S"]);
 
 export const posts = createTable(
   `post`,
@@ -180,7 +180,8 @@ export const pros = createTable(
     playerLastName: varchar("player_last_name", { length: 256 }),
     playerName: varchar("player_name", { length: 256 }),
     team: varchar("team", { length: 256 }),
-    position: positions("position"),
+    position: positions("position").array(),
+    level: varchar("level", { length: 256 }),
     age: integer("age"),
     height: varchar("height", { length: 256 }),
     weight: integer("weight"),
@@ -197,6 +198,7 @@ export const pros = createTable(
   },
   (example) => [
     index("pros_idx").on(example.id),
+    unique("player_team_unique").on(example.playerName, example.team)
   ]
 );
 

@@ -187,14 +187,10 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
         });
   }
 
- 
-
   return response; // Return response
 }
 
-export async function getDraftablePlayersUseCase(): Promise<
-  DraftablePlayers[]
-> {
+export async function getDraftablePlayersUseCase(): Promise< DraftablePlayers[] > {
   // Use case to get draft players
   const draftablePlayers = await getDraftablePlayers();
   if (!draftablePlayers) {
