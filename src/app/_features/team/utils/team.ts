@@ -1,5 +1,7 @@
 import z from "zod";
 
+const positions = z.enum(["RHP", "LHP", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "INF", "DH"]);
+
 const teamSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -21,7 +23,7 @@ const playersSchema =  z.object({
   id: z.number(),
   proId: z.number(),
   teamId: z.number(),
-  position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
+  position: positions,
 }); 
 
 const proSchema = z.object({
@@ -31,12 +33,12 @@ const proSchema = z.object({
   playerLastName: z.string(),
   playerName: z.string(),
   team: z.string(),
-  position: z.enum(["P", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "DH"]),
+  position: positions.array(),
   age: z.number(),
   height: z.string(),
   weight: z.number(),
-  throws: z.enum(["R", "L", "B"]),
-  bats: z.enum(["R", "L", "B"]),
+  throws: z.enum(["R", "L", "B", "S"]),
+  bats: z.enum(["R", "L", "B", "S"]),
   rank: z.number(),
 });
 

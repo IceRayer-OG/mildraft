@@ -21,6 +21,21 @@ export const playerColumns: ColumnDef<Players>[] = [
   {
     accessorKey: "position",
     header: "Position",
+    filterFn: (row, id, value: string[]) => {
+      // Cast the row value to string[] to resolve the 'includes' error
+      const rowValue = row.getValue(id) as string[];
+      
+      // Safety check: ensure rowValue exists and is an array
+      if (!rowValue || !Array.isArray(rowValue)) return false;
+
+      // Return true if any of the selected filter values (value) 
+      // are present in the row's array (rowValue)
+      return value.some((val) => rowValue.includes(val));
+    },
+    cell: ({ row }) => {
+      const positions = row.getValue("position") as string[];
+      return <div className="flex gap-1">{positions.join(", ")}</div>;
+    },
   },
   { 
     accessorKey: "team", 

@@ -92,7 +92,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
     const draftPickEmails = await getDraftPickEmails();
     const nextPick = await getNextDraftPick();
     const emails = draftPickEmails.map(email => `${email.teamName} <${email.teamEmail}>`);
-    // console.log("Draft Pick Emails:", emails);
+    // console.log("Draft Pick Emails:", emails); // Debug email string
 
     // Validate next pick data is not Null
     if (!nextPick[0]?.teamName) {
@@ -187,14 +187,10 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
         });
   }
 
- 
-
   return response; // Return response
 }
 
-export async function getDraftablePlayersUseCase(): Promise<
-  DraftablePlayers[]
-> {
+export async function getDraftablePlayersUseCase(): Promise< DraftablePlayers[] > {
   // Use case to get draft players
   const draftablePlayers = await getDraftablePlayers();
   if (!draftablePlayers) {

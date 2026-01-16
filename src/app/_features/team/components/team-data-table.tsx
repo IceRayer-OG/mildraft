@@ -42,8 +42,8 @@ export function DataTable<TData, TValue>({
     data: use(data),
     columns,
     getCoreRowModel: getCoreRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
+    // onColumnFiltersChange: setColumnFilters,
+    // getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
       columnFilters,
@@ -54,14 +54,14 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="rounded-md">
         <div className="flex items-center py-4">
-          <Input
+          {/* <Input
             placeholder="Filter Positions..."
             value={(table.getColumn("position")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("position")?.setFilterValue(event.target.value)
             }
           className="max-w-sm"
-          />
+          /> */}
       </div>
       <Table>
         <TableHeader>

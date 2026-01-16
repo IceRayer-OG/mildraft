@@ -4,7 +4,7 @@
 import { revalidatePath } from "next/cache";
 
 // Import Use Cases
-import { getFreeAgentsUseCase, loadDraftablePlayersUseCase } from "../use_cases/playerUseCases";
+import { getFreeAgentsUseCase, loadProspectPlayersUseCase } from "../use_cases/playerUseCases";
 
 export async function getFreeAgentsAction() {
     const freeAgents = await getFreeAgentsUseCase();
@@ -12,12 +12,14 @@ export async function getFreeAgentsAction() {
     return freeAgents;
 }
 
-export async function loadDraftablePlayersAction(
+export async function loadProspectPlayersAction(
   previousState: { status: string; message: string },
   formData: FormData,
 ) {
-  const loadFile = formData.get("draftablePlayersFile") as File;
-  const draftablePlayers = await loadDraftablePlayersUseCase(loadFile);
+  const loadFile = formData.get("excelFile") as File;
+  const response = await loadProspectPlayersUseCase(loadFile);
+  console.log("loadProspectPlayersAction response:", response);
+  
   revalidatePath("/league/draft");
-  return true;
+  return response;
 }
