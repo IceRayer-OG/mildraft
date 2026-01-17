@@ -82,6 +82,8 @@ export async function loadProspectPlayersUseCase(loadFile: File) {
 	const dataToInsert = rawData.map((row: any) => {
       // Logic to split "6' 2\" / 210 lbs" into two variables
       const rawHeightWeight = String(row['Height / Weight'] || '');
+      const rawEta = String(row['eta'] || '').trim();
+      const numberedETA = (rawEta === '-' || rawEta === '') ? null : rawEta;
       const [h, w] = rawHeightWeight.split('/').map(s => s.trim());
 			// Mapping logic for Weight
 			// 1. w.replace(/\D/g, '') removes " lbs" or any other text
@@ -91,11 +93,13 @@ export async function loadProspectPlayersUseCase(loadFile: File) {
 
 			return {
         rank: Number(row['Rank']) || null,
+        teamRank: Number(row['Team Rank']) || null,
+        draftRank: Number(row['Draft Rank']) || null,
         playerName: String(row['Player'] || ''),
         position: positionsPlayed as ProPlayers['position'],
         team: String(row['Team'] || ''),
         level: String(row['Level'] || ''),
-        eta: String(row['eta'] || ''),
+        eta: numberedETA,
         age: Number(row['Age']) || null,
         height: String(h || ''),
         weight: numericWeight || null,

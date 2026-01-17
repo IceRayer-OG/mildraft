@@ -45,6 +45,8 @@ export async function loadProspectPlayers(dataToInsert: ProPlayers[]) {
 		target: [pros.playerName, pros.team],
 		set: {
 			rank: sql`excluded.rank`,
+            teamRank: sql`excluded.teamRank`,
+            draftRank: sql`excluded.draftRank`,
 			position: sql`excluded.position`,
 			level: sql`excluded.level`,
 			eta: sql`excluded.eta`,
