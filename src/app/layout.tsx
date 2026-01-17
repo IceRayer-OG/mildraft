@@ -29,7 +29,7 @@ export default function RootLayout({
         <body>
           <Toaster position="bottom-center" richColors />
           <TopNav />
-          <main>
+          <main className="size-full bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
             {children}
           </main>
           <Analytics />

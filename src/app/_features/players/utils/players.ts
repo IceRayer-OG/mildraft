@@ -18,11 +18,14 @@ const draftPlayersSchema = z.object({
 
 const proPlayersSchema = z.object({
     rank: z.number().nullable(),
+    teamRank: z.number().nullable(),
+    draftRank: z.number().nullable(),
     playerName: z.string(),
     position: positions.array(),
     team: z.string(),
     level: z.string(),
     age: z.number().nullable(),
+    eta: z.number().nullable(),
     height: z.string(),
     weight: z.number().nullable(),
     throws: z.enum(["R", "L", "B", "S"]),

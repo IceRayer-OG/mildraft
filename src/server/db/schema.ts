@@ -188,6 +188,8 @@ export const pros = createTable(
     throws: throws("throws"),
     bats: bats("bats"),
     rank: integer("rank"),
+    teamRank: integer("team_rank"),
+    draftRank: integer("draft_rank"),
     eta: integer("eta"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)

@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 // UI Components
 import { type ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, ArrowUpDown } from "lucide-react";
 import { Button } from "~/_components/ui/button";
 import {
   DropdownMenu,
@@ -54,11 +54,29 @@ async function draftPlayer(playerToDraft: DraftablePlayers) {
 export const draftColumns: ColumnDef<DraftablePlayers>[] = [
   {
     accessorKey: "rank",
-    header: "Rank",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted()=== "asc")}
+        > 
+          Rank
+          <ArrowUpDown className=""/>
+        </Button>  
+      )
+    },
   },
   {
     accessorKey: "playerName",
-    header: "Player Name",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted()=== "asc")}
+        > 
+          Player Name
+          <ArrowUpDown className=""/>
+        </Button>  
+      )
+    },
   },
   {
     accessorKey: "position",
