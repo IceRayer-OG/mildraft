@@ -26,14 +26,14 @@ export default function DraftPage() {
   const draftablePlayers = getDraftablePlayersAction();
   const draftPicks = getDraftPicksListAction();
   const allTeams = getLeagueTeamsAction();
-  const draftDetails = getDraftSettingsAction(leagueData);
+  const draftDetails = use(getDraftSettingsAction(leagueData));
 
   return (
     <div className="flex flex-col w-full min-h-screen gap-4 p-4 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
       <div className="flex w-full h-10 justify-center gap-8 rounded-md items-center text-sm md:text-md">
-        <p>Draft Start: {use(draftDetails).draftStart} @ {use(draftDetails).draftTime}</p>
+        <p>Draft Start: {draftDetails.draftStart} @ {draftDetails.draftTime}</p>
         <Suspense>
-          <DraftCountdownTimer targetDate={new Date(use(draftDetails).draftStart+" "+use(draftDetails).draftTime)} />
+          <DraftCountdownTimer targetDate={new Date(draftDetails.draftStart+" "+draftDetails.draftTime)} />
         </Suspense>
       </div>
       <div className="flex border rounded-md">
@@ -41,7 +41,7 @@ export default function DraftPage() {
           <p className="p-1">Picks</p>
           <Separator decorative={true} />
           <div className="p-1 whitespace-nowrap">
-            <p>Clock: {use(draftDetails).pickDuration}:00 h</p>
+            <p>Clock: {draftDetails.pickDuration}:00 h</p>
           </div>
         </div>
         <div>
