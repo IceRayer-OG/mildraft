@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, use } from "react";
 import {
   type ColumnDef,
@@ -7,11 +7,14 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  getFacetedRowModel, // Added
-  getFacetedUniqueValues, // Added
+  getFacetedRowModel, 
+  getFacetedUniqueValues,
+  SortingState,
+  getSortedRowModel, 
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
+import { Input } from "~/_components/ui/input";
 import {
   Table,
   TableBody,
@@ -19,33 +22,37 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/_components/ui/table"
+} from "~/_components/ui/table";
 import { Button } from "~/_components/ui/button";
 import { DataTableFacetedFilter } from "./player-table-faceted-filter"; // You will need to create this
 
 import { PlayerLoadingDialog } from "./PlayerLoadingDialog";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: Promise<TData[]>
+  columns: ColumnDef<TData, TValue>[];
+  data: Promise<TData[]>;
 }
 
 export function PlayerDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
     data: use(data),
     columns,
     state: {
       columnFilters,
+      sorting,
     },
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     // Added for enum/faceted filtering
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
@@ -76,12 +83,60 @@ export function PlayerDataTable<TData, TValue>({
               ]}
             />
           )}
-          
+          {table.getColumn("team") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("team")}
+              title="Team"
+              options={[
+                { label: "Arizona Diamondbacks", value: "Arizona Diamondbacks" },
+                { label: "Athletics", value: "Athletics" },
+                { label: "Atlanta Braves", value: "Atlanta Braves" },
+                { label: "Baltimore Orioles", value: "Baltimore Orioles" },
+                { label: "Boston Red Sox", value: "Boston Red Sox" },
+                { label: "Chicago Cubs", value: "Chicago Cubs" },
+                { label: "Chicago White Sox", value: "Chicago White Sox" },
+                { label: "Cincinnati Reds", value: "Cincinnati Reds" },
+                { label: "Cleveland Guardians", value: "Cleveland Guardians" },
+                { label: "Colorado Rockies", value: "Colorado Rockies" },
+                { label: "Detroit Tigers", value: "Detroit Tigers" },
+                { label: "Houston Astros", value: "Houston Astros" },
+                { label: "Kansas City Royals", value: "Kansas City Royals" },
+                { label: "Los Angeles Angels", value: "Los Angeles Angels" },
+                { label: "Los Angeles Dodgers", value: "Los Angeles Dodgers" },
+                { label: "Miami Marlins", value: "Miami Marlins" },
+                { label: "Milwaukee Brewers", value: "Milwaukee Brewers" },
+                { label: "Minnesota Twins", value: "Minnesota Twins" },
+                { label: "New York Mets", value: "New York Mets" },
+                { label: "New York Yankees", value: "New York Yankees" },
+                { label: "Philadelphia Phillies", value: "Philadelphia Phillies"},
+                { label: "Pittsburgh Pirates", value: "Pittsburgh Pirates" },
+                { label: "San Diego Padres", value: "San Diego Padres" },
+                { label: "Seattle Mariners", value: "Seattle Mariners" },
+                { label: "San Francisco Giants", value: "San Francisco Giants" },
+                { label: "St. Louis Cardinals", value: "St. Louis Cardinals" },
+                { label: "Tampa Bay Rays", value: "Tampa Bay Rays" },
+                { label: "Texas Rangers", value: "Texas Rangers" },
+                { label: "Toronto Blue Jays", value: "Toronto Blue Jays" },
+                { label: "Washington Nationals", value: "Washington Nationals" },
+              ]}
+            />
+          )}
+          <Input
+            placeholder="Player Name..."
+            value={
+              (table.getColumn("playerName")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("playerName")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+
           {columnFilters.length > 0 && (
             <Button
               variant="destructive"
               onClick={() => table.resetColumnFilters()}
-              className="h-8 px-2 lg:px-3 text-lg"
+              className="h-8 px-2 text-lg lg:px-3"
             >
               Reset
             </Button>
@@ -99,7 +154,10 @@ export function PlayerDataTable<TData, TValue>({
                   <TableHead key={header.id}>
                     {header.isPlaceholder
                       ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -111,14 +169,20 @@ export function PlayerDataTable<TData, TValue>({
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -126,24 +190,24 @@ export function PlayerDataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-    <div className="flex items-center justify-end space-x-2 py-4">
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => table.previousPage()}
-        disabled={!table.getCanPreviousPage()}
-      >
-        Prev
-      </Button>
-      <Button 
-        variant="secondary" 
-        size="sm"
-        onClick={() => table.nextPage()} 
-        disabled={!table.getCanNextPage()}
-      >
-        Next
-      </Button>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Prev
+        </Button>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
+      </div>
     </div>
-  </div>
-  )
+  );
 }

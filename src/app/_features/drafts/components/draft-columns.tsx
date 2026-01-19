@@ -65,6 +65,9 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      return <div className="w-px whitespace-nowrap">{row.getValue("rank")}</div>
+    },
     sortingFn: (rowA, rowB, columnId) => {
       const a = rowA.getValue(columnId);
       const b = rowB.getValue(columnId);
@@ -93,6 +96,9 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
           <ArrowUpDown className="" />
         </Button>
       );
+    },
+    cell: ({ row }) => {
+      return <div className="w-px whitespace-nowrap">{row.getValue("teamRank")}</div>
     },
     sortingFn: (rowA, rowB, columnId) => {
       const a = rowA.getValue(columnId);
@@ -138,6 +144,9 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
       // Standard numeric sort for the remaining values
       return Number(a) > Number(b) ? 1 : -1;
     },
+    cell: ({ row }) => {
+      return <div className="w-px whitespace-nowrap">{row.getValue("draftRank")}</div>
+    },
   },
   {
     accessorKey: "playerName",
@@ -151,6 +160,9 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
           <ArrowUpDown className="" />
         </Button>
       );
+    },
+    cell: ({ row }) => {
+      return <div className="w-px whitespace-nowrap">{row.getValue("playerName")}</div>
     },
   },
   {
@@ -169,7 +181,7 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     },
     cell: ({ row }) => {
       const positions = row.getValue("position") as string[];
-      return <div className="flex gap-1">{positions.join(", ")}</div>;
+      return <div className="flex w-px whitespace-nowrap gap-1">{positions.join(", ")}</div>;
     },
   },
   {
