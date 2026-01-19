@@ -36,16 +36,16 @@ export default function DraftPage() {
           <DraftCountdownTimer targetDate={new Date(draftDetails.draftStart+" "+draftDetails.draftTime)} />
         </Suspense>
       </div>
-      <div className="flex border rounded-md">
-        <div className="flex flex-col text-sm md:text-md">
-          <p className="p-1">Picks</p>
-          <Separator decorative={true} />
-          <div className="p-1 whitespace-nowrap">
+      <div className="flex">
+        <div className="flex flex-col border-r justify-center text-sm md:text-md">
+          <p className="p-1 rotate-270">Picks</p>
+          {/* <Separator decorative={true} /> */}
+          {/* <div className="p-1 whitespace-nowrap">
             <p>Clock: {draftDetails.pickDuration}:00 h</p>
-          </div>
+          </div> */}
         </div>
         <div>
-          <Separator orientation="vertical" decorative={true} />
+          {/* <Separator orientation="vertical" decorative={true} /> */}
         </div>
         <div className="flex grow h-16 p-2 items-center overflow-hidden">
           <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
@@ -58,7 +58,7 @@ export default function DraftPage() {
           </ScrollArea>
         </div>
         <div>
-          <Separator orientation="vertical" decorative={true} />
+          {/* <Separator orientation="vertical" decorative={true} /> */}
         </div>
         <div className=" p-0 place-content-center">
           <Suspense>
