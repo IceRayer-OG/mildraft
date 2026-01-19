@@ -1,6 +1,7 @@
 "use client"
  
 import { type ColumnDef } from "@tanstack/react-table"
+import { ArrowUpDown } from "lucide-react"
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -15,8 +16,47 @@ import { type Players } from "../utils/players";
  
 export const playerColumns: ColumnDef<Players>[] = [
   {
+    accessorKey: "teamRank",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Team Rank
+          <ArrowUpDown className="" />
+        </Button>
+      );
+    },
+    sortingFn: (rowA, rowB, columnId) => {
+      const a = rowA.getValue(columnId);
+      const b = rowB.getValue(columnId);
+
+      // Handle blanks (null, undefined, or empty string)
+      const isEmpty = (val: any) =>
+        val === null || val === undefined || val === "";
+
+      if (isEmpty(a) && !isEmpty(b)) return 1; // Move A to bottom
+      if (!isEmpty(a) && isEmpty(b)) return -1; // Move B to bottom
+      if (isEmpty(a) && isEmpty(b)) return 0; // They are equal
+
+      // Standard numeric sort for the remaining values
+      return Number(a) > Number(b) ? 1 : -1;
+    },
+  },
+  {
     accessorKey: "playerName",
-    header: "Player Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Player Name
+          <ArrowUpDown className="" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "position",
