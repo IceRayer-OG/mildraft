@@ -1,10 +1,10 @@
 "use client";
- 
+
 // Refactor
 // React and Next.js imports
 import { useEffect, useState } from "react";
 // UI Components
-import { type ColumnDef } from "@tanstack/react-table"
+import { type ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, ArrowUpDown } from "lucide-react";
 import { Button } from "~/_components/ui/button";
 import {
@@ -29,16 +29,16 @@ async function queuePlayer(playerToQueue: DraftablePlayers) {
     toast.success(`${playerToQueue.playerName} has been added to your queue`);
   } catch (error) {
     console.log(error);
-    toast.error('Error adding player to queue');
+    toast.error("Error adding player to queue");
   }
 }
 
-async function draftPlayer(playerToDraft: DraftablePlayers) {  
+async function draftPlayer(playerToDraft: DraftablePlayers) {
   // setup initial content
   const content = {
     status: "",
-    message: ""
-  }
+    message: "",
+  };
 
   // get response from draft action
   const response = await draftPlayerAction(content, playerToDraft);
@@ -56,26 +56,101 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     accessorKey: "rank",
     header: ({ column }) => {
       return (
-        <Button variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted()=== "asc")}
-        > 
-          Rank
-          <ArrowUpDown className=""/>
-        </Button>  
-      )
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Top 100 Rank
+          <ArrowUpDown className="" />
+        </Button>
+      );
+    },
+    sortingFn: (rowA, rowB, columnId) => {
+      const a = rowA.getValue(columnId);
+      const b = rowB.getValue(columnId);
+
+      // Handle blanks (null, undefined, or empty string)
+      const isEmpty = (val: any) =>
+        val === null || val === undefined || val === "";
+
+      if (isEmpty(a) && !isEmpty(b)) return 1; // Move A to bottom
+      if (!isEmpty(a) && isEmpty(b)) return -1; // Move B to bottom
+      if (isEmpty(a) && isEmpty(b)) return 0; // They are equal
+
+      // Standard numeric sort for the remaining values
+      return Number(a) > Number(b) ? 1 : -1;
+    },
+  },
+  {
+    accessorKey: "teamRank",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Team Rank
+          <ArrowUpDown className="" />
+        </Button>
+      );
+    },
+    sortingFn: (rowA, rowB, columnId) => {
+      const a = rowA.getValue(columnId);
+      const b = rowB.getValue(columnId);
+
+      // Handle blanks (null, undefined, or empty string)
+      const isEmpty = (val: any) =>
+        val === null || val === undefined || val === "";
+
+      if (isEmpty(a) && !isEmpty(b)) return 1; // Move A to bottom
+      if (!isEmpty(a) && isEmpty(b)) return -1; // Move B to bottom
+      if (isEmpty(a) && isEmpty(b)) return 0; // They are equal
+
+      // Standard numeric sort for the remaining values
+      return Number(a) > Number(b) ? 1 : -1;
+    },
+  },
+  {
+    accessorKey: "draftRank",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Draft Rank
+          <ArrowUpDown className="" />
+        </Button>
+      );
+    },
+    sortingFn: (rowA, rowB, columnId) => {
+      const a = rowA.getValue(columnId);
+      const b = rowB.getValue(columnId);
+
+      // Handle blanks (null, undefined, or empty string)
+      const isEmpty = (val: any) =>
+        val === null || val === undefined || val === "";
+
+      if (isEmpty(a) && !isEmpty(b)) return 1; // Move A to bottom
+      if (!isEmpty(a) && isEmpty(b)) return -1; // Move B to bottom
+      if (isEmpty(a) && isEmpty(b)) return 0; // They are equal
+
+      // Standard numeric sort for the remaining values
+      return Number(a) > Number(b) ? 1 : -1;
     },
   },
   {
     accessorKey: "playerName",
     header: ({ column }) => {
       return (
-        <Button variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted()=== "asc")}
-        > 
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Player Name
-          <ArrowUpDown className=""/>
-        </Button>  
-      )
+          <ArrowUpDown className="" />
+        </Button>
+      );
     },
   },
   {
@@ -84,11 +159,11 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     filterFn: (row, id, value: string[]) => {
       // Cast the row value to string[] to resolve the 'includes' error
       const rowValue = row.getValue(id) as string[];
-      
+
       // Safety check: ensure rowValue exists and is an array
       if (!rowValue || !Array.isArray(rowValue)) return false;
 
-      // Return true if any of the selected filter values (value) 
+      // Return true if any of the selected filter values (value)
       // are present in the row's array (rowValue)
       return value.some((val) => rowValue.includes(val));
     },
@@ -97,9 +172,9 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
       return <div className="flex gap-1">{positions.join(", ")}</div>;
     },
   },
-  { 
-    accessorKey: "team", 
-    header: "Team" 
+  {
+    accessorKey: "team",
+    header: "Team",
   },
   {
     accessorKey: "age",
@@ -125,8 +200,8 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const player = row.original
- 
+      const player = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -144,7 +219,7 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];

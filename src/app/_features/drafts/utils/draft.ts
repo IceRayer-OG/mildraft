@@ -26,6 +26,8 @@ const compeltedDraftPickSchema = z.object({
 const draftablePlayersSchema = z.object({
   id: z.number(),
   rank: z.number(),
+  draftRank: z.number(),
+  teamRank: z.number(),
   playerName: z.string(),
   position: positions.array(),
   team: z.string(),
@@ -39,6 +41,8 @@ const draftablePlayersSchema = z.object({
 const queuePlayersSchema = z.object({
   id: z.number(),
   rank: z.number(),
+  draftRank: z.number(),
+  teamRank: z.number(),
   playerName: z.string(),
   position: positions.array(),
   team: z.string(),
