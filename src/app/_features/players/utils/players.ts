@@ -5,6 +5,8 @@ const positions = z.enum(["RHP", "LHP", "C", "1B", "2B", "3B", "SS", "OF", "CI",
 const draftPlayersSchema = z.object({
     id: z.number(),
     rank: z.number(),
+    teamRank: z.number(),
+    draftRank: z.number(),
     playerName: z.string(),
     userId: z.string(),
     position: positions.array(),

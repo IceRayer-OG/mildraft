@@ -92,7 +92,7 @@ export async function loadProspectPlayersUseCase(loadFile: File) {
 			const positionsPlayed = String(row['Position'] || '').split('/').map(s => s.trim()).filter(Boolean);
 
 			return {
-        rank: Number(row['Rank']) || null,
+        rank: Number(row['Top 100 Rank']) || null,
         teamRank: Number(row['Team Rank']) || null,
         draftRank: Number(row['Draft Rank']) || null,
         playerName: String(row['Player'] || ''),
@@ -109,7 +109,7 @@ export async function loadProspectPlayersUseCase(loadFile: File) {
 	});
  
   
-	// For demonstration, we'll just log the file name
+	// For debugging, we'll console log the info to load
 	// console.log("Data to insert:", dataToInsert);
   // console.log("Loading prospect players from file:", loadFile.name);
 

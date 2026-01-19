@@ -12,7 +12,15 @@ import {
   useReactTable,
   getSortedRowModel,
   SortingState,
+  VisibilityState,
 } from "@tanstack/react-table";
+
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuCheckboxItem 
+} from "~/_components/ui/dropdown-menu";
 
 import {
   Table,
@@ -37,6 +45,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const table = useReactTable({
     data: use(data),
@@ -44,6 +53,7 @@ export function DataTable<TData, TValue>({
     state: {
       columnFilters,
       sorting,
+      columnVisibility,
     },
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
@@ -51,6 +61,7 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
     // Added for enum/faceted filtering
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
@@ -86,15 +97,36 @@ export function DataTable<TData, TValue>({
               column={table.getColumn("team")}
               title="Team"
               options={[
-                { label: "Athletics", value: "Athletics" },
-                { label: "Baltimore Orioles", value: "Baltimore Orioles" },
-                { label: "Detroit Tigers", value: "Detroit Tigers" },
-                { label: "Milwaukee Brewers", value: "Milwaukee Brewers" },
-                { label: "Minnesota Twins", value: "Minnesota Twins" },
-                { label: "Pittsburgh Pirates", value: "Pittsburgh Pirates" },
-                { label: "Seattle Mariners", value: "Seattle Mariners" },
-                { label: "St. Louis Cardinals", value: "St. Louis Cardinals" },
-                { label: "Texas Rangers", value: "Texas Rangers" },
+                { label: "Arizona Diamondbacks", value: "Arizona Diamondbacks" }, 
+                { label: "Athletics", value: "Athletics" }, 
+                { label: "Atlanta Braves", value: "Atlanta Braves" }, 
+                { label: "Baltimore Orioles", value: "Baltimore Orioles" }, 
+                { label: "Boston Red Sox", value: "Boston Red Sox" }, 
+                { label: "Chicago Cubs", value: "Chicago Cubs" }, 
+                { label: "Chicago White Sox", value: "Chicago White Sox" }, 
+                { label: "Cincinnati Reds", value: "Cincinnati Reds" }, 
+                { label: "Cleveland Guardians", value: "Cleveland Guardians" }, 
+                { label: "Colorado Rockies", value: "Colorado Rockies" }, 
+                { label: "Detroit Tigers", value: "Detroit Tigers" }, 
+                { label: "Houston Astros", value: "Houston Astros" }, 
+                { label: "Kansas City Royals", value: "Kansas City Royals" }, 
+                { label: "Los Angeles Angels", value: "Los Angeles Angels" }, 
+                { label: "Los Angeles Dodgers", value: "Los Angeles Dodgers" }, 
+                { label: "Miami Marlins", value: "Miami Marlins" }, 
+                { label: "Milwaukee Brewers", value: "Milwaukee Brewers" }, 
+                { label: "Minnesota Twins", value: "Minnesota Twins" }, 
+                { label: "New York Mets", value: "New York Mets" }, 
+                { label: "New York Yankees", value: "New York Yankees" }, 
+                { label: "Philadelphia Phillies", value: "Philadelphia Phillies" }, 
+                { label: "Pittsburgh Pirates", value: "Pittsburgh Pirates" }, 
+                { label: "San Diego Padres", value: "San Diego Padres" }, 
+                { label: "Seattle Mariners", value: "Seattle Mariners" }, 
+                { label: "San Francisco Giants", value: "San Francisco Giants" }, 
+                { label: "St. Louis Cardinals", value: "St. Louis Cardinals" }, 
+                { label: "Tampa Bay Rays", value: "Tampa Bay Rays" }, 
+                { label: "Texas Rangers", value: "Texas Rangers" }, 
+                { label: "Toronto Blue Jays", value: "Toronto Blue Jays" },
+                { label: "Washington Nationals", value: "Washington Nationals" },
               ]}
             />
           )}
@@ -119,7 +151,34 @@ export function DataTable<TData, TValue>({
             </Button>
           )}
         </div>
-        <div className="flex items-center py-4"></div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="ml-auto">
+              Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter(
+                (column) => column.getCanHide()
+              )
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="rounded-md border">
