@@ -66,7 +66,7 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="w-px whitespace-nowrap">{row.getValue("rank")}</div>
+      return <div className="w-fit pr-4 whitespace-nowrap">{row.getValue("rank")}</div>
     },
     sortingFn: (rowA, rowB, columnId) => {
       const a = rowA.getValue(columnId);
@@ -98,7 +98,7 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="w-px whitespace-nowrap">{row.getValue("teamRank")}</div>
+      return <div className="w-px whitespace-nowrap p-1">{row.getValue("teamRank")}</div>
     },
     sortingFn: (rowA, rowB, columnId) => {
       const a = rowA.getValue(columnId);
@@ -162,7 +162,7 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="w-px whitespace-nowrap">{row.getValue("playerName")}</div>
+      return <div className="w-full whitespace-nowrap pr-2">{row.getValue("playerName")}</div>
     },
   },
   {
@@ -181,7 +181,7 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     },
     cell: ({ row }) => {
       const positions = row.getValue("position") as string[];
-      return <div className="flex w-px whitespace-nowrap gap-1">{positions.join(", ")}</div>;
+      return <div className="w-fit pr-2 whitespace-nowrap">{positions.join(", ")}</div>;
     },
   },
   {
