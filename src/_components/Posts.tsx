@@ -1,15 +1,19 @@
-'use client';
-
-import { type Post } from "~/app/_features/posts/utils/posts";
+// React
 import { use } from "react";
+
+// UI Components
 import { Separator } from "~/_components/ui/separator";
+
+// Types
+import { type Post } from "~/app/_features/posts/utils/posts";
+
 
 export default function Posts({
   posts,
 }: {
   posts: Promise<Post[]>;
 }) {
-  const allPosts = use(posts);
+  const allPosts = posts ? use(posts) : [];
   
   return (
   <div className="flex flex-col">

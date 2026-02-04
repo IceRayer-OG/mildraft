@@ -20,6 +20,7 @@ import { DraftHistoryDialog } from "~/app/_features/drafts/components/DraftHisto
 import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
 import { getDraftSettingsAction } from "~/app/_features/leagues/actions/leagueActions";
 
+export const dynamic = 'force-dynamic'
 
 export default function DraftPage() {
   const leagueData = { leagueId: 1, draftId: 2}
@@ -31,7 +32,7 @@ export default function DraftPage() {
   return (
     <div className="flex flex-col w-full min-h-screen gap-4 p-4 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
       <div className="flex w-full h-10 justify-center gap-8 rounded-md items-center text-sm md:text-md">
-        <p>Draft Start: {draftDetails.draftStart} @ {draftDetails.draftTime}</p>
+        <p>Draft Start: {draftDetails.draftStart.toDateString()} @ {draftDetails.draftTime}</p>
         <Suspense>
           <DraftCountdownTimer targetDate={new Date(draftDetails.draftStart+" "+draftDetails.draftTime)} />
         </Suspense>

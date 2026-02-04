@@ -23,8 +23,8 @@ export default function DraftQueueList({
       <ul className="flex gap-1">
         {allPicks.map((pick) => (
           <li key={pick.draft_pick.id} className="flex items-center">
-            <div className="flex flex-col border p-1 rounded-md">
-              <div className="flex items-center gap-1 pb-1 border-b">
+            <div className="flex flex-col border rounded-md">
+              <div className="flex items-center gap-1 p-1 border-b">
                 <p>{pick.draft_pick.pickNumber}:</p>
                 <Avatar className="size-7">
                   <AvatarImage src="/_assets/avatar.png" alt="Avatar" />

@@ -2,7 +2,7 @@
 
 // React and NextJS Imports
 import Form from "next/form";
-import { useActionState, useEffect } from "react";
+import { useState, useActionState, useEffect } from "react";
 
 // UI Components
 import { Button } from "~/_components/ui/button";
@@ -41,6 +41,8 @@ export function DraftSettingsForm({
     { status: "", message: "", data: draftSettingsData },
   );
 
+  const [formattedDate, setFormattedDate] = useState<string>("");
+
   useEffect(() => {
     if (content.status === "success") {
       toast.success(content.message);
@@ -48,6 +50,10 @@ export function DraftSettingsForm({
       toast.error(content.message);
     }
   }, [content]);
+
+  useEffect(() => {
+    setFormattedDate(new Date(content?.data.draftStart).toLocaleString())
+  }, [content?.data.draftStart]);
 
   return (
     <Form action={updateLeagueDraftSettings}>
@@ -76,7 +82,7 @@ export function DraftSettingsForm({
               id="draft-start-date"
               name="draftStartDate"
               type="date"
-              defaultValue={content?.data.draftStart}
+              defaultValue={formattedDate}
               className="md:w-62.5"
             />
           </div>

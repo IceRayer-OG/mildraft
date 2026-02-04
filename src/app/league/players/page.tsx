@@ -5,6 +5,8 @@ import { playerColumns } from "~/app/_features/players/components/player-columns
 
 // Server Actions
 import { getFreeAgentsAction } from "~/app/_features/players/actions/playerActions";
+
+export const dynamic = 'force-dynamic'
  
 export default function PlayerPage() {
   const data = getFreeAgentsAction();

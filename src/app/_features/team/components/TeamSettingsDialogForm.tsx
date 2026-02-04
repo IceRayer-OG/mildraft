@@ -35,7 +35,6 @@ export function TeamSettingsDialogForm({
 }: {
   teamSettingsData: Promise<TeamSettings>;
 }) {
-  // useActionState
   const [content, updateTeamSettings, isPending] = useActionState(
     updateTeamSettingsAction,
     { status: "", message: "", data: use(teamSettingsData) },

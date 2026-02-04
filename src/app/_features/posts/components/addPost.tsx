@@ -58,7 +58,7 @@ export function AddPostDialog() {
       <DialogTrigger asChild>
         <Button variant="secondary">Create</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
           <DialogTitle>Create a post</DialogTitle>
           <DialogDescription>

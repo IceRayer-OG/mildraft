@@ -1,5 +1,7 @@
+// React Components
 import { use } from "react";
 
+// UI Components
 import {
   Dialog,
   DialogContent,
@@ -12,7 +14,10 @@ import { Button } from "~/_components/ui/button";
 import { LeagueSettingsTabsCard } from "./SettingsCard";
 import { LucideSettings } from "lucide-react";
 
-import { type LeagueData } from "../utils/settings";
+// Types
+import { 
+  type LeagueData,
+} from "../utils/settings";
 
 // Action
 import {
@@ -25,11 +30,11 @@ export function SettingDialog() {
   const leagueData = {
     leagueId: 1, // Example league ID, replace with actual logic to get league ID
     draftId: 2, // Example draft ID, replace with actual logic to get draft ID
-  };
+  } as LeagueData;
 
-  const teamData = getTeamSettingsAction(leagueData);
-  const leagueSettingsData = getLeagueSettingsAction(leagueData);
-  const draftSettingsData = getDraftSettingsAction(leagueData);
+  const teamData = use(getTeamSettingsAction(leagueData));
+  const leagueSettingsData = use(getLeagueSettingsAction(leagueData));
+  const draftSettingsData = use(getDraftSettingsAction(leagueData));
 
   return (
     <Dialog>

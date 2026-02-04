@@ -48,7 +48,7 @@ export async function updateDraftSettingsAction(
   const draftData: DraftSettings = {
     draftEnabled: Boolean(formData.get("draftEnabled")),
     snakeDraft: Boolean(formData.get("snakeDraft")),
-    draftStart: formData.get("draftStartDate") as string,
+    draftStart: new Date(formData.get("draftStartDate") as string),
     draftTime: formData.get("draftStartTime") as string,
     pickDuration: Number(formData.get("pickDuration")),
     draftPauseEnabled: Boolean(formData.get("draftPauseEnabled")),
