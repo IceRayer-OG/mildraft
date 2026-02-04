@@ -16,10 +16,7 @@ import { LucideSettings } from "lucide-react";
 
 // Types
 import { 
-  type LeagueData 
-  type LeagueSettings, 
-  type TeamSettings, 
-  type DraftSettings,
+  type LeagueData,
 } from "../utils/settings";
 
 // Action
