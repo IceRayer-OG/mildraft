@@ -27,6 +27,7 @@ import {
 } from "~/app/_features/team/actions/teamActions";
 import { getTeamSettingsAction } from "~/app/_features/team/actions/teamSettingsActions";
 
+export const dynamic = 'force-dynamic'
 
 export default function TeamPage() {
   const data = getMyTeamAction();

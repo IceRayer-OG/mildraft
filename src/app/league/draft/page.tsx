@@ -20,6 +20,7 @@ import { DraftHistoryDialog } from "~/app/_features/drafts/components/DraftHisto
 import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
 import { getDraftSettingsAction } from "~/app/_features/leagues/actions/leagueActions";
 
+export const dynamic = 'force-dynamic'
 
 export default function DraftPage() {
   const leagueData = { leagueId: 1, draftId: 2}
