@@ -35,18 +35,18 @@ export function LeagueSettingsTabsCard({
   draftSettingsData,
   leagueData,
 }: {
-  leagueSettingsData: Promise<LeagueSettings>;
-  teamSettingsData: Promise<TeamSettings>;
-  draftSettingsData: Promise<DraftSettings>;
+  leagueSettingsData: LeagueSettings;
+  teamSettingsData: TeamSettings;
+  draftSettingsData: DraftSettings;
   leagueData: LeagueData;
 }) {
   // State for active tab
   const tabs = ["league", "draft", "team"];
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const leagueInfo = leagueData;
-  const leagueSettingsInfo = use(leagueSettingsData);
-  const draftSettingsInfo = use(draftSettingsData);
-  const teamSettingsInfo = use(teamSettingsData);
+  const leagueSettingsInfo = leagueSettingsData;
+  const draftSettingsInfo = draftSettingsData;
+  const teamSettingsInfo = teamSettingsData;
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="container">

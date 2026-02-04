@@ -132,6 +132,7 @@ export async function getLeagueTeamSettings(
     logoEnabled: data[0]?.teamLogosEnabled,
     teamsAllowed: data[0]?.teams,
   } as TeamSettings;
+  
   return teamSettings;
 }
 

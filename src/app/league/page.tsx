@@ -22,7 +22,7 @@ import { getLeagueSettingsAction } from "~/app/_features/leagues/actions/leagueA
 export default function LeaguePage() {
   const posts = getLeaguePosts();
   const allLeagueTeams = getLeagueTeamsAction();
-  const leagueSettingsData = getLeagueSettingsAction({leagueId: 1, draftId: 2});
+  const leagueSettingsData = use(getLeagueSettingsAction({leagueId: 1, draftId: 2}));
 
   return (
     <div className="min-w-screen flex min-h-screen flex-col bg-linear-to-b from-[#12026d] to-[#15162c] p-4 text-white">
@@ -31,7 +31,7 @@ export default function LeaguePage() {
         </div>
         <div>
           <p className="text-xl font-semibold md:text-4xl">
-            Welcome to {use(leagueSettingsData).name}!
+            Welcome to {leagueSettingsData.name}!
           </p>
         </div>
         <div className="content-right pr-4 flex items-center gap-2">
