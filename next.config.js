@@ -11,6 +11,13 @@ const config = {
     // ppr: 'incremental',
     
   },
+  images: {
+    remotePatterns: [
+      new URL('https://fantasy-media.cbssports.com/baseball/siliconvalley/ealsm1LqkKSOqPRQ.jpg'),
+    ],
+  },
 };
+
+
 
 export default config;

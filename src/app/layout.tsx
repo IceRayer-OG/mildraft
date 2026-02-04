@@ -12,6 +12,7 @@ import { type Metadata } from "next";
 
 // import UI Components
 import { TopNav } from "../_components/TopNav";
+import { TimezoneSetter } from "~/_components/TimezoneSetter";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.variable}`}>
       <ClerkProvider>
         <body>
+          <TimezoneSetter />
           <Toaster position="bottom-center" richColors />
           <TopNav />
           <main className="size-full bg-linear-to-b from-[#12026d] to-[#15162c] text-white">

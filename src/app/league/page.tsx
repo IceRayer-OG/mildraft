@@ -1,5 +1,5 @@
 // React
-// import Image from "next/image";
+import Image from "next/image";
 import { Suspense, use } from "react";
 import { getLeaguePosts } from "~/server/queries";
 
@@ -36,10 +36,13 @@ export default function LeaguePage() {
         </div>
         <div className="content-right pr-4 flex items-center gap-2">
           <SettingDialog />
-          <Avatar>
-          <AvatarImage src="https://fantasy-media.cbssports.com/baseball/siliconvalley/ealsm1LqkKSOqPRQ.jpg" alt="Avatar" />
-          <AvatarFallback className="text-black text-sm">{use(leagueSettingsData).abbreviation}</AvatarFallback>
-        </Avatar>
+          <Image
+            src="https://fantasy-media.cbssports.com/baseball/siliconvalley/ealsm1LqkKSOqPRQ.jpg"
+            width={60}
+            height={40}
+            alt="Avatar"
+            className="rounded-full"
+          />
         </div>
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">

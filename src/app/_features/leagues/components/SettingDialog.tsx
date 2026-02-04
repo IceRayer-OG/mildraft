@@ -1,5 +1,7 @@
-import { use } from "react";
+// React Components
+import { use, } from "react";
 
+// UI Components
 import {
   Dialog,
   DialogContent,
@@ -12,6 +14,7 @@ import { Button } from "~/_components/ui/button";
 import { LeagueSettingsTabsCard } from "./SettingsCard";
 import { LucideSettings } from "lucide-react";
 
+// Types
 import { type LeagueData } from "../utils/settings";
 
 // Action

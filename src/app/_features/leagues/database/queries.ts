@@ -44,7 +44,7 @@ export async function updateLeagueSettings(
 export async function getDraftSettings(
   leagueData: LeagueData,
 ): Promise<DraftSettings> {
-  // Placeholder for actual database query logic
+
   const leagueSettingsData = await db
     .select()
     .from(settings)
@@ -67,12 +67,12 @@ export async function getDraftSettings(
   const draftSettingsDataResponse = {
     draftEnabled: leagueSettingsData[0]?.draftsEnabled,
     snakeDraft: draftSettingsData[0]?.snakeDraft,
-    draftStart: draftSettingsData[0]?.draftStartDate?.toISOString().split("T")[0],
-    draftTime: draftSettingsData[0]?.draftStartTime?.split("+")[0],
+    draftStart: draftSettingsData[0]?.draftStartDate,
+    draftTime: draftSettingsData[0]?.draftStartTime,
     pickDuration: draftSettingsData[0]?.pickDuration,
     draftPauseEnabled: draftSettingsData[0]?.overnightPauseEnable,
-    draftPauseStartTime: draftSettingsData[0]?.pauseStartTime?.split("+")[0],
-    draftPauseEndTime: draftSettingsData[0]?.pauseEndTime?.split("+")[0],
+    draftPauseStartTime: draftSettingsData[0]?.pauseStartTime,
+    draftPauseEndTime: draftSettingsData[0]?.pauseEndTime,
   } as DraftSettings;
 
   return draftSettingsDataResponse;

@@ -3,6 +3,7 @@ import { type LeagueSettings, type DraftSettings, type TeamSettings, type League
 import { auth } from "@clerk/nextjs/server";
 import { updateLeagueSettings, updateDraftSettings, updateTeamSettings, getLeagueSettings, getLeagueTeamSettings, getDraftSettings } from "../database/queries";
 import { revalidatePath } from "next/cache";
+import { formatToUserTimezone } from "../utils/date-utils";
 
 // import database functions here
 
@@ -47,17 +48,25 @@ export async function updateLeagueSettingsUseCase(leagueSettingsData: LeagueSett
 }
 
 export async function getDraftSettingsUseCase(leagueData: LeagueData) {
-    const user = await checkAuthorization();
 
     try {
         const settings = await getDraftSettings(leagueData);
-        return settings;
+        const { dateStr: localStartDate, timeStr: localStartTime } = await formatToUserTimezone(settings.draftStart);
+        const { timeStr: localPauseStart } = await formatToUserTimezone(settings.draftPauseStartTime);
+        const { timeStr: localPauseEnd } = await formatToUserTimezone(settings.draftPauseEndTime);
+
+        settings.draftStart = new Date(localStartDate);
+        settings.draftTime = localStartTime;
+        settings.draftPauseStartTime = localPauseStart;
+        settings.draftPauseEndTime = localPauseEnd;
+
+        return { settings };  
     } catch (error) {
         console.error("Failed to get draft settings:", error);
         return {
             draftEnabled: false, 
             snakeDraft: false, 
-            draftStart: "", 
+            draftStart: new Date(), 
             draftTime: "", 
             pickDuration: 4,
             draftPauseEnabled: false,
