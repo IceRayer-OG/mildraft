@@ -59,11 +59,11 @@ export function LeagueSettingsTabsCard({
       </TabsList>
       <TabsContent value="league">
         <Card>
-          <CardHeader className="items-center">
+          {/* <CardHeader className="items-center">
             <CardTitle>League</CardTitle>
             <CardDescription>Settings for the League.</CardDescription>
             <Separator />
-          </CardHeader>
+          </CardHeader> */}
           <Suspense>
             <LeagueSettingsForm leagueSettingsData={leagueSettingsInfo} leagueDetailsData={leagueInfo} />
           </Suspense>
@@ -72,8 +72,9 @@ export function LeagueSettingsTabsCard({
       <TabsContent value="draft">
         <Card>
           <CardHeader className="items-center">
-            <CardTitle>Draft</CardTitle>
-            <CardDescription>Settings for the mil Draft.</CardDescription>
+            {/* <CardTitle>Draft</CardTitle> */}
+            {/* <CardDescription>Settings for the mil Draft.</CardDescription> */}
+            <CardDescription>Times are displayed in League's Timezone</CardDescription>
           </CardHeader>
           <Suspense>
             <DraftSettingsForm draftSettingsData={draftSettingsInfo} leagueSettingsData={leagueInfo} />
@@ -83,8 +84,8 @@ export function LeagueSettingsTabsCard({
       <TabsContent value="team">
         <Card>
           <CardHeader className="items-center">
-            <CardTitle>Team</CardTitle>
-            <CardDescription>Settings for the Teams.</CardDescription>
+            {/* <CardTitle>Team</CardTitle> */}
+            {/* <CardDescription>Settings for the Teams.</CardDescription> */}
           </CardHeader>
           <Suspense>
             <TeamSettingsForm teamSettingsData={teamSettingsInfo} leagueSettingsData={leagueInfo} />

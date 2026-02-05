@@ -23,6 +23,7 @@ export async function updateLeagueSettingsAction(
   const data: LeagueSettings = {
     name: formData.get("leagueName") as string,
     abbreviation: formData.get("leagueAbbreviation") as string,
+    timezone: formData.get("leagueTimezone") as string,
   };
 
   const response = await updateLeagueSettingsUseCase(data, leagueData);
