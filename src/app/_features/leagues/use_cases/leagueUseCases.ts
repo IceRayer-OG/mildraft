@@ -14,7 +14,7 @@ import {
   getDraftSettings,
 } from "../database/queries";
 import { revalidatePath } from "next/cache";
-import { formatToUserTimezone } from "../utils/date-utils";
+import { formatDateToLeagueTimezone, formatToLeagueTimezone, formatToUserTimezone } from "../utils/date-utils";
 
 // import database functions here
 
@@ -77,7 +77,7 @@ export async function getDraftSettingsUseCase(leagueData: LeagueData) {
     const settings = await getDraftSettings(leagueData);
 
     const { dateStr: localStartDate, timeStr: localStartTime } =
-      await formatToUserTimezone(settings.draftStart);
+      await formatDateToLeagueTimezone(settings.draftStart);
 
     settings.draftStart = new Date(localStartDate);
     settings.draftTime = localStartTime;
@@ -87,6 +87,35 @@ export async function getDraftSettingsUseCase(leagueData: LeagueData) {
   } catch (error) {
     console.error("Failed to get draft settings:", error);
     return defaultSettings;
+  }
+}
+
+export async function getDraftDetailsUseCase(leagueData: LeagueData) {
+    const defaultSettings = {
+      draftEnabled: false,
+      snakeDraft: false,
+      draftStart: new Date(),
+      draftTime: "19:00:00+00",
+      pickDuration: 60,
+      draftPauseEnabled: false,
+      draftPauseStartTime: "00:00:00+00",
+      draftPauseEndTime: "00:00:00+00",
+    }
+
+  try {
+    const settings = await getDraftSettings(leagueData);
+
+    const { dateStr: localStartDate, timeStr: localStartTime } =
+      await formatToUserTimezone(settings.draftStart);
+
+    settings.draftStart = new Date(localStartDate);
+    settings.draftTime = localStartTime;
+
+    return { draftStart: settings.draftStart, draftTime: settings.draftTime };
+
+  } catch (error) {
+    console.error("Failed to get draft settings:", error);
+    return { draftStart: defaultSettings.draftStart, draftTime: defaultSettings.draftTime };
   }
 }
 
