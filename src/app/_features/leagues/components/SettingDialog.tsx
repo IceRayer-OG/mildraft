@@ -45,8 +45,8 @@ export function SettingDialog() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="items-center">
-          <DialogTitle>Setting</DialogTitle>
-          <DialogDescription>Setting for the League.</DialogDescription>
+          <DialogTitle>Settings</DialogTitle>
+          <DialogDescription>Setting's for the League.</DialogDescription>
         </DialogHeader>
         <LeagueSettingsTabsCard 
             teamSettingsData={teamData} 

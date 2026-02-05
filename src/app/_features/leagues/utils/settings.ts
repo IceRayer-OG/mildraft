@@ -1,8 +1,10 @@
+import { time } from "console";
 import z from "zod";
 
 const leagueSettingsSchema = z.object({
   name: z.string(),
   abbreviation: z.string(),
+  timezone: z.string().max(256),
 });
 
 const draftSettingsSchema = z.object({

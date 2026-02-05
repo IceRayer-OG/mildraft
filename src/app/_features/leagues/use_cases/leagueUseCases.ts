@@ -34,7 +34,7 @@ export async function getLeagueSettingsUseCase(leagueData: LeagueData) {
     return settings;
   } catch (error) {
     console.error("Failed to get league settings:", error);
-    return { name: "", abbreviation: "" };
+    return { name: "", abbreviation: "", timezone: "UTC"};
   }
 }
 
@@ -66,11 +66,11 @@ export async function getDraftSettingsUseCase(leagueData: LeagueData) {
       draftEnabled: false,
       snakeDraft: false,
       draftStart: new Date(),
-      draftTime: "19:00",
+      draftTime: "19:00:00+00",
       pickDuration: 60,
       draftPauseEnabled: false,
-      draftPauseStartTime: "00:00",
-      draftPauseEndTime: "00:00",
+      draftPauseStartTime: "00:00:00+00",
+      draftPauseEndTime: "00:00:00+00",
     }
 
   try {
@@ -78,17 +78,9 @@ export async function getDraftSettingsUseCase(leagueData: LeagueData) {
 
     const { dateStr: localStartDate, timeStr: localStartTime } =
       await formatToUserTimezone(settings.draftStart);
-    const { timeStr: localPauseStart } = await formatToUserTimezone(
-      settings.draftPauseStartTime,
-    );
-    const { timeStr: localPauseEnd } = await formatToUserTimezone(
-      settings.draftPauseEndTime,
-    );
 
     settings.draftStart = new Date(localStartDate);
     settings.draftTime = localStartTime;
-    settings.draftPauseStartTime = localPauseStart;
-    settings.draftPauseEndTime = localPauseEnd;
 
     return settings;
 

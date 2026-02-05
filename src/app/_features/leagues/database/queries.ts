@@ -8,6 +8,7 @@ import {
   type TeamSettings,
   type LeagueData,
 } from "../utils/settings";
+import { convertToUTC } from "../utils/date-utils";
 
 export async function getLeagueSettings(
   leagueData: LeagueData,
@@ -24,6 +25,7 @@ export async function getLeagueSettings(
   const leagueSettings = {
     name: data[0]?.name,
     abbreviation: data[0]?.abbreviation,
+    timezone: data[0]?.timezone,
   } as LeagueSettings;
 
   return leagueSettings;
@@ -67,12 +69,12 @@ export async function getDraftSettings(
   const draftSettingsDataResponse = {
     draftEnabled: leagueSettingsData[0]?.draftsEnabled,
     snakeDraft: draftSettingsData[0]?.snakeDraft,
-    draftStart: draftSettingsData[0]?.draftStartDate,
-    draftTime: draftSettingsData[0]?.draftStartTime,
+    draftStart: draftSettingsData[0]?.startDate,
+    draftTime: draftSettingsData[0]?.startDate?.toString().split(" ")[1],
     pickDuration: draftSettingsData[0]?.pickDuration,
     draftPauseEnabled: draftSettingsData[0]?.overnightPauseEnable,
-    draftPauseStartTime: draftSettingsData[0]?.pauseStartTime,
-    draftPauseEndTime: draftSettingsData[0]?.pauseEndTime,
+    draftPauseStartTime: draftSettingsData[0]?.pauseStartTime?.split("-")[0],
+    draftPauseEndTime: draftSettingsData[0]?.pauseEndTime?.split("-")[0],
   } as DraftSettings;
 
   return draftSettingsDataResponse;
@@ -95,17 +97,19 @@ export async function updateDraftSettings(
   }
   
   try {
+    const startDateUTC = await convertToUTC(draftData.draftStart.toISOString(), draftData.draftTime);
+
     await db
     .update(draftSettings)
     .set({
       snakeDraft: draftData.snakeDraft,
-      startDate: new Date(draftData.draftStart+" "+draftData.draftTime),
+      startDate: startDateUTC,
       draftStartDate: new Date(draftData.draftStart),
       draftStartTime: draftData.draftTime,
       pickDuration: draftData.pickDuration,
       overnightPauseEnable: draftData.draftPauseEnabled,
-      pauseStartTime: draftData.draftPauseStartTime,
-      pauseEndTime: draftData.draftPauseEndTime
+      pauseStartTime: `${draftData.draftPauseStartTime}-08`,
+      pauseEndTime: `${draftData.draftPauseEndTime}-08`,
     })
     .where(and(eq(draftSettings.leagueId, leagueData.leagueId),eq(draftSettings.draftId, leagueData.draftId)));
   } catch(error) {

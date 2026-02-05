@@ -66,20 +66,7 @@ export default function LeaguePage() {
         </div>
         <div className="col-span-3 p-4">
           <div className="flex flex-col items-center gap-4 p-4">
-            <p className="text-xl md:text-3xl">Pitcher Stats </p>
-            <Separator />
-          </div>
-          <div className="flex flex-wrap gap-4">
-            <div className="flex flex-col space-y-3">
-              <Skeleton className="h-31.25 w-62.5 rounded-xl bg-slate-800" />
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-62.5 bg-slate-800" />
-                <Skeleton className="h-4 w-50 bg-slate-800" />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col items-center gap-4 p-4">
-            <p className="text-xl md:text-3xl">Batter Stats </p>
+            <p className="text-xl md:text-3xl">Draft Results</p>
             <Separator />
           </div>
           <div className="flex flex-wrap gap-4">

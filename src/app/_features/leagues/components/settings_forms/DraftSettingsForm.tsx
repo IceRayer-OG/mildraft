@@ -41,8 +41,6 @@ export function DraftSettingsForm({
     { status: "", message: "", data: draftSettingsData },
   );
 
-  const [formattedDate, setFormattedDate] = useState<string>("");
-
   useEffect(() => {
     if (content.status === "success") {
       toast.success(content.message);
@@ -50,10 +48,6 @@ export function DraftSettingsForm({
       toast.error(content.message);
     }
   }, [content]);
-
-  useEffect(() => {
-    setFormattedDate(new Date(content?.data.draftStart).toLocaleString())
-  }, [content?.data.draftStart]);
 
   return (
     <Form action={updateLeagueDraftSettings}>
@@ -82,7 +76,7 @@ export function DraftSettingsForm({
               id="draft-start-date"
               name="draftStartDate"
               type="date"
-              defaultValue={formattedDate}
+              defaultValue={content?.data.draftStart.toISOString().split("T")[0]}
               className="md:w-62.5"
             />
           </div>
@@ -109,7 +103,7 @@ export function DraftSettingsForm({
           <Separator />
 
           <p className="text-center">
-            Overnight Pause <span className="text-red-500">-WIP-</span>
+            Overnight Pause Settings
           </p>
 
           <Separator />

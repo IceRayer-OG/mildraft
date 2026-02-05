@@ -49,6 +49,7 @@ export const leagues = createTable(
     abbreviation: varchar("abbreviation", { length: 4 }),
     commissioner: varchar("commissioner", { length: 256 }),
     coCommissioner: varchar("co_commissioner", { length: 256 }),
+    timezone: varchar("time_zone", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -216,6 +217,7 @@ export const settings = createTable(
     sceondaryColor: varchar("secondary_color", { length: 7 }),
     teams: integer("teams"),
     teamLogosEnabled: boolean("team_logos_enabled").default(true),
+    timezone: varchar("time_zone", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

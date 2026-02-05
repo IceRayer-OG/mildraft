@@ -53,7 +53,7 @@ export function LeagueSettingsForm({
             id="league-name"
             name="leagueName"
             defaultValue={content?.data.name}
-            className="md:w-[250px] text-right"
+            className="md:w-62.5 text-right"
           />
         </div>
         <div className="flex items-center gap-1 justify-between">
@@ -64,7 +64,18 @@ export function LeagueSettingsForm({
             name="leagueAbbreviation"
             maxLength={4}
             defaultValue={content?.data.abbreviation}
-            className="md:w-[250px] text-right"
+            className="md:w-62.5 text-right"
+          />
+        </div>
+        <div className="flex items-center gap-1 justify-between">
+          <Label>Timezone</Label>
+          <Input
+            type="text"
+            id="league-timezone"
+            name="leagueTimezone"
+            maxLength={256}
+            defaultValue={content?.data.timezone}
+            className="md:w-62.5 text-right"
           />
         </div>
         <CardFooter className="flex justify-end gap-2 p-4">
