@@ -12,13 +12,14 @@ import { draftColumns } from "~/app/_features/drafts/components/draft-columns";
 import { DataTable } from "~/app/_features/drafts/components/draft-data-table";
 import DraftQueueList from "~/app/_features/drafts/components/draft-picks-queue";
 import { DraftOrderDialog } from "~/app/_features/drafts/components/DraftOrderDialog";
-import DraftCountdownTimer from "~/app/_features/drafts/components/PickClockTimer"
+import DraftCountdownTimer from "~/app/_features/drafts/components/PickClockTimer";
 
 // Server actions
 import { getDraftablePlayersAction, getDraftPicksListAction } from "~/app/_features/drafts/actions/draftActions";
 import { DraftHistoryDialog } from "~/app/_features/drafts/components/DraftHistory";
 import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
-import { getDraftDetailsAction } from "~/app/_features/leagues/actions/leagueActions";
+import { getDraftDetailsAction, getDraftPageDetailsAction, getDraftSettingsAction } from "~/app/_features/leagues/actions/leagueActions";
+import { formatToUserTimezone } from "~/app/_features/leagues/utils/date-utils";
 
 export const dynamic = 'force-dynamic'
 
@@ -27,14 +28,17 @@ export default function DraftPage() {
   const draftablePlayers = getDraftablePlayersAction();
   const draftPicks = getDraftPicksListAction();
   const allTeams = getLeagueTeamsAction();
-  const draftDetails = use(getDraftDetailsAction(leagueData));
+  const userDraftDetails = use(getDraftDetailsAction(leagueData));
+  // const serverDraftDetails= use(getDraftSettingsAction(leagueData));
+  const draftDetails = use(getDraftPageDetailsAction(leagueData));
+
 
   return (
     <div className="flex flex-col w-full min-h-screen gap-4 p-4 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
       <div className="flex w-full h-10 justify-center gap-8 rounded-md items-center text-sm md:text-md">
-        <p>Draft Start: {draftDetails.draftStart.toDateString()} @ {draftDetails.draftTime}</p>
+        <p>Draft Start: {userDraftDetails.draftStart.toDateString()} @ {userDraftDetails.draftTime}</p>
         <Suspense>
-          <DraftCountdownTimer targetDate={new Date(draftDetails.draftStart + "T" + draftDetails.draftTime)} />
+          <DraftCountdownTimer targetDate={draftDetails.serverDetails}/>
         </Suspense>
       </div>
       <div className="flex">

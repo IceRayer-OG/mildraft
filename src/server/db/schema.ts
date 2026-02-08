@@ -153,7 +153,7 @@ export const draftSettings = createTable(
     draftId: integer("draft_id").notNull().references(() => drafts.id),
     draftStartDate: date("darft_start_date", { mode: "date"}),
     draftStartTime: time("darft_start_time", { withTimezone: true}),
-    startDate: timestamp("start_date", { withTimezone: true }),
+    startDate: timestamp("start_date", { withTimezone: true }).notNull(),
     draftType: varchar("draft_type", { length: 256 }),
     snakeDraft: boolean("snake_draft").default(false),
     pickDuration: integer("pick_duration"),

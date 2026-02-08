@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { type LeagueSettings, type TeamSettings, type DraftSettings, type LeagueData } from "../utils/settings";
-import { updateLeagueSettingsUseCase, updateDraftSettingsUseCase, updateTeamSettingsUseCase, getLeagueSettingsUseCase, getTeamSettingsUseCase, getDraftSettingsUseCase, getDraftDetailsUseCase } from "../use_cases/leagueUseCases";
+import { updateLeagueSettingsUseCase, updateDraftSettingsUseCase, updateTeamSettingsUseCase, getLeagueSettingsUseCase, getTeamSettingsUseCase, getDraftSettingsUseCase, getDraftDetailsUseCase, getDraftPageDetailsUseCase } from "../use_cases/leagueUseCases";
 
 export async function getLeagueSettingsAction(leagueData: LeagueData) {
   const response = await getLeagueSettingsUseCase(leagueData);
@@ -31,8 +31,14 @@ export async function updateLeagueSettingsAction(
   return response;
 }
 
+export async function getDraftPageDetailsAction(leagueData: LeagueData) {
+  const response = await getDraftPageDetailsUseCase(leagueData);
+  return response;
+}
+
 export async function getDraftSettingsAction(leagueData: LeagueData) {
   const response = await getDraftSettingsUseCase(leagueData);
+  console.log(response.draftStart)
   return response;
 }
 

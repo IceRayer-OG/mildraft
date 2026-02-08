@@ -7,6 +7,7 @@ import {
   type DraftSettings,
   type TeamSettings,
   type LeagueData,
+  DraftPageDetails,
 } from "../utils/settings";
 import { convertToUTC } from "../utils/date-utils";
 
@@ -77,7 +78,38 @@ export async function getDraftSettings(
     draftPauseEndTime: draftSettingsData[0]?.pauseEndTime?.split("-")[0],
   } as DraftSettings;
 
+  console.log(draftSettingsDataResponse.draftStart)
+
   return draftSettingsDataResponse;
+
+}
+
+export async function getDraftPageDetails(
+  leagueData: LeagueData,
+) {
+
+  const leagueSettingsData = await db
+    .select()
+    .from(settings)
+    .where(eq(settings.leagueId, leagueData.leagueId))
+    .limit(1);
+  if (!leagueSettingsData) throw new Error("League settings not found");
+
+  const draftSettingsData = await db
+    .select({
+      draftStart: draftSettings.startDate,
+    })
+    .from(draftSettings)
+    .where(
+      and(
+        eq(draftSettings.leagueId, leagueData.leagueId),
+        eq(draftSettings.draftId, leagueData.draftId)
+      ))
+    .limit(1);
+
+  if (!draftSettingsData) throw new Error("Draft settings not found");
+
+  return draftSettingsData;
 
 }
 

@@ -12,9 +12,11 @@ import {
   getLeagueSettings,
   getLeagueTeamSettings,
   getDraftSettings,
+  getDraftPageDetails,
 } from "../database/queries";
 import { revalidatePath } from "next/cache";
 import { formatDateToLeagueTimezone, formatToLeagueTimezone, formatToUserTimezone } from "../utils/date-utils";
+import { log } from "console";
 
 // import database functions here
 
@@ -88,6 +90,35 @@ export async function getDraftSettingsUseCase(leagueData: LeagueData) {
     console.error("Failed to get draft settings:", error);
     return defaultSettings;
   }
+}
+
+export async function getDraftPageDetailsUseCase(leagueData: LeagueData) {
+  const draftPageDetailsDefault = {
+    userDetails: new Date(),
+    serverDetails: new Date(),
+  }
+
+  try {
+    const draftPageDetailsData = await getDraftPageDetails(leagueData)
+
+    if(!draftPageDetailsData) throw new Error("No start date found")
+
+    const userDateData = await formatToUserTimezone(draftPageDetailsData[0]?.draftStart)
+
+    const draftPageDetailsResponse = {
+      userDetails: new Date(`${userDateData.dateStr}T${userDateData.timeStr}`),
+      serverDetails: draftPageDetailsData[0]?.draftStart as Date
+    }
+
+    console.log(draftPageDetailsResponse)
+
+    return draftPageDetailsResponse;
+
+  } catch (error) {
+    console.log(error)
+    return draftPageDetailsDefault
+  }
+
 }
 
 export async function getDraftDetailsUseCase(leagueData: LeagueData) {
