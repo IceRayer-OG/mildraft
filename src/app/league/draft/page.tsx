@@ -34,7 +34,7 @@ export default function DraftPage() {
       <div className="flex w-full h-10 justify-center gap-8 rounded-md items-center text-sm md:text-md">
         <p>Draft Start: {draftDetails.draftStart.toDateString()} @ {draftDetails.draftTime}</p>
         <Suspense>
-          <DraftCountdownTimer targetDate={new Date(draftDetails.draftStart + "T" + draftDetails.draftTime)} />
+          <DraftCountdownTimer targetDate={draftDetails.draftStart} />
         </Suspense>
       </div>
       <div className="flex">
