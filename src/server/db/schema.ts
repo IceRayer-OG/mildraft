@@ -132,6 +132,10 @@ export const draftPicks = createTable(
     isWriteIn: boolean("is_write_in").default(false),
     writeInName: varchar("write_in", {length: 256}),
     pickMade: boolean("pick_made").default(false),
+    isOnClock: boolean("is_on_clock").default(false),
+    onClockAt: timestamp('on_clock_at').defaultNow(),
+    completedAt: timestamp('completed_at'),
+    isAutoSkipped: boolean('is_auto_skipped').default(false),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
