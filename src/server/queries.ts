@@ -121,6 +121,7 @@ export async function getCurrentDraftPick() {
 
     return currentPick;
 }
+
 export async function getNextDraftPick() {  
     // Check if user is current pick
     const nextPick = await db.select({
@@ -138,13 +139,37 @@ export async function getNextDraftPick() {
     return nextPick;
 }
 
+export async function setPickOnClock(pickNumber: number) {
+  await db.update(draftPicks)
+    .set({ 
+      status: "on_clock",
+      onClockAt: new Date(),
+      isOnClock: true,
+     })
+    .where(eq(draftPicks.pickNumber, pickNumber));
+}
+
+export async function setPickOverdue (pickNumber: number) {
+  await db.update(draftPicks)
+    .set({ 
+      status: "overdue",
+      isOnClock: false,
+     })
+    .where(eq(draftPicks.pickNumber, pickNumber));
+}
+
 export async function postDraftPick(playerDrafted: number, draftingPick: number) {  
   // Authorization
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");  
 
   await db.update(draftPicks)
-    .set({ playerId: playerDrafted})
+    .set({ 
+      playerId: playerDrafted, 
+      pickMade: true,
+      status: "completed",
+      completedAt: new Date(),
+    })
     .where(eq(draftPicks.pickNumber, draftingPick));
 }
 

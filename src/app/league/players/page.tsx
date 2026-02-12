@@ -5,6 +5,7 @@ import { playerColumns } from "~/app/_features/players/components/player-columns
 
 // Server Actions
 import { getFreeAgentsAction } from "~/app/_features/players/actions/playerActions";
+import { TeamsTableLoading } from "~/app/_features/team/components/TeamsLoading";
 
 export const dynamic = 'force-dynamic'
  
@@ -14,7 +15,7 @@ export default function PlayerPage() {
   return (
     <main className="flex flex-col min-h-screen w-full items-center p-4 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
         <div className="grow w-full">
-            <Suspense fallback={<div>...Loading</div>}>
+            <Suspense fallback={<TeamsTableLoading />}>
               <PlayerDataTable columns={playerColumns} data={data} />
             </Suspense>
         </div>

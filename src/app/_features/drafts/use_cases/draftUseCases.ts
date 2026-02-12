@@ -86,11 +86,15 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
     console.error("Drafting player failed:", error);
   }
   
-  // If draft operation was successful, send emails
+  // If draft operation was successful, set timer and send emails
   if (response.status === "Success") {
+    // Move into inngest function to handle timer and email sending
+
     // Get needed info for email
     const draftPickEmails = await getDraftPickEmails();
     const nextPick = await getNextDraftPick();
+
+    //send email
     const emails = draftPickEmails.map(email => `${email.teamName} <${email.teamEmail}>`);
     // console.log("Draft Pick Emails:", emails); // Debug email string
 
@@ -98,6 +102,12 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
     if (!nextPick[0]?.teamName) {
       response.status = "Error";
       response.message = "No Next Pick Team Data";
+      // Check if all picks complete
+
+      // If all picks complete, send draft complete email
+
+      //Else send awaiting final draft picks email to league
+
       return response;
     }
 
@@ -113,7 +123,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
       from: 'No-Reply <no-reply@siliconvalleybaseball.com>',
       // to: emails, // Distro list
       to: ['Slump Busters <matthew.dowling3@gmail.com>'],  // Used for testing
-      subject: 'TEST - Draft Pick Completed',
+      subject: 'Draft Pick Completed',
       react: DraftPickEmail(emailprops),
     });
   }
@@ -243,6 +253,7 @@ export async function undoDraftPickUseCase(draftPickToUndo: number) {
     // return response
     return
   }
+
 }
 
 export async function addNewDraftPickUseCase(teamName: string) {

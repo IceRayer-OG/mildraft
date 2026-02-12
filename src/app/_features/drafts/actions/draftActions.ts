@@ -35,9 +35,7 @@ export async function draftPlayerAction(
 ) {
   const response = await draftPlayerUseCase(playerToDraft);
 
-  if (response.status === "Success") {
-    // send email notification here
-  } else if (response.status === "Error") {
+  if (response.status === "Error") {
     revalidatePath("league/draft");
     return response;
   }

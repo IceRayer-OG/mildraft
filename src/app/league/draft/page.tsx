@@ -18,8 +18,7 @@ import DraftCountdownTimer from "~/app/_features/drafts/components/PickClockTime
 import { getDraftablePlayersAction, getDraftPicksListAction } from "~/app/_features/drafts/actions/draftActions";
 import { DraftHistoryDialog } from "~/app/_features/drafts/components/DraftHistory";
 import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
-import { getDraftDetailsAction, getDraftPageDetailsAction, getDraftSettingsAction } from "~/app/_features/leagues/actions/leagueActions";
-import { formatToUserTimezone } from "~/app/_features/leagues/utils/date-utils";
+import { getDraftDetailsAction, getDraftPageDetailsAction } from "~/app/_features/leagues/actions/leagueActions";
 
 export const dynamic = 'force-dynamic'
 

@@ -1,6 +1,7 @@
 import z from "zod";
 
 const positions = z.enum(["RHP", "LHP", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "INF", "DH"]);
+const status = z.enum(['pending', 'on the clock', 'overdue', 'completed']);
 
 const queueDraftPickSchema = z.object({
   team: z.object({
@@ -13,6 +14,7 @@ const queueDraftPickSchema = z.object({
     pickNumber: z.number(),
     leagueId: z.number(),
     draftId: z.number(),
+    status: status,
   }),
 });
 

@@ -102,6 +102,8 @@ export async function postDraftPick(
       isWriteIn: false,
       leagueId: 1,
       pickMade: true,
+      status: "completed",
+      completedAt: new Date(),
     })
     .where(
       and(
@@ -124,6 +126,8 @@ export async function postWriteInDraftPick(
       isWriteIn: true,
       writeInName: playerName,
       pickMade: true,
+      status: "completed",
+      completedAt: new Date(),
     })
     .where(
       and(
@@ -176,27 +180,15 @@ async function getDraftPickInfo(draftPick: number, draftId: number) {
 export async function undoDraftPick(draftPick: number, draftId: number) {
   const pickInfo = await getDraftPickInfo(draftPick, draftId);
 
-  if (pickInfo[0]?.isWriteIn === true) {
-    await db
-      .update(draftPicks)
-      .set({
-        isWriteIn: null,
-        writeInName: null,
-        pickMade: false,
-      })
-      .where(
-        and(
-          eq(draftPicks.pickNumber, draftPick),
-          eq(draftPicks.draftId, draftId),
-        ),
-      );
-  } else {
     await db
       .update(draftPicks)
       .set({
         playerId: null,
-        isWriteIn: null,
+        isWriteIn: false,
+        writeInName: null,
         pickMade: false,
+        status: "overdue",
+        completedAt: null,
       })
       .where(
         and(
@@ -204,8 +196,6 @@ export async function undoDraftPick(draftPick: number, draftId: number) {
           eq(draftPicks.draftId, draftId),
         ),
       );
-  }
-
 }
 
 export async function getCompletedDraftPicks(draftId: number) {
@@ -235,7 +225,6 @@ export async function getTeamIdByName(teamName: string){
   if(teamId === undefined) throw new Error("Team not found")
 
   return teamId.id
-  
 }
 
 export async function insertNewDraftPick( draftId: number, teamName: string ) {
