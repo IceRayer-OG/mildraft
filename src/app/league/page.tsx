@@ -1,7 +1,6 @@
 // React
 import Image from "next/image";
 import { Suspense, use } from "react";
-import { getLeaguePosts } from "~/server/queries";
 
 // UI Elements
 import { Separator } from "~/_components/ui/separator";
@@ -17,10 +16,11 @@ import Posts from "~/_components/Posts";
 // Actions
 import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
 import { getLeagueSettingsAction } from "~/app/_features/leagues/actions/leagueActions"; 
+import { getLeaguePostsAction } from "../_features/posts/actions/postActions";
 
 
 export default function LeaguePage() {
-  const posts = getLeaguePosts();
+  const posts = getLeaguePostsAction();
   const allLeagueTeams = getLeagueTeamsAction();
   const leagueSettingsData = use(getLeagueSettingsAction({leagueId: 1, draftId: 2}));
 

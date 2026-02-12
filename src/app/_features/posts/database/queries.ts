@@ -10,19 +10,20 @@ export async function getAllPosts() {
   return allPosts;
 }
 
-export async function createAPost(postData: CreatePost) {
+export async function createAPost(postData: CreatePost, userId: string) {
 
   const newPost = postData;
 
   const postNewPost = await db.insert(posts).values({
     title: newPost.title,
-    textBody: newPost.body,
+    body: newPost.body,
     leagueId: newPost.leagueId,
+    ownerId: userId,
   });
   return postNewPost;
 }
 
-export async function getLeaguePosts(): Promise<Post[]> {  // add league: number
+export async function getLeaguePosts() {  // add league: number
 
   const leaguePosts = await db.query.posts.findMany({
     orderBy: (model, {desc}) => desc(posts.createdAt),
@@ -30,6 +31,6 @@ export async function getLeaguePosts(): Promise<Post[]> {  // add league: number
     // where: eq(posts.leagueId, league),
   });
 
-  return leaguePosts as Post[];
+  return leaguePosts;
 
 }

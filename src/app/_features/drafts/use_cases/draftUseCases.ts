@@ -21,8 +21,9 @@ import {
   insertNewDraftPick,
   getDraftPickEmails,
   deletePlayerFromQueues,
+  getCurrentDraftPick,
+  getNextDraftPick
 } from "../database/queries";
-import { getCurrentDraftPick, getNextDraftPick } from "~/server/queries";
 import { removePlayerFromQueueUseCase } from "./queueUseCases";
 
 // Email Imports
