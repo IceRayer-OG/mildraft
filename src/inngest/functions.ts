@@ -1,4 +1,11 @@
+import { calculateDeadline } from "~/lib/date-utils";
 import { inngest } from "./client";
+import { getDraftSettings } from "~/app/_features/leagues/database/queries";
+import { 
+  markDraftPickOverduUseCase, 
+  startDraftPickClockUseCase,
+  getNextDraftPickUseCase 
+} from "~/app/_features/drafts/use_cases/draftUseCases";
 
 export const draftStart = inngest.createFunction(
   { id: "draft-start" },
@@ -19,56 +26,30 @@ export const draftComplete = inngest.createFunction(
   },
 );  
 
-// // Handle a pick the runs over their timer
-// export const draftTimeoutHandler = inngest.createFunction(
-//   { id: "handle-draft-timeout", 
-//     cancelOn: [{ 
-//       event: "draft/pick.made", 
-//       match: "data.pickId" 
-//     }] 
-//   },
-//   { event: "draft/turn.started" },
-//   async ({ event, step }) => {
-//     const { pickId, userId, clockEndsAt, leagueEmail } = event.data;
+export const handlePickTimer = inngest.createFunction(
+  { id: "pick-timer", cancelOn: [{ event: "draft/pick.submitted", match: "data.pickId" }] },
+  { event: "draft/turn.started" },
+  async ({ event, step }) => {
+    const { pickId, draftId } = event.data;
 
-//     // 1. Set the timers for the pick - wait until the clock ends, then add a grace period
-//     await step.sleepUntil("wait-for-clock-end", clockEndsAt);
-//     await step.sleep("grace-period", "30s");
+    const pick = await step.run("initialize-clock", async () => {
+      const draft = await getDraftSettings({ leagueId: 1, draftId: 2 });
+      const pickStart = new Date()
+      const deadline = calculateDeadline(pickStart, 4, Number(draft.draftPauseStartTime), Number(draft.draftPauseEndTime));
+      const updated = await startDraftPickClockUseCase(pickStart, deadline);
+      return updated;
+    });
 
-//     // 2. Double check Drizzle to see if they picked in the last few seconds
-//     const pick = await step.run("check-final-status", async () => {
-//       return await db.query.draftPicks.findFirst({
-//         where: (picks, { and, eq, isNull }) => and(
-//           eq(picks.id, pickId),
-//           isNull(picks.completedAt)
-//         ),
-//         with: { user: true } // Assuming you have a relation to get the user's name
-//       });
-//     });
+    await step.sleepUntil("wait-for-pick-deadline", pick);
 
-//     // 3. If they missed it, update DB and Send Email
-//     if (pick) {
-//       await step.run("overdue-and-notify", async () => {
-//         // Mark as skipped in Drizzle
-//         await db.update(draftPicks)
-//           .set({ status: "overdue" })
-//           .where(eq(draftPicks.id, pickId));
-
-//         // Send the Resend email
-//         await sendLeagueNotification(
-//           leagueEmail, 
-//           pick.user.name, 
-//           "The next manager" // You can fetch the actual next user here too
-//         );
-//       });
-
-//       // 4. Trigger the NEXT turn event to start the NEW 4-hour clock
-//       await step.run("trigger-next-clock", async () => {
-//          await inngest.send({
-//            name: "draft/turn.started",
-//            data: { pickId: nextPickId, userId: nextUserId, leagueEmail }
-//          });
-//       });
-//     }
-//   }
-// );
+    await step.run("process-timeout", async () => {
+      await markDraftPickOverduUseCase(pickId);
+      const nextPick = await getNextDraftPickUseCase(2);
+      
+      if (nextPick) {
+        await inngest.send({ name: "draft/turn.started", data: { pickId: nextPick[0]?.pickId, draftId } });
+      }
+      // Send Resend email here...
+    });
+  }
+);

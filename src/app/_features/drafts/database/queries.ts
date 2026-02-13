@@ -12,55 +12,7 @@ import {
   or,
   sql
 } from "drizzle-orm";
-import { queues, draftPicks, pros, teams } from "~/server/db/schema";
-
-export async function getDraftablePlayers() {
-  const draftedPlayers = db
-    .select({ pickedPlayer: draftPicks.playerId })
-    .from(draftPicks)
-    .where(and(eq(draftPicks.draftId, 2), isNotNull(draftPicks.playerId)));
-
-  const draftablePlayers = await db
-    .select()
-    .from(pros)
-    .where(notInArray(pros.id, draftedPlayers));
-
-  if (draftablePlayers === null) throw new Error("Error getting draft players");
-
-  return draftablePlayers;
-}
-
-export async function getMyQueuePlayers(userId: string) {
-  const myQueue = db
-    .select({ queuedPlayer: queues.playerId })
-    .from(queues)
-    .where(eq(queues.userId, userId));
-
-  const myQueuedPlayeers = await db
-    .select()
-    .from(pros)
-    .where(inArray(pros.id, myQueue));
-
-  if (myQueuedPlayeers === null) throw new Error("Error getting draft queue");
-
-  return myQueuedPlayeers;
-}
-
-export async function postPlayerToQueue(prosId: number, userId: string) {
-  await db.insert(queues).values({
-    playerId: prosId,
-    userId: userId,
-    // teamId: teams.id,
-    // leagueId: leagues.id,
-    draftId: 2,
-  });
-}
-
-export async function deletePlayerFromQueue(playerId: number, userId: string) {
-  await db
-    .delete(queues)
-    .where(and(eq(queues.playerId, playerId), eq(queues.userId, userId)));
-}
+import { draftPicks, pros, teams } from "~/server/db/schema";
 
 export async function getDraftPicks() {
   const draftPicksData = await db
@@ -71,10 +23,6 @@ export async function getDraftPicks() {
     .leftJoin(teams, eq(draftPicks.teamId, teams.id));
 
   return draftPicksData;
-}
-
-export async function deletePlayerFromQueues(playerId: number) {
-  await db.delete(queues).where(and(eq(queues.playerId, playerId), eq(queues.draftId, 2)));
 }
 
 export async function getCurrentDraftPick() {  
@@ -90,9 +38,10 @@ export async function getCurrentDraftPick() {
     return currentPick;
 }
 
-export async function getNextDraftPick() {  
+export async function getNextDraftPick(draftId: number) {  
     // Check if user is current pick
     const nextPick = await db.select({
+        pickId: draftPicks.id,
         teamName: teams.name
       })
       .from(draftPicks)
@@ -162,20 +111,6 @@ export async function getDraftPickEmails() {
     .where(and(eq(teams.leagueId, 1),or(eq(teams.id,2),eq(teams.id,5),eq(teams.id,8),eq(teams.id,14))));
 
   return draftPickEmails;
-}
-
-export async function getDraftedPlayers() {
-  const completedDraftPicks = db
-    .select({ pickedPlayer: draftPicks.playerId })
-    .from(draftPicks)
-    .where(and(eq(draftPicks.draftId, 2), isNotNull(draftPicks.playerId)));
-
-  const draftedPlayers = await db
-    .select()
-    .from(pros)
-    .where(inArray(pros.id, completedDraftPicks));
-
-  return draftedPlayers;
 }
 
 async function getDraftPickInfo(draftPick: number, draftId: number) {

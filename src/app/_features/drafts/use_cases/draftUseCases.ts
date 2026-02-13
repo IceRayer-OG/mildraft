@@ -12,23 +12,29 @@ import {
 
 // Database Queries
 import {
-  getDraftablePlayers,
   getDraftPicks,
   postDraftPick,
   postWriteInDraftPick,
   undoDraftPick,
   getCompletedDraftPicks,
   insertNewDraftPick,
-  getDraftPickEmails,
-  deletePlayerFromQueues,
   getCurrentDraftPick,
-  getNextDraftPick
+  getNextDraftPick,
 } from "../database/queries";
+import { getDraftPickEmails } from "..//database/teamQueries"
+import { deletePlayerFromQueues } from "../database/queueQueries"
+import { startPickClock } from "../database/draftPickQueries"
+import { getDraftablePlayers } from "../database/draftPalyersQueries"
 import { removePlayerFromQueueUseCase } from "./queueUseCases";
+
+// Inngest Import
+import { inngest } from "~/inngest/client";
 
 // Email Imports
 import { Resend } from "resend";
 import DraftPickEmail from "~/emails/draft_pick";
+import { db } from "~/server/db";
+import { updateDraftPickOverdue } from "../database/draftPickQueries";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -37,6 +43,23 @@ async function checkAuthorization() {
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");
   return user;
+}
+
+export async function startDraftPickClockUseCase(startPickAt: Date, deadLine: Date) {
+  const pickData = await startPickClock(2, startPickAt, deadLine);
+  if(!pickData[0]?.endsAt) throw new Error("No pick info")
+  return pickData[0]?.endsAt
+}
+
+export async function markDraftPickOverduUseCase(pickId: number) {
+  const pickData = await updateDraftPickOverdue(pickId);
+  return pickData;
+}
+
+export async function getNextDraftPickUseCase(draftId: number){
+  const nextPickData = await getNextDraftPick(2);
+  return nextPickData;
+
 }
 
 export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
@@ -90,10 +113,19 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
   // If draft operation was successful, set timer and send emails
   if (response.status === "Success") {
     // Move into inngest function to handle timer and email sending
+    // await inngest.send({ name: "draft/pick.submitted", data: { currentPick: currentPick[0]?.draft_pick.id } });
 
     // Get needed info for email
     const draftPickEmails = await getDraftPickEmails();
-    const nextPick = await getNextDraftPick();
+    const nextPick = await getNextDraftPick(2);
+
+    // Start the next timer
+    // if (nextPick) {
+    //   await inngest.send({ 
+    //     name: "draft/turn.started", 
+    //     data: { pickId: nextPick[0]?.pickId, draftId: 2 } 
+    //   });
+    // }
 
     //send email
     const emails = draftPickEmails.map(email => `${email.teamName} <${email.teamEmail}>`);
@@ -171,7 +203,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
 
   if (response.status === "Success") {
     const draftPickEmails = await getDraftPickEmails();
-    const nextPick = await getNextDraftPick();
+    const nextPick = await getNextDraftPick(2);
     const emails = draftPickEmails.map(email => `${email.teamName} <${email.teamEmail}>`);
     console.log("Draft Pick Emails:", emails);
 
