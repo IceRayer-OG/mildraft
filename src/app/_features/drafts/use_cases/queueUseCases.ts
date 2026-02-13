@@ -7,7 +7,7 @@ import { auth } from "@clerk/nextjs/server";
 import { type QueuePlayers, type DraftablePlayers } from "../utils/draft";
 
 // Queries
-import { postPlayerToQueue, deletePlayerFromQueue, getMyQueuePlayers } from "../database/queries";
+import { postPlayerToQueue, deletePlayerFromQueue, getMyQueuePlayers } from "../database/queueQueries";
 
 
 async function checkAuthorization() {
@@ -68,3 +68,4 @@ export async function removePlayerFromQueueUseCase(playerToRemove: DraftablePlay
         throw new Error("Error removing player from queue");
     } 
 }
+

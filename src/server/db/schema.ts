@@ -19,6 +19,12 @@ export const createTable = pgTableCreator((name) => `mildraft_${name}`);
 export const positions = pgEnum('positions', ['RHP', 'LHP', 'C', '1B', '2B', '3B', 'SS', 'OF', 'CI', 'MI', "INF", "DH"]);
 export const throws = pgEnum("throws", ["R", "L", "B", "S"]);
 export const bats = pgEnum("bats", ["R", "L", "B", "S"]);
+export const statusEnum = pgEnum('pick_status', [
+  'pending',    // Future pick
+  'on the clock',   // Currently active 4-hour window
+  'overdue',    // Skipped, but can still pick
+  'completed'   // Pick has been made
+]);
 
 export const posts = createTable(
   `post`,
@@ -134,8 +140,10 @@ export const draftPicks = createTable(
     pickMade: boolean("pick_made").default(false),
     isOnClock: boolean("is_on_clock").default(false),
     onClockAt: timestamp('on_clock_at').defaultNow(),
+    clockEndsAt: timestamp('clock_ends_at'),
     completedAt: timestamp('completed_at'),
     isAutoSkipped: boolean('is_auto_skipped').default(false),
+    status: statusEnum("pick_status").default("pending").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

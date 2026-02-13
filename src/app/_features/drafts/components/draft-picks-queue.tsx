@@ -35,14 +35,11 @@ export default function DraftQueueList({
                 <p className="text-xs">{pick.team.name}</p>
               </div>
               <div className="w-full">
-                {pick.draft_pick.id === allPicks[0]?.draft_pick.id ? ( 
+                {pick.draft_pick.status === "on the clock" ? ( 
                   <p className="text-xs text-center text-green-500">On the Clock</p>
                 ) : 
-                pick.draft_pick.id === allPicks[1]?.draft_pick.id ? ( 
-                  <p className="text-xs text-center text-yellow-500">On Deck</p>
-                ) : 
-                pick.draft_pick.id === allPicks[2]?.draft_pick.id ? ( 
-                  <p className="text-xs text-center text-yellow-500">In the Hole</p>
+                pick.draft_pick.status === "overdue" ? ( 
+                  <p className="text-xs text-center text-red-500">Overdue</p>
                 ) : 
                 <p className="text-xs text-center ">&nbsp;</p>}
               </div>

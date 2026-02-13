@@ -1,6 +1,7 @@
 import z from "zod";
 
 const positions = z.enum(["RHP", "LHP", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "INF", "DH"]);
+const status = z.enum(['pending', 'on the clock', 'overdue', 'completed']);
 
 const queueDraftPickSchema = z.object({
   team: z.object({
@@ -13,6 +14,7 @@ const queueDraftPickSchema = z.object({
     pickNumber: z.number(),
     leagueId: z.number(),
     draftId: z.number(),
+    status: status,
   }),
 });
 
@@ -53,6 +55,12 @@ const queuePlayersSchema = z.object({
   bats: z.enum(["R", "L", "B", "S"]),
 });
 
+export const inngestPickSchema = z.object({
+  pickId: z.number(),
+  startsAt: z.date(),
+  endsAt: z.date(),
+})
+
 export const calculateTimeLeft = (targetDate: Date) => {
   const difference = +targetDate - +new Date();
   const timeLeft = {
@@ -82,3 +90,4 @@ export type QueueDraftPick = z.infer<typeof queueDraftPickSchema>;
 export type DraftablePlayers = z.infer<typeof draftablePlayersSchema>;
 export type QueuePlayers = z.infer<typeof queuePlayersSchema>;
 export type CompletedDraftPicks = z.infer<typeof compeltedDraftPickSchema>;
+export type InngestPick = z.infer<typeof inngestPickSchema>;
