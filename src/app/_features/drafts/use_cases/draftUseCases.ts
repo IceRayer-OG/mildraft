@@ -45,15 +45,20 @@ async function checkAuthorization() {
   return user;
 }
 
-export async function startDraftPickClockUseCase(startPickAt: Date, deadLine: Date) {
-  const pickData = await startPickClock(2, startPickAt, deadLine);
-  if(!pickData[0]?.endsAt) throw new Error("No pick info")
-  return pickData[0]?.endsAt
+export async function startDraftPickClockUseCase(pickId: number, startPickAt: Date, deadLine: Date) {
+  const pickData = await startPickClock(pickId, startPickAt, deadLine);
+  if(!pickData?.endsAt) throw new Error("No pick info")
+  return pickData?.endsAt
 }
 
 export async function markDraftPickOverduUseCase(pickId: number) {
   const pickData = await updateDraftPickOverdue(pickId);
   return pickData;
+}
+
+export async function getCurrentDraftPickUseCase(){
+  const currentPickData = getCurrentDraftPick()
+  return currentPickData
 }
 
 export async function getNextDraftPickUseCase(draftId: number){
@@ -113,26 +118,26 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
   // If draft operation was successful, set timer and send emails
   if (response.status === "Success") {
     // Move into inngest function to handle timer and email sending
-    // await inngest.send({ name: "draft/pick.submitted", data: { currentPick: currentPick[0]?.draft_pick.id } });
+    await inngest.send({ name: "draft/pick.submitted", data: { pickId: currentPick[0]?.draft_pick.id } });
 
     // Get needed info for email
     const draftPickEmails = await getDraftPickEmails();
-    const nextPick = await getNextDraftPick(2);
+    const nextPick = await getCurrentDraftPick();
 
     // Start the next timer
-    // if (nextPick) {
-    //   await inngest.send({ 
-    //     name: "draft/turn.started", 
-    //     data: { pickId: nextPick[0]?.pickId, draftId: 2 } 
-    //   });
-    // }
+    if (nextPick) {
+      await inngest.send({ 
+        name: "draft/turn.started", 
+        data: { pickId: nextPick[0]?.draft_pick.id, draftId: 2 } 
+      });
+    }
 
     //send email
     const emails = draftPickEmails.map(email => `${email.teamName} <${email.teamEmail}>`);
     // console.log("Draft Pick Emails:", emails); // Debug email string
 
     // Validate next pick data is not Null
-    if (!nextPick[0]?.teamName) {
+    if (!nextPick[0]?.team?.name) {
       response.status = "Error";
       response.message = "No Next Pick Team Data";
       // Check if all picks complete
@@ -149,7 +154,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
       pickNumber: currentPick[0]?.draft_pick.pickNumber,
       teamName: currentPick[0]?.team.name || "Unknown Team",
       playerName: playerToDraft.playerName,
-      pickingTeam: nextPick[0]?.teamName,
+      pickingTeam: nextPick[0]?.team.name,
     };
 
     const { data, error } = await resend.emails.send({

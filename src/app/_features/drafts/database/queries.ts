@@ -70,6 +70,7 @@ export async function postDraftPick(
       leagueId: 1,
       pickMade: true,
       status: "completed",
+      isOnClock: false,
       completedAt: new Date(),
     })
     .where(
@@ -94,6 +95,7 @@ export async function postWriteInDraftPick(
       writeInName: playerName,
       pickMade: true,
       status: "completed",
+      isOnClock: false,
       completedAt: new Date(),
     })
     .where(
