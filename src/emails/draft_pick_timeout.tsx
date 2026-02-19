@@ -15,14 +15,10 @@ import {
   Tailwind,
   Text,
 } from '@react-email/components';
+import { DraftTimeOutEmailData } from '~/app/_features/emails/utils/emails';
 
-type DraftPickEmailProps = {
-  pickNumber: number;
-  teamName: string;
-  pickingTeam: string;
-};
 
-export default function DraftPickTimeoutEmail({ pickNumber, teamName, pickingTeam }: DraftPickEmailProps) {
+export default function DraftPickTimeoutEmail({ pickNumber, teamName, pickingTeam }: DraftTimeOutEmailData ) {
   return (
     <Html>
       <Tailwind>

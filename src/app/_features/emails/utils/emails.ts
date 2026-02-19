@@ -16,5 +16,12 @@ export const DraftStartDataSchema = z.object({
   }),
 });
 
+export const DraftTimeOutEmailDataSchema = z.object({
+  pickNumber: z.number(),
+  teamName: z.string(),
+  pickingTeam: z.string(),
+});
+
 export type DraftPickEmailProps = z.infer<typeof DraftPickEmailPropsSchema>;
 export type DraftStartData = z.infer<typeof DraftStartDataSchema>;
+export type DraftTimeOutEmailData = z.infer<typeof DraftTimeOutEmailDataSchema>;

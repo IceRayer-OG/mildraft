@@ -12,10 +12,11 @@ import {
   getNextDraftPickUseCase, 
   getCurrentDraftPickUseCase
 } from "~/app/_features/drafts/use_cases/draftUseCases";
-import { sendDraftStartEmail, sendPickDeadlineEmail } from "~/app/_features/emails/use_cases/sendUseCases";
+import { sendDraftStartEmail, sendPickDeadlineEmail, sendPickTimeoutEmail } from "~/app/_features/emails/use_cases/sendUseCases";
 
 //Types
 import { type DraftStartData } from "~/app/_features/emails/utils/emails";
+import { Send } from "lucide-react";
 
 export const draftStart = inngest.createFunction(
   { id: "draft-start",
@@ -81,8 +82,18 @@ export const handlePickTimer = inngest.createFunction(
       await markDraftPickOverdueUseCase(pickId);
       const [nextPick] = await getNextDraftPickUseCase(2);
 
-      // Send email for pick timeout and next team on clock here
-      
+      if(!nextPick) {
+        throw new Error("No more picks in the draft.");
+      }
+      const emailProps = {
+        pickNumber: nextPick?.pickNumber || 0,
+        teamName: nextPick?.teamName || "Unknown Team",
+        pickingTeam: nextPick?.teamName || "Unknown Team",
+      }
+
+      const email = await sendPickTimeoutEmail(emailProps);
+      console.log("LOG: Pick timeout email sent with response:", email.data);
+      if(email.error != null) {console.log("Debug: Pick timeout email error:", email.error)};
       
       if (nextPick != undefined) {
         await inngest.send({ name: "draft/turn.started", data: { pickId: nextPick?.pickId, draftId } });

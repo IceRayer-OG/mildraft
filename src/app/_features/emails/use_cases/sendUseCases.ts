@@ -1,11 +1,21 @@
+// Resend API client
 import { Resend } from "resend";
-import DraftPickEmail from "~/emails/draft_pick";
 
-import { type DraftPickEmailProps } from "../utils/emails";
+// Database queries
 import { getDraftPickEmails } from "../../drafts/database/teamQueries";
+import { getCurrentDraftPick } from "../../drafts/database/queries";
+
+// Types
+import { 
+  type DraftPickEmailProps, 
+  type DraftTimeOutEmailData 
+} from "../utils/emails";
+
+// Emails
+import DraftPickEmail from "~/emails/draft_pick";
+import DraftPickTimeoutEmail from "~/emails/draft_pick_timeout";
 import DraftStartEmail from "~/emails/draft_start";
 import DraftReminderEmail from "~/emails/one_hour";
-import { getCurrentDraftPick } from "../../drafts/database/queries";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -26,7 +36,7 @@ export async function sendDraftStartEmail(pickingTeamName: string) {
     react: DraftStartEmail({ pickingTeam: pickingTeamName }),
   });
 
-  console.log("Sending draft start email...");
+  console.log("LOG: Sending draft start email...");
 }
 
 export async function sendPickDeadlineEmail(pickingTeamName: string) {
@@ -45,12 +55,23 @@ export async function sendPickDeadlineEmail(pickingTeamName: string) {
   });
   
   // Implement the logic to send an email when a pick deadline is approaching
-  console.log("Sending pick deadline email...");
+  console.log("LOG: Sending pick deadline email...");
 }
 
-export async function sendPickTimeoutEmail() {
-  // Implement the logic to send an email when a pick has timed out
-  console.log("Sending pick timeout email...");
+export async function sendPickTimeoutEmail(emailprops: DraftTimeOutEmailData ) {
+  const emails = await getLeagueEmails();
+
+  const { data, error } = await resend.emails.send({
+    from: "No-Reply <no-reply@siliconvalleybaseball.com>",
+    // to: emails, //used for production
+    to: ["Slump Busters <matthew.dowling3@gmail.com>"], // used for testing
+    subject: "SVBB MiL Draft Pick Timed Out",
+    react: DraftPickTimeoutEmail(emailprops),
+  });
+
+  console.log("LOG: Sending pick timeout email...");
+
+  return { data, error };
 }
 
 export async function sendPickMadeEmail(emailprops: DraftPickEmailProps) {
@@ -64,7 +85,7 @@ export async function sendPickMadeEmail(emailprops: DraftPickEmailProps) {
     react: DraftPickEmail(emailprops),
   });
   // Implement the logic to send an email when a pick is made
-  console.log("Sending pick made email...");
+  console.log("LOG: Sending pick made email...");
 }
 
 export async function sendDraftPauseEmail() {
@@ -74,15 +95,15 @@ export async function sendDraftPauseEmail() {
 
 export async function sendDraftResumeEmail() {
   // Implement the logic to send an email when the draft is resumed
-  console.log("Sending draft resume email...");
+  console.log("LOG: Sending draft resume email...");
 }
 
 export async function sendDraftCompletionEmail() {
   // Implement the logic to send an email when the draft is completed
-  console.log("Sending draft completion email...");
+  console.log("LOG: Sending draft completion email...");
 }
 
 export async function sendDraftSummaryEmail() {
   // Implement the logic to send a summary email after the draft is completed
-  console.log("Sending draft summary email...");
+  console.log("LOG: Sending draft summary email...");
 }

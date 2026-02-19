@@ -13,6 +13,7 @@ import {
   sql
 } from "drizzle-orm";
 import { draftPicks, pros, teams } from "~/server/db/schema";
+import { PickCountdownTimer } from "../components/PickClockTimer";
 
 export async function getDraftPicks() {
   const draftPicksData = await db
@@ -65,6 +66,7 @@ export async function getNextDraftPick(draftId: number) {
     // Check if user is current pick
     const nextPick = await db.select({
         pickId: draftPicks.id,
+        pickNumber: draftPicks.pickNumber,
         teamName: teams.name
       })
       .from(draftPicks)
