@@ -30,7 +30,6 @@ async function checkAuthorization() {
   const user = await auth();
   if (!user.userId) throw new Error("Not logged in");
   return user;
-
 }
 
 export async function getLeagueSettingsUseCase(leagueData: LeagueData) {
@@ -170,26 +169,30 @@ export async function updateDraftSettingsUseCase(
 
   try {
     await updateDraftSettings(draftData, leagueData);
-    console.log(draftData.draftStart.toDateString())
     response.status = "success";
     response.message = "Draft settings updated successfully";
-    response.data = draftData;
-
-    await inngest.send({
-      name: "draft/startDraft.changed", 
-      data: {draftId: 2}
-    })
-
-    await inngest.send({ 
-      name: "draft/draft.start", 
-      data: { draftStart: draftData.draftStart } 
-    });
-
+    response.data = await getDraftSettings(leagueData);
   } catch (error) {
     console.error("Failed to update draft settings:", error);
     response.status = "error";
     response.message = "Failed to update draft settings";
     response.data = draftData;
+  }
+
+  if (response.status === "success") {
+    const startDate = response.data.draftStart.toISOString();
+    
+    console.log("DEBUG: Sending to Inngest ->", response.data.draftStart, "as ISO String:", startDate);
+
+    await inngest.send({
+      name: "draft/draftStart.changed",
+      data: { draftId: 2 },
+    });
+
+    await inngest.send({
+      name: "draft/draft.start",
+      data: { draftStart: startDate, draftId: 2, leagueName: "SVBB" },
+    });
   }
 
   return response;

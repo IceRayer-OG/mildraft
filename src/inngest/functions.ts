@@ -1,12 +1,21 @@
+// next imports
 import { calculateDeadline } from "~/lib/date-utils";
 import { inngest } from "./client";
+
+// Database Queries
 import { getDraftSettings } from "~/app/_features/leagues/database/queries";
+
+// Use Cases
 import { 
-  markDraftPickOverduUseCase, 
+  markDraftPickOverdueUseCase, 
   startDraftPickClockUseCase,
   getNextDraftPickUseCase, 
   getCurrentDraftPickUseCase
 } from "~/app/_features/drafts/use_cases/draftUseCases";
+import { sendDraftStartEmail, sendPickDeadlineEmail } from "~/app/_features/emails/use_cases/sendUseCases";
+
+//Types
+import { type DraftStartData } from "~/app/_features/emails/utils/emails";
 
 export const draftStart = inngest.createFunction(
   { id: "draft-start",
@@ -17,20 +26,21 @@ export const draftStart = inngest.createFunction(
    },
   { event: "draft/draft.start" },
   async ({ event, step }) => {
-    await step.sleepUntil("wait-for-draft-start", new Date(event.data.draftStart).toISOString());
+    await step.sleepUntil("wait-for-draft-start", event.data.draftStart);
 
     const firstPick = await step.run("getting-first-pick", async () => {
-      const [firstPickData] = await getCurrentDraftPickUseCase()
+      const firstPickData = await getCurrentDraftPickUseCase()
       if(!firstPickData) throw new Error("No first Pick")
-      return firstPickData;
+      return firstPickData as DraftStartData;
     });
 
     await step.run("start-the-clock", async () => {
-      await inngest.send({name: 'draft/turn.started', data: { pickId: firstPick.draft_pick.id, draftId: 2 }})
+      await inngest.send({name: 'draft/turn.started', data: { pickId: firstPick.draft_pick.id, draftId: 2 }});
+      await sendDraftStartEmail(firstPick.team.name);
     })
     
     return { message: `Draft started for ${event.data.leagueName}!` };
-  },
+  }
 );
 
 export const handlePickTimer = inngest.createFunction(
@@ -43,7 +53,7 @@ export const handlePickTimer = inngest.createFunction(
   async ({ event, step }) => {
     const { pickId, draftId } = event.data;
 
-    const pick = await step.run("initialize-clock", async () => {
+    const pickDeadline = await step.run("initialize-clock", async () => {
       const draft = await getDraftSettings({ leagueId: 1, draftId: 2 });
       const pickStart = await new Date()
       const deadline = await calculateDeadline(pickStart, draft.pickDuration, Number(draft.draftPauseEndTime.toString().split(":")[0]), Number(draft.draftPauseStartTime.toString().split(":")[0]), "America/Los_Angeles");
@@ -51,16 +61,32 @@ export const handlePickTimer = inngest.createFunction(
       return updated;
     });
 
-    await step.sleepUntil("wait-for-pick-deadline", pick);
+    const pickReminder = await step.run("generate-reminder-time", async () => {
+      const pickDate = new Date(pickDeadline);
+      const reminderTime = new Date(pickDate.getTime() - 60 * 60 *1000).toISOString();
+      return reminderTime;
+    });
+
+    // Insert one hour email remider here using inngest timer function
+    await step.sleepUntil("pick-deadline-reminder", pickReminder);
+
+    await step.run("send-pick-reminder-email", async () => {
+      const currentPick = await getCurrentDraftPickUseCase() as DraftStartData;
+      await sendPickDeadlineEmail(currentPick.team.name);
+    });
+
+    await step.sleepUntil("wait-for-pick-deadline", pickDeadline);
 
     await step.run("process-timeout", async () => {
-      await markDraftPickOverduUseCase(pickId);
+      await markDraftPickOverdueUseCase(pickId);
       const [nextPick] = await getNextDraftPickUseCase(2);
+
+      // Send email for pick timeout and next team on clock here
+      
       
       if (nextPick != undefined) {
         await inngest.send({ name: "draft/turn.started", data: { pickId: nextPick?.pickId, draftId } });
       }
-      // Send Resend email here...
     });
   }
 );

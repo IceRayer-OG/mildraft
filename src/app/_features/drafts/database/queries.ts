@@ -25,9 +25,32 @@ export async function getDraftPicks() {
   return draftPicksData;
 }
 
+export async function checkUserCanPick(userId: string) {
+  const [pickNumber] = await db.select({ 
+    pickId: draftPicks.id,
+    pickNumber: draftPicks.pickNumber,
+    teamName: teams.name
+  })
+  .from(draftPicks)
+  .where(and(
+    eq(teams.ownerId, userId), 
+    eq(draftPicks.pickMade, false),
+    or(eq(draftPicks.status, "overdue"), eq(draftPicks.status, "on the clock"))
+  ))
+  .orderBy(asc(draftPicks.pickNumber))
+  .limit(1)
+  .leftJoin(teams, eq(draftPicks.teamId, teams.id))
+
+  if(pickNumber === undefined) {
+    return;
+  }
+
+  return pickNumber;
+}
+
 export async function getCurrentDraftPick() {  
     // Check if user is current pick
-    const currentPick = await db.select().from(draftPicks)
+    const [currentPick] = await db.select().from(draftPicks)
       .where(eq(draftPicks.pickMade, false))
       .orderBy(asc(draftPicks.pickNumber))
       .limit(1)
@@ -57,7 +80,6 @@ export async function getNextDraftPick(draftId: number) {
 }
 
 export async function postDraftPick(
-  teamId: number,
   draftId: number,
   pickNumber: number,
   playerPicked: number,

@@ -20,12 +20,14 @@ import {
   insertNewDraftPick,
   getCurrentDraftPick,
   getNextDraftPick,
+  checkUserCanPick,
 } from "../database/queries";
 import { getDraftPickEmails } from "..//database/teamQueries"
 import { deletePlayerFromQueues } from "../database/queueQueries"
 import { startPickClock } from "../database/draftPickQueries"
 import { getDraftablePlayers } from "../database/draftPalyersQueries"
 import { removePlayerFromQueueUseCase } from "./queueUseCases";
+import { updateDraftPickOverdue } from "../database/draftPickQueries";
 
 // Inngest Import
 import { inngest } from "~/inngest/client";
@@ -33,8 +35,7 @@ import { inngest } from "~/inngest/client";
 // Email Imports
 import { Resend } from "resend";
 import DraftPickEmail from "~/emails/draft_pick";
-import { db } from "~/server/db";
-import { updateDraftPickOverdue } from "../database/draftPickQueries";
+
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -51,7 +52,7 @@ export async function startDraftPickClockUseCase(pickId: number, startPickAt: Da
   return pickData?.endsAt
 }
 
-export async function markDraftPickOverduUseCase(pickId: number) {
+export async function markDraftPickOverdueUseCase(pickId: number) {
   const pickData = await updateDraftPickOverdue(pickId);
   return pickData;
 }
@@ -64,7 +65,6 @@ export async function getCurrentDraftPickUseCase(){
 export async function getNextDraftPickUseCase(draftId: number){
   const nextPickData = await getNextDraftPick(2);
   return nextPickData;
-
 }
 
 export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
@@ -81,22 +81,17 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
     return response
   }
 
-  // Check if user is current pick team owner
-  const currentPick = await getCurrentDraftPick();
-  if (!currentPick[0]?.draft_pick) {
+  const userPickId = await checkUserCanPick(user.userId);
+
+  if (!userPickId) {
     response.status = "Error";
-    response.message = "Not the current pick";
-    return response
-  }
-    if (!currentPick[0]?.team) {
-    response.status = "Error";
-    response.message = "No team data";
-    return response
+    response.message = "User is not on the clock";
+    return response;
   }
 
   // Perform the draft operation
   try {
-    await postDraftPick(currentPick[0]?.draft_pick.teamId,2,currentPick[0]?.draft_pick.pickNumber,playerToDraft.id,);
+    await postDraftPick(2, userPickId.pickNumber,playerToDraft.id,);
     
     // Attempt to remove player from queues
     try { 
@@ -117,27 +112,25 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
   
   // If draft operation was successful, set timer and send emails
   if (response.status === "Success") {
-    // Move into inngest function to handle timer and email sending
-    await inngest.send({ name: "draft/pick.submitted", data: { pickId: currentPick[0]?.draft_pick.id } });
-
-    // Get needed info for email
-    const draftPickEmails = await getDraftPickEmails();
-    const nextPick = await getCurrentDraftPick();
+    // Cancel timer if still running
+    await inngest.send({ name: "draft/pick.submitted", data: { pickId: userPickId.pickId } });
 
     // Start the next timer
+    const nextPick = await getCurrentDraftPick();
     if (nextPick) {
       await inngest.send({ 
         name: "draft/turn.started", 
-        data: { pickId: nextPick[0]?.draft_pick.id, draftId: 2 } 
+        data: { pickId: nextPick?.draft_pick.id, draftId: 2 } 
       });
     }
 
-    //send email
+    // Get email list
+    const draftPickEmails = await getDraftPickEmails();
     const emails = draftPickEmails.map(email => `${email.teamName} <${email.teamEmail}>`);
-    // console.log("Draft Pick Emails:", emails); // Debug email string
+    // console.log("DEBUG: Draft Pick Emails:", emails); // Debug email string
 
     // Validate next pick data is not Null
-    if (!nextPick[0]?.team?.name) {
+    if (!nextPick?.team) {
       response.status = "Error";
       response.message = "No Next Pick Team Data";
       // Check if all picks complete
@@ -151,10 +144,10 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
 
     // Send Draft Pick Email
     const emailprops = {
-      pickNumber: currentPick[0]?.draft_pick.pickNumber,
-      teamName: currentPick[0]?.team.name || "Unknown Team",
+      pickNumber: userPickId.pickNumber,
+      teamName: userPickId?.teamName || "Unknown Team",
       playerName: playerToDraft.playerName,
-      pickingTeam: nextPick[0]?.team.name,
+      pickingTeam: nextPick?.team.name,
     };
 
     const { data, error } = await resend.emails.send({
@@ -184,12 +177,12 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
 
   // Check if user is current pick team owner
   const currentPick = await getCurrentDraftPick();
-  if (!currentPick[0]?.draft_pick) {
+  if (!currentPick?.draft_pick) {
     response.status = "Error";
     response.message = "No Pick Set";
     return response;
   }
-  if (!currentPick[0]?.team) {
+  if (!currentPick?.team) {
     response.status = "Error";
     response.message = "No Team Data";
     return response;
@@ -197,7 +190,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
 
   // draft write in player
   try {
-    await postWriteInDraftPick(currentPick[0]?.draft_pick.teamId, 2, currentPick[0]?.draft_pick.pickNumber, playerToDraft);
+    await postWriteInDraftPick(currentPick?.draft_pick.teamId, 2, currentPick?.draft_pick.pickNumber, playerToDraft);
     response.status = "Success";
     response.message = `${playerToDraft} drafted successfully`;
   } catch (error) {
@@ -220,8 +213,8 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
 
     // Send Draft Pick Email
     const emailprops = {
-      pickNumber: currentPick[0]?.draft_pick.pickNumber,
-      teamName: currentPick[0]?.team.name || "Unknown Team",
+      pickNumber: currentPick?.draft_pick.pickNumber,
+      teamName: currentPick?.team.name || "Unknown Team",
       playerName: playerToDraft,
       pickingTeam: nextPick[0]?.teamName,
     };
