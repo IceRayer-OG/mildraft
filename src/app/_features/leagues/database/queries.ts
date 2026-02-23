@@ -55,7 +55,7 @@ export async function getDraftSettings(
     .limit(1);
   if (!leagueSettingsData) throw new Error("League settings not found");
 
-  const draftSettingsData = await db
+  const [draftSettingsData] = await db
     .select()
     .from(draftSettings)
     .where(
@@ -69,16 +69,16 @@ export async function getDraftSettings(
 
   const draftSettingsDataResponse = {
     draftEnabled: leagueSettingsData[0]?.draftsEnabled,
-    snakeDraft: draftSettingsData[0]?.snakeDraft,
-    draftStart: draftSettingsData[0]?.startDate,
-    draftTime: draftSettingsData[0]?.startDate?.toString().split(" ")[1],
-    pickDuration: draftSettingsData[0]?.pickDuration,
-    draftPauseEnabled: draftSettingsData[0]?.overnightPauseEnable,
-    draftPauseStartTime: draftSettingsData[0]?.pauseStartTime?.split("-")[0],
-    draftPauseEndTime: draftSettingsData[0]?.pauseEndTime?.split("-")[0],
+    snakeDraft: draftSettingsData?.snakeDraft,
+    draftStart: draftSettingsData?.startDate,
+    draftTime: draftSettingsData?.startDate?.toString().split(" ")[1],
+    pickDuration: draftSettingsData?.pickDuration,
+    draftPauseEnabled: draftSettingsData?.overnightPauseEnable,
+    draftPauseStartTime: draftSettingsData?.pauseStartTime?.split("-")[0],
+    draftPauseEndTime: draftSettingsData?.pauseEndTime?.split("-")[0],
   } as DraftSettings;
 
-  console.log(draftSettingsDataResponse.draftStart)
+  // console.log(draftSettingsDataResponse.draftStart)
 
   return draftSettingsDataResponse;
 
@@ -125,7 +125,7 @@ export async function updateDraftSettings(
     .where(eq(settings.leagueId, leagueData.leagueId)
   );
   } catch(error) {
-    console.log("Draft Enable error",error)
+    console.log("ERROR: Draft Enable error",error)
   }
   
   try {
@@ -143,13 +143,12 @@ export async function updateDraftSettings(
       pauseStartTime: `${draftData.draftPauseStartTime}-08`,
       pauseEndTime: `${draftData.draftPauseEndTime}-08`,
     })
-    .where(and(eq(draftSettings.leagueId, leagueData.leagueId),eq(draftSettings.draftId, leagueData.draftId)));
+    .where(and(eq(draftSettings.leagueId, leagueData.leagueId),eq(draftSettings.draftId, leagueData.draftId)))
   } catch(error) {
-    console.log("Draft Settings error",error)
+    console.log("ERROR: Draft Settings error",error)
   }
 
   return true;
-
 }
 
 export async function getLeagueTeamSettings(

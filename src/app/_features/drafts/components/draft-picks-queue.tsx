@@ -9,6 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "~/_components/ui/avatar";
 
 // import Types
 import { type QueueDraftPick } from "~/app/_features/drafts/utils/draft";
+import { PickCountdownTimer } from "./PickClockTimer";
 
 export default function DraftQueueList({
   draftQueue,
@@ -34,9 +35,9 @@ export default function DraftQueueList({
                 </Avatar>
                 <p className="text-xs">{pick.team.name}</p>
               </div>
-              <div className="w-full">
-                {pick.draft_pick.status === "on the clock" ? ( 
-                  <p className="text-xs text-center text-green-500">On the Clock</p>
+              <div className="w-full place-items-center">
+                {pick.draft_pick.status === "on the clock" ? (
+                  <p className="text-xs text-center text-green-500"><PickCountdownTimer targetDate={pick.draft_pick.clockEndsAt} /></p>
                 ) : 
                 pick.draft_pick.status === "overdue" ? ( 
                   <p className="text-xs text-center text-red-500">Overdue</p>

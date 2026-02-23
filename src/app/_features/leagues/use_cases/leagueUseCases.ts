@@ -15,8 +15,13 @@ import {
   getDraftPageDetails,
 } from "../database/queries";
 import { revalidatePath } from "next/cache";
-import { formatDateToLeagueTimezone, formatToLeagueTimezone, formatToUserTimezone } from "../utils/date-utils";
-import { log } from "console";
+import {
+  formatDateToLeagueTimezone,
+  formatToLeagueTimezone,
+  formatToUserTimezone,
+} from "../utils/date-utils";
+
+import { inngest } from "~/inngest/client";
 
 // import database functions here
 
@@ -36,7 +41,7 @@ export async function getLeagueSettingsUseCase(leagueData: LeagueData) {
     return settings;
   } catch (error) {
     console.error("Failed to get league settings:", error);
-    return { name: "", abbreviation: "", timezone: "UTC"};
+    return { name: "", abbreviation: "", timezone: "UTC" };
   }
 }
 
@@ -64,16 +69,16 @@ export async function updateLeagueSettingsUseCase(
 }
 
 export async function getDraftSettingsUseCase(leagueData: LeagueData) {
-    const defaultSettings = {
-      draftEnabled: false,
-      snakeDraft: false,
-      draftStart: new Date(),
-      draftTime: "19:00:00+00",
-      pickDuration: 60,
-      draftPauseEnabled: false,
-      draftPauseStartTime: "00:00:00+00",
-      draftPauseEndTime: "00:00:00+00",
-    }
+  const defaultSettings = {
+    draftEnabled: false,
+    snakeDraft: false,
+    draftStart: new Date(),
+    draftTime: "19:00:00+00",
+    pickDuration: 60,
+    draftPauseEnabled: false,
+    draftPauseStartTime: "00:00:00+00",
+    draftPauseEndTime: "00:00:00+00",
+  };
 
   try {
     const settings = await getDraftSettings(leagueData);
@@ -85,7 +90,6 @@ export async function getDraftSettingsUseCase(leagueData: LeagueData) {
     settings.draftTime = localStartTime;
 
     return settings;
-
   } catch (error) {
     console.error("Failed to get draft settings:", error);
     return defaultSettings;
@@ -96,42 +100,42 @@ export async function getDraftPageDetailsUseCase(leagueData: LeagueData) {
   const draftPageDetailsDefault = {
     userDetails: new Date(),
     serverDetails: new Date(),
-  }
+  };
 
   try {
-    const draftPageDetailsData = await getDraftPageDetails(leagueData)
+    const draftPageDetailsData = await getDraftPageDetails(leagueData);
 
-    if(!draftPageDetailsData) throw new Error("No start date found")
+    if (!draftPageDetailsData) throw new Error("No start date found");
 
-    const userDateData = await formatToUserTimezone(draftPageDetailsData[0]?.draftStart)
+    const userDateData = await formatToUserTimezone(
+      draftPageDetailsData[0]?.draftStart,
+    );
 
     const draftPageDetailsResponse = {
       userDetails: new Date(`${userDateData.dateStr}T${userDateData.timeStr}`),
-      serverDetails: draftPageDetailsData[0]?.draftStart as Date
-    }
+      serverDetails: draftPageDetailsData[0]?.draftStart as Date,
+    };
 
-    console.log(draftPageDetailsResponse)
+    // console.log("DEBUG: Draft Page Details Response:", draftPageDetailsResponse);
 
     return draftPageDetailsResponse;
-
   } catch (error) {
-    console.log(error)
-    return draftPageDetailsDefault
+    console.log("Error:", error);
+    return draftPageDetailsDefault;
   }
-
 }
 
 export async function getDraftDetailsUseCase(leagueData: LeagueData) {
-    const defaultSettings = {
-      draftEnabled: false,
-      snakeDraft: false,
-      draftStart: new Date(),
-      draftTime: "19:00:00+00",
-      pickDuration: 60,
-      draftPauseEnabled: false,
-      draftPauseStartTime: "00:00:00+00",
-      draftPauseEndTime: "00:00:00+00",
-    }
+  const defaultSettings = {
+    draftEnabled: false,
+    snakeDraft: false,
+    draftStart: new Date(),
+    draftTime: "19:00:00+00",
+    pickDuration: 60,
+    draftPauseEnabled: false,
+    draftPauseStartTime: "00:00:00+00",
+    draftPauseEndTime: "00:00:00+00",
+  };
 
   try {
     const settings = await getDraftSettings(leagueData);
@@ -143,10 +147,12 @@ export async function getDraftDetailsUseCase(leagueData: LeagueData) {
     settings.draftTime = localStartTime;
 
     return { draftStart: settings.draftStart, draftTime: settings.draftTime };
-
   } catch (error) {
     console.error("Failed to get draft settings:", error);
-    return { draftStart: defaultSettings.draftStart, draftTime: defaultSettings.draftTime };
+    return {
+      draftStart: defaultSettings.draftStart,
+      draftTime: defaultSettings.draftTime,
+    };
   }
 }
 
@@ -155,22 +161,41 @@ export async function updateDraftSettingsUseCase(
   leagueData: LeagueData,
 ) {
   await checkAuthorization();
+  const response = {
+    status: "",
+    message: "",
+    data: draftData,
+  };
 
   try {
     await updateDraftSettings(draftData, leagueData);
-    return {
-      status: "success",
-      message: "Draft settings updated successfully",
-      data: draftData,
-    };
+    response.status = "success";
+    response.message = "Draft settings updated successfully";
+    response.data = await getDraftSettings(leagueData);
   } catch (error) {
     console.error("Failed to update draft settings:", error);
-    return {
-      status: "error",
-      message: "Failed to update draft settings",
-      data: draftData,
-    };
+    response.status = "error";
+    response.message = "Failed to update draft settings";
+    response.data = draftData;
   }
+
+  if (response.status === "success") {
+    const startDate = response.data.draftStart.toISOString();
+    
+    // console.log("DEBUG: Sending to Inngest ->", response.data.draftStart, "as ISO String:", startDate);
+
+    await inngest.send({
+      name: "draft/draftStart.changed",
+      data: { draftId: 2 },
+    });
+
+    await inngest.send({
+      name: "draft/draft.start",
+      data: { draftStart: startDate, draftId: 2, leagueName: "SVBB" },
+    });
+  }
+
+  return response;
 }
 
 export async function getTeamSettingsUseCase(leagueData: LeagueData) {

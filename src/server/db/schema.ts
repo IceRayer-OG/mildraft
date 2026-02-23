@@ -72,8 +72,8 @@ export const teams = createTable(
   `team`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    name: varchar("name", { length: 256 }),
-    leagueId: integer("league_id").notNull().references(() => leagues.id),
+    name: varchar("name", { length: 256 }).notNull(),
+    leagueId: integer("league_id").notNull().references(() => leagues.id).notNull(),
     ownerId: varchar("owner_id", { length: 256 }),
     abbreviation: varchar("abbreviation", { length: 5 }),
     email: varchar("email", { length: 256 }),

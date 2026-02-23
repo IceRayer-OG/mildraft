@@ -15,6 +15,7 @@ const queueDraftPickSchema = z.object({
     leagueId: z.number(),
     draftId: z.number(),
     status: status,
+    clockEndsAt: z.date(),
   }),
 });
 

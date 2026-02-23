@@ -32,11 +32,48 @@ export default function DraftCountdownTimer({
     ([unit, value]) => {
       return (
         <div key={unit} className="flex items-center">
-          {`${value.toString().padStart(2,"0")}${unit.toLowerCase()}`}
+          {`${value.toString().padStart(2, "0")}${unit.toLowerCase()}`}
         </div>
       );
     },
   );
+
+  return (
+    <div className="flex gap-1">
+      {timerComponents.length ? (
+        timerComponents
+      ) : (
+        <span>Time`&apos;`s up!</span>
+      )}
+    </div>
+  );
+}
+
+export function PickCountdownTimer({ targetDate }: CountdownTimerProps) {
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(targetDate));
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(calculateTimeLeft(targetDate));
+    }, 1000);
+
+    // Clean up the timer when the component unmounts
+    return () => clearTimeout(timer);
+  });
+
+  if (!timeLeft.state.active) {
+    const timerComponents = null;
+  }
+
+  const timerComponents = Object.entries(timeLeft.dateData)
+    .filter(([unit]) => unit !== "D") // Skip the Days unit
+    .map(([unit, value]) => {
+      return (
+        <div key={unit} className="flex items-center">
+          {`${value.toString().padStart(2, "0")}${unit.toLowerCase()}`}
+        </div>
+      );
+    });
 
   return (
     <div className="flex gap-1">

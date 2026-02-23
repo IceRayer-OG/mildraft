@@ -5,6 +5,7 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
   Img,
   Link,
@@ -14,19 +15,15 @@ import {
   Tailwind,
   Text,
 } from '@react-email/components';
+import { DraftTimeOutEmailData } from '~/app/_features/emails/utils/emails';
 
-type DraftReminderEmailProps = {
-  timeRemaining: number;
-};
 
-export default function DraftReminderEmail(
-  { timeRemaining }: DraftReminderEmailProps
-) {
+export default function DraftPickTimeoutEmail({ pickNumber, teamName, pickingTeam }: DraftTimeOutEmailData ) {
   return (
- <Html>
+    <Html>
       <Tailwind>
         <Head />
-        <Preview>Caution: One Hour Remaining</Preview>
+        <Preview>Draft Pick Timedout</Preview>
         <Body>
           <Container className='h-full'>
             <Section className='bg-[#12026d] text-green-500 place-content-center rounded-t-xl h-20'>
@@ -38,17 +35,23 @@ export default function DraftReminderEmail(
                   />
                 </Column>
                 <Column className='w-[80%] text-center'>
-                  <Heading className='text-red-700 text-3xl'><span className="font-bold underline">Warning:</span> One Hour Remaining</Heading>
+                  <Heading className='text-green-500 text-3xl'>Draft Pick Timed Out</Heading>
                 </Column>
                 <Column className='w-[10%] p-2'>
                 </Column>
               </Row>
             </Section>
               
+            <Text className='text-lg'>With the <span className='font-bold underline'>#{pickNumber} pick</span> in the 2026 draft.</Text>
+            <Text className='text-lg'>
+              <span className='font-bold'>{teamName} </span> has timed out. Though they are able to make their pick at any time, the clock has moved on to the next team.
+            </Text>
+            
+            <Hr className='border-pink-950 border-t-2'/>
+
             <Section>
               <Row>
-                <Text className='text-lg text-center'>You currently have 1 hour remaining to make your player selection.</Text>
-                <Text className='text-lg text-center'>The button below will take you to the Draft Room.</Text>
+                <Text className='text-lg text-center'><span className='font-bold underline'>{pickingTeam}</span> is on the Clock!</Text>
               </Row>
               <Row>
                 <Column align='center'>

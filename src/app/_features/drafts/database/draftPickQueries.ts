@@ -51,9 +51,9 @@ export async function startPickClock(pickId: number, startPickAt: Date, deadline
       endsAt: draftPicks.clockEndsAt
     });
   
-  if(pickData[0]) throw new Error("No Pick to set")
+  if(!pickData[0]) throw new Error("No Pick to set")
 
-  return pickData as InngestPick[];
+  return pickData[0] as InngestPick;
 }
 
 export async function updateDraftPickOverdue(pickId: number){
