@@ -116,11 +116,11 @@ export async function getDraftPageDetailsUseCase(leagueData: LeagueData) {
       serverDetails: draftPageDetailsData[0]?.draftStart as Date,
     };
 
-    console.log(draftPageDetailsResponse);
+    // console.log("DEBUG: Draft Page Details Response:", draftPageDetailsResponse);
 
     return draftPageDetailsResponse;
   } catch (error) {
-    console.log(error);
+    console.log("Error:", error);
     return draftPageDetailsDefault;
   }
 }
@@ -182,7 +182,7 @@ export async function updateDraftSettingsUseCase(
   if (response.status === "success") {
     const startDate = response.data.draftStart.toISOString();
     
-    console.log("DEBUG: Sending to Inngest ->", response.data.draftStart, "as ISO String:", startDate);
+    // console.log("DEBUG: Sending to Inngest ->", response.data.draftStart, "as ISO String:", startDate);
 
     await inngest.send({
       name: "draft/draftStart.changed",

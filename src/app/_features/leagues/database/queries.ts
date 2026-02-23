@@ -78,7 +78,7 @@ export async function getDraftSettings(
     draftPauseEndTime: draftSettingsData?.pauseEndTime?.split("-")[0],
   } as DraftSettings;
 
-  console.log(draftSettingsDataResponse.draftStart)
+  // console.log(draftSettingsDataResponse.draftStart)
 
   return draftSettingsDataResponse;
 
@@ -125,7 +125,7 @@ export async function updateDraftSettings(
     .where(eq(settings.leagueId, leagueData.leagueId)
   );
   } catch(error) {
-    console.log("Draft Enable error",error)
+    console.log("ERROR: Draft Enable error",error)
   }
   
   try {
@@ -145,7 +145,7 @@ export async function updateDraftSettings(
     })
     .where(and(eq(draftSettings.leagueId, leagueData.leagueId),eq(draftSettings.draftId, leagueData.draftId)))
   } catch(error) {
-    console.log("Draft Settings error",error)
+    console.log("ERROR: Draft Settings error",error)
   }
 
   return true;

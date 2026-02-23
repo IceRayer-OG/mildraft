@@ -97,7 +97,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
     try { 
       await deletePlayerFromQueues(playerToDraft.id);
     } catch (error) {
-      console.error("Error removing player from queues:", error);
+      console.error("ERROR: Error removing player from queues:", error);
     }
     
     // Draft operation successful
@@ -107,7 +107,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
     // Draft operation failed
     response.status = "Error";
     response.message = "Error making pick";
-    console.error("Drafting player failed:", error);
+    console.error("ERROR: Drafting player failed:", error);
   }
   
   // If draft operation was successful, set timer and send emails
@@ -194,7 +194,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
     response.status = "Success";
     response.message = `${playerToDraft} drafted successfully`;
   } catch (error) {
-    console.error("Failed to draft write in player:", error);
+    console.error("ERROR: Failed to draft write in player:", error);
     response.status = "Error";
     response.message = `Failed to draft ${playerToDraft}`;
   }
@@ -203,7 +203,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
     const draftPickEmails = await getDraftPickEmails();
     const nextPick = await getNextDraftPick(2);
     const emails = draftPickEmails.map(email => `${email.teamName} <${email.teamEmail}>`);
-    console.log("Draft Pick Emails:", emails);
+    // console.log("Draft Pick Emails:", emails);
 
     if (!nextPick[0]?.teamName) {
       response.status = "Error";

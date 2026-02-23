@@ -33,7 +33,7 @@ export async function convertToUTC(
   const localDateTime = `${dateStr.split("T")[0]}T${timeStr.length === 5 ? timeStr + ":00" : timeStr}`;
 
   const UTCDateTime = fromZonedTime(localDateTime, timezone);
-  console.log("Local DateTime:", localDateTime, "converted to UTC:", UTCDateTime.toISOString());
+  // console.log("Local DateTime:", localDateTime, "converted to UTC:", UTCDateTime.toISOString());
   // This treats the string as "Local Time in [Timezone]" and returns a UTC Date object
   return UTCDateTime;
 }

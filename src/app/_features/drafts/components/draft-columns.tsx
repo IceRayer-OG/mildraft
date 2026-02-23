@@ -56,17 +56,21 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     accessorKey: "rank",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Top 100 Rank
-          <ArrowUpDown className="" />
-        </Button>
+        <div className="max-w-fit">
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Top 100 Rank
+            <ArrowUpDown className="" />
+          </Button>
+        </div>
       );
     },
     cell: ({ row }) => {
-      return <div className="w-fit pr-4 whitespace-nowrap">{row.getValue("rank")}</div>
+      return (
+        <div className="w-px p-1 whitespace-nowrap">{row.getValue("rank")}</div>
+      );
     },
     sortingFn: (rowA, rowB, columnId) => {
       const a = rowA.getValue(columnId);
@@ -88,17 +92,23 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     accessorKey: "teamRank",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Team Rank
-          <ArrowUpDown className="" />
-        </Button>
+        <div className="max-w-fit">
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Team Rank
+            <ArrowUpDown className="" />
+          </Button>
+        </div>
       );
     },
     cell: ({ row }) => {
-      return <div className="w-px whitespace-nowrap p-1">{row.getValue("teamRank")}</div>
+      return (
+        <div className="w-px p-1 whitespace-nowrap">
+          {row.getValue("teamRank")}
+        </div>
+      );
     },
     sortingFn: (rowA, rowB, columnId) => {
       const a = rowA.getValue(columnId);
@@ -145,24 +155,34 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
       return Number(a) > Number(b) ? 1 : -1;
     },
     cell: ({ row }) => {
-      return <div className="w-px whitespace-nowrap">{row.getValue("draftRank")}</div>
+      return (
+        <div className="w-px whitespace-nowrap">
+          {row.getValue("draftRank")}
+        </div>
+      );
     },
   },
   {
     accessorKey: "playerName",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Player Name
-          <ArrowUpDown className="" />
-        </Button>
+        <div className="w-full">
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Player Name
+            <ArrowUpDown className="" />
+          </Button>
+        </div>
       );
     },
     cell: ({ row }) => {
-      return <div className="w-full whitespace-nowrap pr-2">{row.getValue("playerName")}</div>
+      return (
+        <div className="w-full pr-2 whitespace-nowrap">
+          {row.getValue("playerName")}
+        </div>
+      );
     },
   },
   {
@@ -181,7 +201,11 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     },
     cell: ({ row }) => {
       const positions = row.getValue("position") as string[];
-      return <div className="w-fit pr-2 whitespace-nowrap">{positions.join(", ")}</div>;
+      return (
+        <div className="w-fit pr-2 whitespace-nowrap">
+          {positions.join(", ")}
+        </div>
+      );
     },
   },
   {
