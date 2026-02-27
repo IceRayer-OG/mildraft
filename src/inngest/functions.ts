@@ -54,6 +54,10 @@ export const handlePickTimer = inngest.createFunction(
   async ({ event, step }) => {
     const { pickId, draftId } = event.data;
 
+    // await step.run("check-auto-draft", async () => {
+    //   const teamId = await 
+    // });
+
     const pickDeadline = await step.run("initialize-clock", async () => {
       const draft = await getDraftSettings({ leagueId: 1, draftId: 2 });
       const pickStart = await new Date()

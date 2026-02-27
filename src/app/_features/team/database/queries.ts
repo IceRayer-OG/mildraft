@@ -13,6 +13,7 @@ export async function updateTeamSettings(
     .set({
       name: teamData.teamName,
       abbreviation: teamData.teamAbbreviation,
+      autoDraftEnabled: teamData.autoDraftEnabled,
     })
     .where(eq(teams.ownerId, teamId));
 
@@ -44,6 +45,18 @@ export async function getTeamIdByUserId(userId: string) {
     }
     
     return teamId;
+}
+
+export async function getTeamSettingsById(teamId: number) {
+  const team = await db.query.teams.findFirst({
+    where: eq(teams.id, teamId),
+  });
+
+  if (!team) {
+    return null; // No team found for the given ID
+  }
+
+  return team;
 }
 
 export async function getMyTeam(userId: string) {

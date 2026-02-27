@@ -19,6 +19,8 @@ import { Button } from "~/_components/ui/button";
 import { Label } from "~/_components/ui/label";
 import { Input } from "~/_components/ui/input";
 import { toast } from "sonner";
+import { Checkbox } from "~/_components/ui/checkbox";
+import { Separator } from "~/_components/ui/separator";
 
 // Actions
 import {
@@ -28,7 +30,6 @@ import {
 
 // Utils
 import { type TeamSettings } from "../utils/team";
-
 
 export function TeamSettingsDialogForm({
   teamSettingsData,
@@ -40,7 +41,7 @@ export function TeamSettingsDialogForm({
     { status: "", message: "", data: use(teamSettingsData) },
   );
 
-  useEffect(() => { 
+  useEffect(() => {
     if (content.status === "success") {
       toast.success(content.message);
     } else if (content.status === "error") {
@@ -102,11 +103,33 @@ export function TeamSettingsDialogForm({
                 name="teamLogo"
                 defaultValue={content?.data.teamLogo}
                 placeholder="Enter team Logo URL"
+                disabled={true} // Disable the input for now since logo updates aren't implemented
                 className="text-right"
               />
               {content?.status === "error" && (
                 <p
-                  id="team-abbreviation-error"
+                  id="team-logo-error"
+                  className="text-sm text-red-500"
+                >
+                  {content.message}
+                </p>
+              )}
+            </div>
+            
+            <div>
+              <h2 className="text-lg font-semibold text-center">Draft Settings</h2>
+            </div>
+            <Separator className="border"/>
+            <div className="flex items-center justify-between space-y-1">
+              <Label>Auto Draft</Label>
+              <Checkbox
+                id="auto-draft-enabled"
+                name="autoDraftEnabled"
+                defaultChecked={content?.data.autoDraftEnabled}
+              />
+              {content?.status === "error" && (
+                <p
+                  id="auto-draft-error"
                   className="text-sm text-red-500"
                 >
                   {content.message}
@@ -127,11 +150,11 @@ export function TeamSettingsDialogForm({
             <DialogClose asChild>
               <PopoverClose asChild>
                 {content.status === "success" ? (
-                    <Button variant="destructive">Close</Button>
+                  <Button variant="destructive" type="reset">Close</Button>
                 ) : (
-                    <Button variant="destructive">Cancel</Button>
-                )} 
-              </PopoverClose>             
+                  <Button variant="destructive" type="reset">Cancel</Button>
+                )}
+              </PopoverClose>
             </DialogClose>
           </DialogFooter>
         </Form>
