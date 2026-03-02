@@ -30,6 +30,20 @@ async function checkAuthentication() {
     return user;
 }
 
+export async function getMyTeamIdUseCase() {
+    const user = await checkAuthentication();
+
+    // Get users team id
+    const teamId = await getTeamIdByUserId(user.userId);
+    
+    // If no team id is found, return an empty array
+    if (!teamId) {
+        return [];
+    }
+
+    return teamId;
+}
+
 
 export async function getMyTeamUseCase() {
     const user = await checkAuthentication();

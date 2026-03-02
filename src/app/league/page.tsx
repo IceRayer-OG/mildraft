@@ -12,29 +12,33 @@ import { AddPostDialog } from "~/app/_features/posts/components/addPost";
 import { SettingDialog } from "~/app/_features/leagues/components/SettingDialog";
 import TeamList from "~/app/_features/team/components/TeamsList";
 import Posts from "~/_components/Posts";
+import { DataTable } from "../_features/drafts/components/draftresults-data-table";
 
 // Actions
 import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
-import { getLeagueSettingsAction } from "~/app/_features/leagues/actions/leagueActions"; 
+import { getLeagueSettingsAction } from "~/app/_features/leagues/actions/leagueActions";
 import { getLeaguePostsAction } from "../_features/posts/actions/postActions";
-
+import { draftResultColumns } from "../_features/drafts/components/draftresults-columns";
+import { getDraftResultsAction } from "../_features/drafts/actions/draftActions";
 
 export default function LeaguePage() {
   const posts = getLeaguePostsAction();
   const allLeagueTeams = getLeagueTeamsAction();
-  const leagueSettingsData = use(getLeagueSettingsAction({leagueId: 1, draftId: 2}));
+  const leagueSettingsData = use(
+    getLeagueSettingsAction({ leagueId: 1, draftId: 2 }),
+  );
+  const draftResultData = getDraftResultsAction(2);
 
   return (
-    <div className="min-w-screen flex min-h-screen flex-col bg-linear-to-b from-[#12026d] to-[#15162c] p-4 text-white">
+    <div className="flex min-h-screen min-w-screen flex-col bg-linear-to-b from-[#12026d] to-[#15162c] p-4 text-white">
       <div className="flex min-h-20 items-center justify-between gap-4">
-        <div>
-        </div>
+        <div></div>
         <div>
           <p className="text-xl font-semibold md:text-4xl">
             Welcome to {leagueSettingsData.name}!
           </p>
         </div>
-        <div className="content-right pr-4 flex items-center gap-2">
+        <div className="content-right flex items-center gap-2 pr-4">
           <SettingDialog />
           <Image
             src="https://fantasy-media.cbssports.com/baseball/siliconvalley/ealsm1LqkKSOqPRQ.jpg"
@@ -71,11 +75,19 @@ export default function LeaguePage() {
           </div>
           <div className="flex flex-wrap gap-4">
             <div className="flex flex-col space-y-3">
-              <Skeleton className="h-31.25 w-62.5 rounded-xl bg-slate-800" />
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-62.5 bg-slate-800" />
-                <Skeleton className="h-4 w-50 bg-slate-800" />
-              </div>
+              <Suspense
+                fallback={
+                  <div>
+                    <Skeleton className="h-31.25 w-62.5 rounded-xl bg-slate-800" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-62.5 bg-slate-800" />
+                      <Skeleton className="h-4 w-50 bg-slate-800" />
+                    </div>
+                  </div>
+                }
+              >
+                <DataTable columns={draftResultColumns} data={draftResultData} />
+              </Suspense>
             </div>
           </div>
         </div>

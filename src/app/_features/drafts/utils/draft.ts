@@ -56,7 +56,7 @@ const queuePlayersSchema = z.object({
   bats: z.enum(["R", "L", "B", "S"]),
 });
 
-export const inngestPickSchema = z.object({
+const inngestPickSchema = z.object({
   pickId: z.number(),
   startsAt: z.date(),
   endsAt: z.date(),
@@ -87,8 +87,15 @@ export const calculateTimeLeft = (targetDate: Date) => {
   return timeLeft;
 };
 
+const draftResultsSchema = z.object({
+  pickId: z.number(),
+  teamName: z.string(),
+  playerName: z.string(),
+})
+
 export type QueueDraftPick = z.infer<typeof queueDraftPickSchema>;
 export type DraftablePlayers = z.infer<typeof draftablePlayersSchema>;
 export type QueuePlayers = z.infer<typeof queuePlayersSchema>;
 export type CompletedDraftPicks = z.infer<typeof compeltedDraftPickSchema>;
 export type InngestPick = z.infer<typeof inngestPickSchema>;
+export type DraftResults = z.infer<typeof draftResultsSchema>;

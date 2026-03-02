@@ -11,8 +11,15 @@ import {
     getMyTeamUseCase,
     getLeagueUnclaimedTeamsUseCase,
     claimTeamUseCase,
+    getMyTeamIdUseCase,
 } from "../use_cases/teamsUseCase";
 import { type UnclaimedTeam } from "../utils/team";
+
+export async function getMyTeamIdAction() {
+    const teamId = await getMyTeamIdUseCase();
+
+    return teamId;
+}
 
 export async function getMyTeamAction() {
     const myTeam = await getMyTeamUseCase();

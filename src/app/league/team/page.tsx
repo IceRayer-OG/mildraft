@@ -29,7 +29,14 @@ import { getTeamSettingsAction } from "~/app/_features/team/actions/teamSettings
 
 export const dynamic = 'force-dynamic'
 
-export default function TeamPage() {
+export default function TeamPage(
+// {
+//   params,
+// }: {
+//   params: Promise<{ team: string }>
+// }
+) {
+  // const { team } = await params;
   const data = getMyTeamAction();
   const teamSettings = getTeamSettingsAction();
   const myTeamInfo = use(getMyTeamInfoAction());
