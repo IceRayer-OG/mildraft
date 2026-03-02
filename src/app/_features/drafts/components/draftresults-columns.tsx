@@ -13,7 +13,7 @@ import { type DraftResults } from "../utils/draft";
 
 export const draftResultColumns: ColumnDef<DraftResults>[] = [
   {
-    accessorKey: "draft pick",
+    accessorKey: "draftPick",
     header: ({ column }) => {
       return (
         <Button
@@ -27,7 +27,7 @@ export const draftResultColumns: ColumnDef<DraftResults>[] = [
     },
     cell: ({ row }) => {
       return (
-        <div className="w-px p-1 whitespace-nowrap">{row.getValue("rank")}</div>
+        <div className="w-px p-1 whitespace-nowrap">{row.getValue("draftPick")}</div>
       );
     },
     sortingFn: (rowA, rowB, columnId) => {
@@ -83,14 +83,14 @@ export const draftResultColumns: ColumnDef<DraftResults>[] = [
     },
   },
   {
-    accessorKey: "PlayerName",
+    accessorKey: "playerName",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Draft Rank
+          Player
           <ArrowUpDown className="" />
         </Button>
       );
@@ -113,7 +113,7 @@ export const draftResultColumns: ColumnDef<DraftResults>[] = [
     cell: ({ row }) => {
       return (
         <div className="w-px p-1 whitespace-nowrap">
-          {row.getValue("PlayerName")}
+          {row.getValue("playerName")}
         </div>
       );
     },
