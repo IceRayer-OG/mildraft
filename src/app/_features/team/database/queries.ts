@@ -1,7 +1,7 @@
 import "server-only";
 import { db } from "~/server/db";
-import { teams, players, pros, settings } from "~/server/db/schema";
-import { eq, and, isNull } from "drizzle-orm";
+import { teams, players, pros, settings} from "~/server/db/schema";
+import { eq, and, isNull, asc } from "drizzle-orm";
 import { TeamSettings } from "../utils/team";
 
 export async function updateTeamSettings(
@@ -104,13 +104,12 @@ export async function dropPlayerFromMyTeam(playerId: number, userId: string) {
 
 export async function getLeagueUnclaimedTeams() {
 
-  const unclaimedLeagueTeams = await db.query.teams.findMany({
-    columns: {
-      id: true,
-      name: true,
-    },
-    where: and(eq(teams.leagueId, 1),isNull(teams.ownerId))
-  });
+  const unclaimedLeagueTeams = await db.select({id: teams.id, name: teams.name}).from(teams)
+  .where(and(
+    eq(teams.leagueId, 1),
+    isNull(teams.ownerId)
+  ))
+  .orderBy(asc(teams.name));
 
   if(!unclaimedLeagueTeams) throw new Error("No teams found");
 

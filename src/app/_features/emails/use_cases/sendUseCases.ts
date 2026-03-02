@@ -30,8 +30,8 @@ export async function sendDraftStartEmail(pickingTeamName: string) {
 
   const { data, error } = await resend.emails.send({
     from: "No-Reply <no-reply@siliconvalleybaseball.com>",
-    // to: emails, //used for production
-    to: ["Slump Busters <matthew.dowling3@gmail.com>"], // used for testing
+    to: emails, //used for production
+    // to: ["Slump Busters <matthew.dowling3@gmail.com>"], // used for testing
     subject: "2026 SVBB MiL Draft Start",
     react: DraftStartEmail({ pickingTeam: pickingTeamName }),
   });
@@ -63,8 +63,8 @@ export async function sendPickTimeoutEmail(emailprops: DraftTimeOutEmailData ) {
 
   const { data, error } = await resend.emails.send({
     from: "No-Reply <no-reply@siliconvalleybaseball.com>",
-    // to: emails, //used for production
-    to: ["Slump Busters <matthew.dowling3@gmail.com>"], // used for testing
+    to: emails, //used for production
+    // to: ["Slump Busters <matthew.dowling3@gmail.com>"], // used for testing
     subject: "SVBB MiL Draft Pick Timed Out",
     react: DraftPickTimeoutEmail(emailprops),
   });
@@ -79,8 +79,8 @@ export async function sendPickMadeEmail(emailprops: DraftPickEmailProps) {
 
   const { data, error } = await resend.emails.send({
     from: "No-Reply <no-reply@siliconvalleybaseball.com>",
-    // to: emails, //used for production
-    to: ["Slump Busters <matthew.dowling3@gmail.com>"], // used for testing
+    to: emails, //used for production
+    // to: ["Slump Busters <matthew.dowling3@gmail.com>"], // used for testing
     subject: "SVBB MiL Draft Pick Completed",
     react: DraftPickEmail(emailprops),
   });
