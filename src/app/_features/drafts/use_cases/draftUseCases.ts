@@ -153,8 +153,8 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
 
     const { data, error } = await resend.emails.send({
       from: 'No-Reply <no-reply@siliconvalleybaseball.com>',
-      // to: emails, // Distro list
-      to: ['Slump Busters <matthew.dowling3@gmail.com>'],  // Used for testing
+      to: emails, // Distro list
+      // to: ['Slump Busters <matthew.dowling3@gmail.com>'],  // Used for testing
       subject: 'Draft Pick Completed',
       react: DraftPickEmail(emailprops),
     });
@@ -222,8 +222,8 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
 
     const { data, error } = await resend.emails.send({
           from: 'No-Reply <no-reply@siliconvalleybaseball.com>',
-          // to: emails,
-          to: ['Slump Busters <matthew.dowling3@gmail.com>'],
+          to: emails,
+          // to: ['Slump Busters <matthew.dowling3@gmail.com>'],
           subject: 'TEST - Draft Pick Completed',
           react: DraftPickEmail(emailprops),
         });
