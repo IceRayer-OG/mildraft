@@ -76,6 +76,7 @@ export const teams = createTable(
     leagueId: integer("league_id").notNull().references(() => leagues.id).notNull(),
     ownerId: varchar("owner_id", { length: 256 }),
     abbreviation: varchar("abbreviation", { length: 5 }),
+    autoDraftEnabled: boolean("auto_draft_enabled").default(false),
     email: varchar("email", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)

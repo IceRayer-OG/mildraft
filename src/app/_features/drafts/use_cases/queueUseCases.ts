@@ -68,4 +68,3 @@ export async function removePlayerFromQueueUseCase(playerToRemove: DraftablePlay
         throw new Error("Error removing player from queue");
     } 
 }
-

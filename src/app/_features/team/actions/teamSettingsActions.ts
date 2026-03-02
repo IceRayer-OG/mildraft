@@ -16,6 +16,7 @@ export async function updateTeamSettingsAction(
     teamName: formData.get("teamName") as string,
     teamAbbreviation: formData.get("teamAbbreviation") as string,
     teamLogo: formData.get("teamLogo") as string,
+    autoDraftEnabled: formData.get("autoDraftEnabled") === "on", // Convert checkbox value to boolean
   };
   const response = await updateTeamSettingsUseCase(teamData);
   revalidatePath("/team"); // Revalidate the path to reflect changes

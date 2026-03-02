@@ -56,7 +56,7 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     accessorKey: "rank",
     header: ({ column }) => {
       return (
-        <div className="max-w-fit">
+        <div className="max-w-fit p-1 whitespace-nowrap">
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -92,7 +92,7 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     accessorKey: "teamRank",
     header: ({ column }) => {
       return (
-        <div className="max-w-fit">
+        <div className="w-px p-1 whitespace-nowrap">
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -166,7 +166,7 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     accessorKey: "playerName",
     header: ({ column }) => {
       return (
-        <div className="w-full">
+        <div className="p-1 whitespace-nowrap">
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -179,7 +179,7 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     },
     cell: ({ row }) => {
       return (
-        <div className="w-full pr-2 whitespace-nowrap">
+        <div className="p-1 whitespace-nowrap">
           {row.getValue("playerName")}
         </div>
       );
@@ -202,7 +202,7 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     cell: ({ row }) => {
       const positions = row.getValue("position") as string[];
       return (
-        <div className="w-fit pr-2 whitespace-nowrap">
+        <div className="w-px p-1 whitespace-nowrap">
           {positions.join(", ")}
         </div>
       );
