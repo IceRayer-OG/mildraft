@@ -10,9 +10,9 @@ import {
   ne,
   count,
   or,
-  sql
+  sql,
 } from "drizzle-orm";
-import { draftPicks, pros, teams } from "~/server/db/schema";
+import { draftPicks, pros, players, teams } from "~/server/db/schema";
 
 export async function getDraftablePlayers() {
   const draftedPlayers = db
@@ -20,10 +20,20 @@ export async function getDraftablePlayers() {
     .from(draftPicks)
     .where(and(eq(draftPicks.draftId, 2), isNotNull(draftPicks.playerId)));
 
+  const playersOnTeams = db
+    .select({ playerOnTeam: players.proId })
+    .from(players)
+    .where(eq(players.leagueId, 1));
+
   const draftablePlayers = await db
     .select()
     .from(pros)
-    .where(notInArray(pros.id, draftedPlayers));
+    .where(
+      and(
+        notInArray(pros.id, draftedPlayers),
+        notInArray(pros.id, playersOnTeams),
+      ),
+    );
 
   if (draftablePlayers === null) throw new Error("Error getting draft players");
 
