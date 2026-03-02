@@ -12,6 +12,7 @@ import {
   getDraftPicksListUseCase,
   undoDraftPickUseCase,
   addNewDraftPickUseCase,
+  getDraftResultsUseCase,
 } from "../use_cases/draftUseCases";
 
 // Types
@@ -79,4 +80,9 @@ export async function addNewDraftPickAction(teamName: string) {
   const teamSelected = await addNewDraftPickUseCase(teamName);
   revalidatePath("/league/Draft");
   return teamSelected;
+}
+
+export async function getDraftResultsAction(draftId: number) {
+  const draftResults = await getDraftResultsUseCase(draftId);
+  return draftResults;
 }

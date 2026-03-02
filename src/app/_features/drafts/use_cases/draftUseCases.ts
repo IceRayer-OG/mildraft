@@ -5,6 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 
 // Types
 import {
+  DraftResults,
   type CompletedDraftPicks,
   type DraftablePlayers,
   type QueueDraftPick,
@@ -24,7 +25,7 @@ import {
 } from "../database/queries";
 import { getDraftPickEmails } from "..//database/teamQueries"
 import { deletePlayerFromQueues } from "../database/queueQueries"
-import { startPickClock } from "../database/draftPickQueries"
+import { getDraftResults, startPickClock } from "../database/draftPickQueries"
 import { getDraftablePlayers } from "../database/draftPalyersQueries"
 import { removePlayerFromQueueUseCase } from "./queueUseCases";
 import { updateDraftPickOverdue } from "../database/draftPickQueries";
@@ -296,4 +297,12 @@ export async function addNewDraftPickUseCase(teamName: string) {
   const teamSelected = await insertNewDraftPick(2, teamName);
 
   return teamSelected;
+}
+
+export async function getDraftResultsUseCase(draftId: number) {
+  const draftResults = await getDraftResults(draftId);
+  if (!draftResults) {
+    throw new Error("Error getting draft results");
+  }
+  return draftResults as DraftResults[];
 }
