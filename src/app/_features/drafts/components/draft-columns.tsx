@@ -56,15 +56,13 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     accessorKey: "rank",
     header: ({ column }) => {
       return (
-        <div className="max-w-fit p-1 whitespace-nowrap">
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Top 100 Rank
-            <ArrowUpDown className="" />
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Top 100 Rank
+          <ArrowUpDown className="" />
+        </Button>
       );
     },
     cell: ({ row }) => {
@@ -92,15 +90,13 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     accessorKey: "teamRank",
     header: ({ column }) => {
       return (
-        <div className="w-px p-1 whitespace-nowrap">
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Team Rank
-            <ArrowUpDown className="" />
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Team Rank
+          <ArrowUpDown className="" />
+        </Button>
       );
     },
     cell: ({ row }) => {
@@ -156,7 +152,7 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     },
     cell: ({ row }) => {
       return (
-        <div className="w-px whitespace-nowrap">
+        <div className="w-px p-1 whitespace-nowrap">
           {row.getValue("draftRank")}
         </div>
       );
@@ -202,9 +198,7 @@ export const draftColumns: ColumnDef<DraftablePlayers>[] = [
     cell: ({ row }) => {
       const positions = row.getValue("position") as string[];
       return (
-        <div className="w-px p-1 whitespace-nowrap">
-          {positions.join(", ")}
-        </div>
+        <div className="w-px p-1 whitespace-nowrap">{positions.join(", ")}</div>
       );
     },
   },
