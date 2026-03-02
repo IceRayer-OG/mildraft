@@ -27,7 +27,7 @@ export function ClaimTeamDialog({
       <DialogTrigger asChild>
         <div className="relative">
           <Button
-            variant={"ghost"}
+            variant="ghost"
             className="relative inline-flex items-center gap-1 p-4 rounded-md bg-zinc-900"
           >
             <TextShimmerWave
