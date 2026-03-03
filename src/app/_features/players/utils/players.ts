@@ -1,6 +1,6 @@
 import z from "zod";
 
-const positions = z.enum(["RHP", "LHP", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "INF", "DH"]);
+const positions = z.enum(["RHP", "LHP", "C", "1B", "2B", "3B", "SS", "OF", "CI", "MI", "INF", "DH", "UTIL"]);
 
 const draftPlayersSchema = z.object({
     id: z.number(),

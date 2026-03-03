@@ -16,7 +16,7 @@ import {
 
 // export const namespace = "mildraft_";
 export const createTable = pgTableCreator((name) => `mildraft_${name}`);
-export const positions = pgEnum('positions', ['RHP', 'LHP', 'C', '1B', '2B', '3B', 'SS', 'OF', 'CI', 'MI', "INF", "DH"]);
+export const positions = pgEnum('positions', ['RHP', 'LHP', 'C', '1B', '2B', '3B', 'SS', 'OF', 'CI', 'MI', "INF", "DH", "UTIL"]);
 export const throws = pgEnum("throws", ["R", "L", "B", "S"]);
 export const bats = pgEnum("bats", ["R", "L", "B", "S"]);
 export const statusEnum = pgEnum('pick_status', [
