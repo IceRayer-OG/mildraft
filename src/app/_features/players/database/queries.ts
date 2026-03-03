@@ -42,12 +42,13 @@ export async function loadProspectPlayers(dataToInsert: ProPlayers[]) {
 	await db.insert(pros)
 	.values(batch)
 	.onConflictDoUpdate({
-		target: [pros.playerName, pros.team],
+		target: [pros.playerName],
 		set: {
 			rank: sql`excluded.rank`,
             teamRank: sql`excluded.team_rank`,
             draftRank: sql`excluded.draft_rank`,
 			position: sql`excluded.position`,
+            team: sql`excluded.team`,
 			level: sql`excluded.level`,
 			eta: sql`excluded.eta`,
 			age: sql`excluded.age`,
