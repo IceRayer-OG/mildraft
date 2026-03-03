@@ -89,6 +89,7 @@ export function DataTable<TData, TValue>({
                 { label: "MI", value: "MI" },
                 { label: "INF", value: "INF" },
                 { label: "OF", value: "OF" },
+                { label: "UTIL", value: "UTIL" },
               ]}
             />
           )}
