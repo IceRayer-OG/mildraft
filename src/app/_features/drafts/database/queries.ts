@@ -42,6 +42,8 @@ export async function checkUserCanPick(userId: string) {
   .limit(1)
   .leftJoin(teams, eq(draftPicks.teamId, teams.id))
 
+  console.log("LOG: User pick check result:", { pickNumber: pickNumber?.pickNumber, teamName: pickNumber?.teamName });
+
   if(pickNumber === undefined) {
     return;
   }
