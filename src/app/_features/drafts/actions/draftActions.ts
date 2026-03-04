@@ -35,11 +35,6 @@ export async function draftPlayerAction(
   playerToDraft: DraftablePlayers
 ) {
   const response = await draftPlayerUseCase(playerToDraft);
-
-  if (response.status === "Error") {
-    revalidatePath("league/draft");
-    return response;
-  }
   
   revalidatePath("league/draft");
   return response;
