@@ -70,7 +70,6 @@ export async function getNextDraftPick(draftId: number) {
       .from(draftPicks)
       .where(eq(draftPicks.status, "pending"))
       .orderBy(asc(draftPicks.pickNumber))
-      .offset(1)
       .limit(1)
       .leftJoin(teams, eq(draftPicks.teamId, teams.id));
   
