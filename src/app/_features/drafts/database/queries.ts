@@ -68,7 +68,7 @@ export async function getNextDraftPick(draftId: number) {
         teamName: teams.name
       })
       .from(draftPicks)
-      .where(eq(draftPicks.pickMade, false))
+      .where(eq(draftPicks.status, "pending"))
       .orderBy(asc(draftPicks.pickNumber))
       .offset(1)
       .limit(1)
