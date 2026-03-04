@@ -86,14 +86,16 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
   if (!user) {
     response.status = "Error";
     response.message = "User is not authenticated";
+    console.error("ERROR: User not authenticated");
     return response;
   }
 
   const userPickId = await checkUserCanPick(user.userId);
 
-  if (!userPickId) {
+  if (userPickId === undefined) {
     response.status = "Error";
     response.message = "User is not on the clock";
+    console.error("ERROR: User is not on the clock");
     return response;
   }
 
