@@ -82,7 +82,7 @@ export async function getDraftResults(draftId: number) {
     .select({
       pickId: draftPicks.id,
       teamName: teams.name,
-      playerName: pros.playerName,
+      playerName: sql<string>`COALESCE(${pros.playerName}, ${draftPicks.writeInName})`.as('player_name'),
     })
     .from(draftPicks)
     .where(and(eq(draftPicks.draftId, draftId), eq(draftPicks.pickMade, true)))
