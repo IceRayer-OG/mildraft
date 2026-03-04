@@ -30,7 +30,7 @@ export async function checkUserCanPick(userId: string) {
   const [pickNumber] = await db.select({ 
     pickId: draftPicks.id,
     pickNumber: draftPicks.pickNumber,
-    teamName: teams.name
+    teamName: teams.name,
   })
   .from(draftPicks)
   .where(and(
@@ -50,7 +50,7 @@ export async function checkUserCanPick(userId: string) {
 export async function getCurrentDraftPick() {  
     // Check if user is current pick
     const [currentPick] = await db.select().from(draftPicks)
-      .where(eq(draftPicks.pickMade, false))
+      .where(eq(draftPicks.status, "on the clock"))
       .orderBy(asc(draftPicks.pickNumber))
       .limit(1)
       .leftJoin(teams, eq(draftPicks.teamId, teams.id));
