@@ -107,6 +107,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
     // Draft operation successful
     response.status = "Success";
     response.message = `${playerToDraft.playerName} selected`;
+    console.log(`LOG: ${playerToDraft.playerName} drafted successfully by ${userPickId.teamName}`);
   } catch (error) {
     // Draft operation failed
     response.status = "Error";
@@ -197,10 +198,12 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
     await postWriteInDraftPick(2, userPickId.pickNumber, playerToDraft);
     response.status = "Success";
     response.message = `${playerToDraft} drafted successfully`;
+    console.log(`LOG: Write In ${playerToDraft} drafted successfully by ${userPickId.teamName}`);
   } catch (error) {
     console.error("ERROR: Failed to draft write in player:", error);
     response.status = "Error";
     response.message = `Failed to draft ${playerToDraft}`;
+    console.log(`LOG: Failed to draft write in ${playerToDraft} by ${userPickId.teamName}`, error);
   }
 
   if (response.status === "Success") {
