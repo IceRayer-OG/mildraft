@@ -81,6 +81,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
     status: "",
     message: "",
   };
+  
   // Check if user is authenticated
   const user = await checkAuthorization();
   if (!user) {
@@ -106,6 +107,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
     // Attempt to remove player from queues
     try {
       await deletePlayerFromQueues(playerToDraft.id);
+      console.log("LOG: Player removed from queues successfully");
     } catch (error) {
       console.error("ERROR: Error removing player from queues:", error);
     }
@@ -190,6 +192,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
   if (!user) {
     response.status = "Error";
     response.message = "User is not authenticated";
+    console.error("ERROR: User not authenticated");
     return response;
   }
 
@@ -198,6 +201,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
   if (!userPickId) {
     response.status = "Error";
     response.message = "User is not on the clock";
+    console.error("ERROR: User not on the clock");
     return response;
   }
   // Check if name is available
@@ -205,6 +209,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
   if (existingPlayer) {
     response.status = "Error";
     response.message = `${playerToDraft} has already been drafted`;
+    console.error("ERROR: Write in name already drafted");
     return response;
   }
 
@@ -220,7 +225,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
     console.error("ERROR: Failed to draft write in player:", error);
     response.status = "Error";
     response.message = `Failed to draft ${playerToDraft}`;
-    console.log(
+    console.error(
       `LOG: Failed to draft write in ${playerToDraft} by ${userPickId.teamName}`,
       error,
     );
