@@ -25,7 +25,11 @@ import {
 } from "../database/queries";
 import { getDraftPickEmails } from "..//database/teamQueries";
 import { deletePlayerFromQueues } from "../database/queueQueries";
-import { getDraftResults, startPickClock } from "../database/draftPickQueries";
+import {
+  checkWriteInNameAvailable,
+  getDraftResults,
+  startPickClock,
+} from "../database/draftPickQueries";
 import { getDraftablePlayers } from "../database/draftPalyersQueries";
 import { removePlayerFromQueueUseCase } from "./queueUseCases";
 import { updateDraftPickOverdue } from "../database/draftPickQueries";
@@ -107,7 +111,9 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
     // Draft operation successful
     response.status = "Success";
     response.message = `${playerToDraft.playerName} selected`;
-    console.log(`LOG: ${playerToDraft.playerName} drafted successfully by ${userPickId.teamName}`);
+    console.log(
+      `LOG: ${playerToDraft.playerName} drafted successfully by ${userPickId.teamName}`,
+    );
   } catch (error) {
     // Draft operation failed
     response.status = "Error";
@@ -192,18 +198,30 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
     response.message = "User is not on the clock";
     return response;
   }
+  // Check if name is available
+  const existingPlayer = await checkWriteInNameAvailable(playerToDraft);
+  if (existingPlayer) {
+    response.status = "Error";
+    response.message = `${playerToDraft} has already been drafted`;
+    return response;
+  }
 
   // draft write in player
   try {
     await postWriteInDraftPick(2, userPickId.pickNumber, playerToDraft);
     response.status = "Success";
     response.message = `${playerToDraft} drafted successfully`;
-    console.log(`LOG: Write In ${playerToDraft} drafted successfully by ${userPickId.teamName}`);
+    console.log(
+      `LOG: Write In ${playerToDraft} drafted successfully by ${userPickId.teamName}`,
+    );
   } catch (error) {
     console.error("ERROR: Failed to draft write in player:", error);
     response.status = "Error";
     response.message = `Failed to draft ${playerToDraft}`;
-    console.log(`LOG: Failed to draft write in ${playerToDraft} by ${userPickId.teamName}`, error);
+    console.log(
+      `LOG: Failed to draft write in ${playerToDraft} by ${userPickId.teamName}`,
+      error,
+    );
   }
 
   if (response.status === "Success") {

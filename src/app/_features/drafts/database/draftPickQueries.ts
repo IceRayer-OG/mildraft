@@ -94,24 +94,19 @@ export async function getDraftResults(draftId: number) {
 }
 
 export async function checkWriteInNameAvailable(playerName: string) {
-  const draftedPlayers = db
-    .select({ pickedPlayer: draftPicks.playerId })
-    .from(draftPicks)
-    .where(and(eq(draftPicks.draftId, 2), isNotNull(draftPicks.playerId)));
+const existingPlayer = await db
+  .select({ id: players.id }) // Minimize data transfer by only selecting the ID
+  .from(players)
+  .leftJoin(pros, eq(players.id, pros.id))
+  .leftJoin(draftPicks, eq(players.id, draftPicks.playerId))
+  .where(
+    or(
+      // Case-insensitive comparison: "Name" vs "name"
+      sql`lower(${pros.playerName}) = lower(${playerName})`,
+      sql`lower(${draftPicks.writeInName}) = lower(${playerName})`
+    )
+  )
+  .limit(1);
 
-  const playersOnTeams = db
-    .select({ playerOnTeam: players.proId })
-    .from(players)
-    .where(eq(players.leagueId, 1));
-
-  const nameCheck = await db
-    .select({
-      playerName: pros.playerName,
-    })
-    .from(players)
-    .where(eq(pros.playerName, playerName))
-    .leftJoin(pros, eq(players.id, pros.id))
-    .limit(1);
-
-  return nameCheck.length === 0; // Returns true if name is available, false if taken
+return existingPlayer.length > 0;
 }
