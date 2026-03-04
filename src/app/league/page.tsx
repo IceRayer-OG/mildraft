@@ -74,7 +74,7 @@ export default function LeaguePage() {
             <Separator />
           </div>
           <div className="flex flex-wrap gap-4">
-            <div className="flex flex-col space-y-3">
+            <div className="flex flex-col w-full space-y-3">
               <Suspense
                 fallback={
                   <div>
