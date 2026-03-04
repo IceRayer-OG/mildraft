@@ -48,8 +48,8 @@ export async function sendPickDeadlineEmail(pickingTeamName: string) {
 
   const { data, error } = await resend.emails.send({
     from: "No-Reply <no-reply@siliconvalleybaseball.com>",
-    // to: email, //used for production
-    to: ["Slump Busters <matthew.dowling3@gmail.com>"], // used for testing
+    to: email, //used for production
+    // to: ["Slump Busters <matthew.dowling3@gmail.com>"], // used for testing
     subject: "2026 SVBB MiL Draft Pick Reminder",
     react: DraftReminderEmail({ timeRemaining: 1 }),
   });
