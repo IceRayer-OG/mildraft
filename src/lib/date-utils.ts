@@ -1,5 +1,14 @@
 // lib/draft-utils.ts
-import { addHours, setHours, addDays, startOfDay } from 'date-fns';
+import { 
+  addMilliseconds, 
+  setHours, 
+  setMinutes, 
+  setSeconds, 
+  setMilliseconds, 
+  addDays, 
+  startOfDay, 
+  differenceInMilliseconds 
+} from 'date-fns';
 import { toZonedTime, fromZonedTime } from 'date-fns-tz';
 
 export function calculateDeadline(
@@ -9,35 +18,56 @@ export function calculateDeadline(
   resumeHour: number,
   leagueTz: string
 ): Date {
-  // 1. Calculate the raw deadline in UTC first
-  const initialDeadlineUTC = addHours(startTimeUTC, durationHours);
+  // 1. Initial raw deadline in UTC
+  const durationMs = durationHours * 60 * 60 * 1000;
+  const initialDeadlineUTC = addMilliseconds(startTimeUTC, durationMs);
 
-  // 2. See what time that is in the League's local "Wall Clock"
+  // 2. Convert that deadline to League Local Time
   const zonedDeadline = toZonedTime(initialDeadlineUTC, leagueTz);
-  const hour = zonedDeadline.getHours();
+  
+  // 3. Define the Pause Start boundary for that day in Local Time
+  let zonedPauseStart = startOfDay(zonedDeadline);
+  zonedPauseStart = setHours(zonedPauseStart, pauseHour);
+  zonedPauseStart = setMinutes(zonedPauseStart, 0);
+  zonedPauseStart = setSeconds(zonedPauseStart, 0);
+  zonedPauseStart = setMilliseconds(zonedPauseStart, 0);
 
-  // 3. Determine if this hour is inside the forbidden "Pause" window
+  // 4. Determine if the deadline falls inside the pause window
+  const hour = zonedDeadline.getHours();
   const isPaused = pauseHour > resumeHour 
-    ? (hour >= pauseHour || hour < resumeHour) // e.g. 22 to 8 (Overnight)
-    : (hour >= pauseHour && hour < resumeHour); // e.g. 12 to 13 (Lunch break)
+    ? (hour >= pauseHour || hour < resumeHour)
+    : (hour >= pauseHour && hour < resumeHour);
 
   if (!isPaused) return initialDeadlineUTC;
 
-  // 4. Calculate "Owed Time"
-  // How many hours of the pick duration fell into the pause?
-  const hoursIntoPause = hour >= pauseHour 
-    ? hour - pauseHour 
-    : hour + (24 - pauseHour);
-
-  // 5. Jump to the Resume Point
-  // If the deadline hour is < resumeHour, we are on the same calendar day as the resume.
-  // If the deadline hour is >= pauseHour, the resume happens tomorrow.
-  const resumeDay = hour >= pauseHour ? addDays(zonedDeadline, 1) : zonedDeadline;
-  const resumePointInTz = setHours(startOfDay(resumeDay), resumeHour);
+  // 5. Calculate "Owed Time" (Overflow)
+  // We need to know exactly how far past the start of the pause the deadline fell.
+  let overflowMs: number;
   
-  // 6. Add the "Owed Time" to the Resume Point
-  const finalZonedDeadline = addHours(resumePointInTz, hoursIntoPause);
+  if (hour >= pauseHour) {
+    // Case A: Deadline fell after pause started on the same day
+    overflowMs = differenceInMilliseconds(zonedDeadline, zonedPauseStart);
+  } else {
+    // Case B: Deadline fell after midnight but before resume (overnight pause)
+    // We compare it to the pause start of the PREVIOUS day
+    const prevDayPauseStart = addDays(zonedPauseStart, -1);
+    overflowMs = differenceInMilliseconds(zonedDeadline, prevDayPauseStart);
+  }
 
-  // 7. Convert back to UTC for the database
+  // 6. Calculate the Resume Point
+  // If hour >= pauseHour, the draft resumes tomorrow.
+  // If hour < resumeHour, it resumes today.
+  const resumeDay = hour >= pauseHour ? addDays(zonedDeadline, 1) : zonedDeadline;
+  
+  let resumePointInTz = startOfDay(resumeDay);
+  resumePointInTz = setHours(resumePointInTz, resumeHour);
+  resumePointInTz = setMinutes(resumePointInTz, 0);
+  resumePointInTz = setSeconds(resumePointInTz, 0);
+  resumePointInTz = setMilliseconds(resumePointInTz, 0);
+
+  // 7. Final Deadline = Resume Time + the exact Overflow
+  const finalZonedDeadline = addMilliseconds(resumePointInTz, overflowMs);
+
+  // 8. Convert back to UTC
   return fromZonedTime(finalZonedDeadline, leagueTz);
 }
