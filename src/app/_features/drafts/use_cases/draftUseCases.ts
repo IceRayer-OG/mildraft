@@ -224,7 +224,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
           from: 'No-Reply <no-reply@siliconvalleybaseball.com>',
           to: emails,
           // to: ['Slump Busters <matthew.dowling3@gmail.com>'],
-          subject: 'TEST - Draft Pick Completed',
+          subject: 'Draft Pick Completed',
           react: DraftPickEmail(emailprops),
         });
   }
