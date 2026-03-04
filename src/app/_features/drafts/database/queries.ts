@@ -44,10 +44,6 @@ export async function checkUserCanPick(userId: string) {
 
   console.log("LOG: User pick check result:", { pickNumber: pickNumber?.pickNumber, teamName: pickNumber?.teamName });
 
-  if(pickNumber === undefined) {
-    return;
-  }
-
   return pickNumber;
 }
 
