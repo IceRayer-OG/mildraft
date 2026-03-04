@@ -106,7 +106,6 @@ export async function postDraftPick(
 }
 
 export async function postWriteInDraftPick(
-  teamId: number,
   draftId: number,
   pickNumber: number,
   playerName: string,

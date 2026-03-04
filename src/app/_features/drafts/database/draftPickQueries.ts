@@ -13,7 +13,7 @@ import {
   or,
   sql,
 } from "drizzle-orm";
-import { draftPicks, pros, teams } from "~/server/db/schema";
+import { draftPicks, players, pros, teams } from "~/server/db/schema";
 import { type InngestPick } from "../utils/draft";
 
 export async function getNextDraftPick(draftId: number) {
@@ -85,13 +85,33 @@ export async function getDraftResults(draftId: number) {
       playerName: pros.playerName,
     })
     .from(draftPicks)
-    .where(and(
-      eq(draftPicks.draftId, draftId),
-      eq(draftPicks.pickMade, true)
-    ))
+    .where(and(eq(draftPicks.draftId, draftId), eq(draftPicks.pickMade, true)))
     .orderBy(desc(draftPicks.pickNumber))
     .leftJoin(teams, eq(draftPicks.teamId, teams.id))
     .leftJoin(pros, eq(draftPicks.id, pros.id));
 
   return draftResults;
+}
+
+export async function checkWriteInNameAvailable(playerName: string) {
+  const draftedPlayers = db
+    .select({ pickedPlayer: draftPicks.playerId })
+    .from(draftPicks)
+    .where(and(eq(draftPicks.draftId, 2), isNotNull(draftPicks.playerId)));
+
+  const playersOnTeams = db
+    .select({ playerOnTeam: players.proId })
+    .from(players)
+    .where(eq(players.leagueId, 1));
+
+  const nameCheck = await db
+    .select({
+      playerName: pros.playerName,
+    })
+    .from(players)
+    .where(eq(pros.playerName, playerName))
+    .leftJoin(pros, eq(players.id, pros.id))
+    .limit(1);
+
+  return nameCheck.length === 0; // Returns true if name is available, false if taken
 }
