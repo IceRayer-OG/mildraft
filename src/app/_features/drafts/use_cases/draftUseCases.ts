@@ -239,11 +239,11 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
     });
 
     // Start the next timer
-    const nextPick = await getCurrentDraftPick();
+    const [nextPick] = await getNextDraftPick(2);
     if (nextPick) {
       await inngest.send({
         name: "draft/turn.started",
-        data: { pickId: nextPick?.draft_pick.id, draftId: 2 },
+        data: { pickId: nextPick.pickId, draftId: 2 },
       });
     }
 
@@ -255,7 +255,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
     // console.log("DEBUG: Draft Pick Emails:", emails); // Debug email string
 
     // Validate next pick data is not Null
-    if (!nextPick?.team) {
+    if (!nextPick?.teamName) {
       response.status = "Error";
       response.message = "No Next Pick Team Data";
       // Check if all picks complete
@@ -272,7 +272,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
       pickNumber: userPickId.pickNumber,
       teamName: userPickId?.teamName || "Unknown Team",
       playerName: playerToDraft,
-      pickingTeam: nextPick?.team.name,
+      pickingTeam: nextPick?.teamName,
     };
 
     const { data, error } = await resend.emails.send({
