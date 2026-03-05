@@ -80,7 +80,7 @@ export async function updateDraftPickOverdue(pickId: number) {
 export async function getDraftResults(draftId: number) {
   const draftResults = await db
     .select({
-      pickId: draftPicks.id,
+      pickNumber: draftPicks.pickNumber,
       teamName: teams.name,
       playerName: sql<string>`COALESCE(${pros.playerName}, ${draftPicks.writeInName})`.as('player_name'),
     })
@@ -94,6 +94,7 @@ export async function getDraftResults(draftId: number) {
 }
 
 export async function checkWriteInNameAvailable(playerName: string) {
+
 const existingPlayer = await db
   .select({ id: players.id }) // Minimize data transfer by only selecting the ID
   .from(players)

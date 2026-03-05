@@ -13,7 +13,7 @@ import { type DraftResults } from "../utils/draft";
 
 export const draftResultColumns: ColumnDef<DraftResults>[] = [
   {
-    accessorKey: "draftPick",
+    accessorKey: "pickNumber",
     header: ({ column }) => {
       return (
         <Button
@@ -27,7 +27,7 @@ export const draftResultColumns: ColumnDef<DraftResults>[] = [
     },
     cell: ({ row }) => {
       return (
-        <div className="w-px p-1 whitespace-nowrap">{row.getValue("draftPick")}</div>
+        <div className="w-px p-1 whitespace-nowrap">{row.getValue("pickNumber")}</div>
       );
     },
     sortingFn: (rowA, rowB, columnId) => {

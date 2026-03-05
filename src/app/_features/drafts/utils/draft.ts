@@ -88,7 +88,7 @@ export const calculateTimeLeft = (targetDate: Date) => {
 };
 
 const draftResultsSchema = z.object({
-  pickId: z.number(),
+  pickNumber: z.number(),
   teamName: z.string(),
   playerName: z.string(),
 })
