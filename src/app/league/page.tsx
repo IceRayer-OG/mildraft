@@ -4,7 +4,6 @@ import { Suspense, use } from "react";
 
 // UI Elements
 import { Separator } from "~/_components/ui/separator";
-import { Avatar, AvatarImage, AvatarFallback } from "~/_components/ui/avatar";
 import { PostsLoading } from "~/app/_features/posts/components/PostsLoading";
 import { Skeleton } from "~/_components/ui/skeleton";
 import { TeamsLoadingSkeleton } from "~/app/_features/team/components/TeamsLoading";
