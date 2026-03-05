@@ -81,14 +81,13 @@ export async function getDraftResults(draftId: number) {
   const draftResults = await db
     .select({
       pickNumber: draftPicks.pickNumber,
-      teamName: teams.name,
-      playerName: sql<string>`COALESCE(${pros.playerName}, ${draftPicks.writeInName})`.as('player_name'),
-    })
-    .from(draftPicks)
-    .where(and(eq(draftPicks.draftId, draftId), eq(draftPicks.pickMade, true)))
-    .orderBy(desc(draftPicks.pickNumber))
+    playerName: sql<string>`COALESCE(${pros.playerName}, ${draftPicks.writeInName})`.as('player_name'),
+    teamName: teams.name,
+  }).from(draftPicks)
+    .where(and(eq(draftPicks.pickMade, true),eq(draftPicks.draftId, draftId)))
+    .leftJoin(pros, eq(draftPicks.playerId, pros.id))
     .leftJoin(teams, eq(draftPicks.teamId, teams.id))
-    .leftJoin(pros, eq(draftPicks.id, pros.id));
+    .orderBy(desc(draftPicks.pickNumber))
 
   return draftResults;
 }

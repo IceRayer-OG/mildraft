@@ -69,7 +69,7 @@ export function PickCountdownTimer({ targetDate }: CountdownTimerProps) {
     .filter(([unit]) => unit !== "D") // Skip the Days unit
     .map(([unit, value]) => {
       return (
-        <div key={unit} className="flex items-center">
+        <div key={unit} className="flex text-xs text-green-500">
           {`${value.toString().padStart(2, "0")}${unit.toLowerCase()}`}
         </div>
       );
