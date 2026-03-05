@@ -10,7 +10,8 @@ import {
   ne,
   count,
   or,
-  sql
+  sql,
+  desc
 } from "drizzle-orm";
 import { draftPicks, pros, teams } from "~/server/db/schema";
 import { PickCountdownTimer } from "../components/PickClockTimer";
@@ -31,6 +32,7 @@ export async function checkUserCanPick(userId: string) {
     pickId: draftPicks.id,
     pickNumber: draftPicks.pickNumber,
     teamName: teams.name,
+    pickStatus: draftPicks.status
   })
   .from(draftPicks)
   .where(and(
@@ -183,7 +185,7 @@ export async function getCompletedDraftPicks(draftId: number) {
     .where(and(eq(draftPicks.pickMade, true),eq(draftPicks.draftId, draftId)))
     .leftJoin(pros, eq(draftPicks.playerId, pros.id))
     .leftJoin(teams, eq(draftPicks.teamId, teams.id))
-    .orderBy(asc(draftPicks.pickNumber))
+    .orderBy(desc(draftPicks.pickNumber))
 
   return completedDraftPicks;  
 }
