@@ -214,7 +214,8 @@ export const pros = createTable(
   },
   (example) => [
     index("pros_idx").on(example.id),
-    unique("player_team_unique").on(example.playerName, example.team)
+    unique("player_team_unique").on(example.playerName, example.team),
+    unique("player_throws_unique").on(example.playerName, example.throws)
   ]
 );
 
