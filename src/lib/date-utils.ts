@@ -71,3 +71,31 @@ export function calculateDeadline(
   // 8. Convert back to UTC
   return fromZonedTime(finalZonedDeadline, leagueTz);
 }
+
+export function getEffectiveStartTime(
+  currentTimeUTC: Date,
+  pauseHour: number,
+  resumeHour: number,
+  leagueTz: string
+): Date {
+  const zonedCurrent = toZonedTime(currentTimeUTC, leagueTz);
+  const hour = zonedCurrent.getHours();
+
+  // Check if we are currently in the pause window
+  const isPaused = pauseHour > resumeHour 
+    ? (hour >= pauseHour || hour < resumeHour) // Overnights (e.g., 22:00 to 08:00)
+    : (hour >= pauseHour && hour < resumeHour); // Same day (e.g., 12:00 to 14:00)
+
+  if (!isPaused) return currentTimeUTC;
+
+  // Move to the next resume point
+  const resumeDay = hour >= pauseHour ? addDays(zonedCurrent, 1) : zonedCurrent;
+  
+  let resumePoint = startOfDay(resumeDay);
+  resumePoint = setHours(resumePoint, resumeHour);
+  resumePoint = setMinutes(resumePoint, 0);
+  resumePoint = setSeconds(resumePoint, 0);
+  resumePoint = setMilliseconds(resumePoint, 0);
+
+  return fromZonedTime(resumePoint, leagueTz);
+}

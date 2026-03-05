@@ -1,5 +1,5 @@
 // next imports
-import { calculateDeadline } from "~/lib/date-utils";
+import { calculateDeadline, getEffectiveStartTime } from "~/lib/date-utils";
 import { inngest } from "./client";
 
 // Database Queries
@@ -60,7 +60,7 @@ export const handlePickTimer = inngest.createFunction(
 
     const pickDeadline = await step.run("initialize-clock", async () => {
       const draft = await getDraftSettings({ leagueId: 1, draftId: 2 });
-      const pickStart = await new Date()
+      const pickStart = await getEffectiveStartTime(new Date(), Number(draft.draftPauseEndTime.toString().split(":")[0]), Number(draft.draftPauseStartTime.toString().split(":")[0]), "America/Los_Angeles");
       const deadline = await calculateDeadline(pickStart, draft.pickDuration, Number(draft.draftPauseEndTime.toString().split(":")[0]), Number(draft.draftPauseStartTime.toString().split(":")[0]), "America/Los_Angeles");
       const updated = await startDraftPickClockUseCase(pickId, pickStart, deadline);
       return updated;
