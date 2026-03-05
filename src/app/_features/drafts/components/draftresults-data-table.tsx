@@ -32,7 +32,6 @@ import {
 } from "~/_components/ui/table";
 import { Button } from "~/_components/ui/button";
 import { Input } from "~/_components/ui/input";
-import { DataTableFacetedFilter } from "./draft-table-faceted-filter"; // You will need to create this
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -62,9 +61,6 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    // Added for enum/faceted filtering
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
   return (
