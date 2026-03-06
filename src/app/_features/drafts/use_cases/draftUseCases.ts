@@ -147,7 +147,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
         response.status = "Error";
         response.message = "No Next Pick Team Data";
         // Check if all picks complete
-      
+
         // If all picks complete, send draft complete email
       }
 
@@ -158,7 +158,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
         nextPick?.teamName ?? "Unknown Team",
       );
     }
-
+  } else {
     const currentPick = await getCurrentDraftPick();
 
     const { data, error } = await sendDraftPickEmail(
@@ -242,7 +242,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
         response.status = "Error";
         response.message = "No Next Pick Team Data";
         // Check if all picks complete
-      
+
         // If all picks complete, send draft complete email
       }
 
@@ -253,7 +253,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
         nextPick?.teamName ?? "Unknown Team",
       );
     }
-
+  } else {
     const currentPick = await getCurrentDraftPick();
 
     const { data, error } = await sendDraftPickEmail(
