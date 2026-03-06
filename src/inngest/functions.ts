@@ -80,7 +80,7 @@ export const handlePickTimer = inngest.createFunction(
       await sendPickDeadlineEmail(currentPick.team.name);
     });
 
-    await step.sleepUntil("wait-for-pick-deadline", pickDeadline);
+    await step.sleepUntil("wait-for-pick-deadline", pickReminder);
 
     await step.run("process-timeout", async () => {
       await markDraftPickOverdueUseCase(pickId);
