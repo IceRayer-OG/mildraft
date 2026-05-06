@@ -2,7 +2,6 @@
 import { Suspense, use } from "react";
 
 // Global UI components
-import { Separator } from "~/_components/ui/separator";
 import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
 
 // Feature components
@@ -28,7 +27,6 @@ export default function DraftPage() {
   const draftPicks = getDraftPicksListAction();
   const allTeams = getLeagueTeamsAction();
   const userDraftDetails = use(getDraftDetailsAction(leagueData));
-  // const serverDraftDetails= use(getDraftSettingsAction(leagueData));
   const draftDetails = use(getDraftPageDetailsAction(leagueData));
 
 
@@ -43,13 +41,6 @@ export default function DraftPage() {
       <div className="flex">
         <div className="flex flex-col border-r justify-center text-sm md:text-md">
           <p className="p-1 rotate-270">Picks</p>
-          {/* <Separator decorative={true} /> */}
-          {/* <div className="p-1 whitespace-nowrap">
-            <p>Clock: {draftDetails.pickDuration}:00 h</p>
-          </div> */}
-        </div>
-        <div>
-          {/* <Separator orientation="vertical" decorative={true} /> */}
         </div>
         <div className="flex grow h-16 p-2 items-center overflow-hidden">
           <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
@@ -61,10 +52,7 @@ export default function DraftPage() {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>
-        <div>
-          {/* <Separator orientation="vertical" decorative={true} /> */}
-        </div>
-        <div className=" p-0 place-content-center">
+        <div className="p-0 place-content-center">
           <Suspense>
             <DraftOrderDialog draftOrderList={draftPicks} leagueTeams={allTeams}/>
           </Suspense>
@@ -80,7 +68,7 @@ export default function DraftPage() {
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
-      <div className="flex fixed bottom-0 gap-4 justify-center w-full pb-8">
+      <div className="w-full flex fixed bottom-0 gap-4 justify-center pb-8 ">
         <div>
           <QueueDrawer />
         </div>
