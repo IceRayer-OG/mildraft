@@ -192,12 +192,9 @@ export async function getCompletedDraftPicks(draftId: number) {
 
 export async function getTeamIdByName(teamName: string){
     // Get the teamId by name
-  const teamId = await db.query.teams.findFirst({
-    columns: {
-      id: true
-    },
-    where: eq(teams.name, teamName)
-  })
+  const [teamId] = await db.select({id: teams.id}).from(teams)
+    .where(eq(teams.name, teamName))
+    .limit(1);
 
   if(teamId === undefined) throw new Error("Team not found")
 
