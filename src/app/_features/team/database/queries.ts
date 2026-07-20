@@ -21,9 +21,9 @@ export async function updateTeamSettings(
 }
 
 export async function getTeamSettings(teamOwnerId: string) {
-  const team = await db.query.teams.findFirst({
-    where: eq(teams.ownerId, teamOwnerId),
-  });
+  const [team] = await db.select().from(teams)
+    .where(eq(teams.ownerId, teamOwnerId))
+    .limit(1);
 
   if (!team) {
     return null; // No team found for the given ID
@@ -33,12 +33,9 @@ export async function getTeamSettings(teamOwnerId: string) {
 }
 
 export async function getTeamIdByUserId(userId: string) {
-    const teamId = await db.query.teams.findFirst({
-        where: eq(teams.ownerId, userId),
-        columns: {
-            id: true
-        }
-    });
+    const [teamId] = await db.select({id: teams.id}).from(teams)
+        .where(eq(teams.ownerId, userId))
+        .limit(1);
 
     if(!teamId) {
       throw new Error("No team found for user");
@@ -48,9 +45,9 @@ export async function getTeamIdByUserId(userId: string) {
 }
 
 export async function getTeamSettingsById(teamId: number) {
-  const team = await db.query.teams.findFirst({
-    where: eq(teams.id, teamId),
-  });
+  const [team] = await db.select().from(teams)
+    .where(eq(teams.id, teamId))
+    .limit(1);
 
   if (!team) {
     return null; // No team found for the given ID
@@ -61,9 +58,9 @@ export async function getTeamSettingsById(teamId: number) {
 
 export async function getMyTeam(userId: string) {
 
-  const myTeamId = await db.query.teams.findFirst({
-    where: eq(teams.ownerId, userId),
-  });
+  const [myTeamId] = await db.select({id: teams.id}).from(teams)
+    .where(eq(teams.ownerId, userId))
+    .limit(1);
 
   if(myTeamId === undefined) throw new Error("No team found");
 
@@ -78,19 +75,18 @@ export async function getMyTeam(userId: string) {
 }
 
 export async function getAllTeamsInLeague() {
-  const leagueTeams = await db.query.teams.findMany({
-    where: eq(teams.leagueId, 1),
-  });
+  const leagueTeams = await db.select().from(teams)
+    .where(eq(teams.leagueId, 1));
 
   return leagueTeams;
 }
 
 export async function dropPlayerFromMyTeam(playerId: number, userId: string) {
   // Check user is team owner
-  const myTeamId = await db.query.teams.findFirst({
-    where: eq(teams.ownerId, userId),
-  });
-  
+  const [myTeamId] = await db.select({id: teams.id}).from(teams)
+    .where(eq(teams.ownerId, userId))
+    .limit(1);
+
   if(myTeamId === undefined) throw new Error("No team found");
 
   // Delete player from team

@@ -4,7 +4,7 @@ import "~/styles/globals.css";
 // import Providers
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // import other
 import { GeistSans } from "geist/font/sans";
@@ -26,8 +26,8 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      <ClerkProvider>
-        <body>
+      <body>
+        <ClerkProvider>
           <TimezoneSetter />
           <Toaster position="bottom-center" richColors />
           <TopNav />
@@ -36,8 +36,8 @@ export default function RootLayout({
           </main>
           <Analytics />
           <SpeedInsights />
-        </body>
-      </ClerkProvider>
+        </ClerkProvider>
+      </body>
     </html>
   );
 }
