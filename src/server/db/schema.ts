@@ -254,6 +254,7 @@ export const queues = createTable(
     playerId: integer("player_id").references(() => pros.id),     // Make not null later
     userId: varchar("user_id", { length: 256 }),                  // Make not null later
     name: varchar("name", { length: 256 }),
+    rank: integer("rank"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

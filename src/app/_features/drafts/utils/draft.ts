@@ -56,6 +56,13 @@ const queuePlayersSchema = z.object({
   bats: z.enum(["R", "L", "B", "S"]),
 });
 
+const reorderQueueItemSchema = z.object({
+  playerId: z.number(),
+  rank: z.number().int().min(0),
+});
+
+const reorderQueueSchema = z.array(reorderQueueItemSchema);
+
 const inngestPickSchema = z.object({
   pickId: z.number(),
   startsAt: z.date(),
@@ -99,3 +106,4 @@ export type QueuePlayers = z.infer<typeof queuePlayersSchema>;
 export type CompletedDraftPicks = z.infer<typeof compeltedDraftPickSchema>;
 export type InngestPick = z.infer<typeof inngestPickSchema>;
 export type DraftResults = z.infer<typeof draftResultsSchema>;
+export type reorderQueue = z.infer<typeof reorderQueueSchema>;

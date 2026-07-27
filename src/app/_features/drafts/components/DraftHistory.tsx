@@ -26,7 +26,7 @@ export function DraftHistoryDialog() {
       </DialogTrigger>
       <DialogContent className="max-h-3/4">
         <DialogTitle className="justify-self-center">Draft History</DialogTitle>
-        <p className="place-content-start">Here are the recent picks</p>
+        <DialogDescription className="place-content-start">Here are the recent picks</DialogDescription>
         <ScrollArea className="overflow-y-hidden">
           <Suspense fallback={<div className="h-full w-full">Loading...</div>}>
             <DraftPickTable columns={draftPickColumns} data={completedPickInfo} />

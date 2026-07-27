@@ -10,7 +10,7 @@ import {
   ne,
   count,
   or,
-  sql
+  sql,
 } from "drizzle-orm";
 import { queues, draftPicks, pros, teams } from "~/server/db/schema";
 
@@ -49,4 +49,19 @@ export async function deletePlayerFromQueue(playerId: number, userId: string) {
 
 export async function deletePlayerFromQueues(playerId: number) {
   await db.delete(queues).where(and(eq(queues.playerId, playerId), eq(queues.draftId, 2)));
+}
+
+export async function updateQueueOrder(queueOrder: {rank: number, playerId: number}[], userId: string) {
+
+  for(const order of queueOrder ) {
+    if(!order || order.rank === undefined || order.playerId === undefined) {
+      continue;
+    }
+
+    await db
+      .update(queues)
+      .set({rank: order.rank})
+      .where(and(eq(queues.playerId, order.playerId),eq(queues.userId, userId)));
+
+  }
 }

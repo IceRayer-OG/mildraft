@@ -7,7 +7,7 @@ import { auth } from "@clerk/nextjs/server";
 import { type QueuePlayers, type DraftablePlayers } from "../utils/draft";
 
 // Queries
-import { postPlayerToQueue, deletePlayerFromQueue, getMyQueuePlayers } from "../database/queueQueries";
+import { postPlayerToQueue, deletePlayerFromQueue, getMyQueuePlayers, updateQueueOrder } from "../database/queueQueries";
 
 
 async function checkAuthorization() {
@@ -67,4 +67,21 @@ export async function removePlayerFromQueueUseCase(playerToRemove: DraftablePlay
         console.log(error);
         throw new Error("Error removing player from queue");
     } 
+}
+
+export async function updateMyQueueOrderUseCase(queueOrder: {playerId: number, rank: number}[]) {
+
+    const user = await checkAuthorization();
+    if(!user) {
+        throw new Error("User is not authenticated");
+    }
+
+    try {
+        await updateQueueOrder(queueOrder, user.userId)
+    } catch(error) {
+        console.log("Error Updating Queue:", error)
+        throw new Error("Error Updating Queue")
+    }
+
+
 }

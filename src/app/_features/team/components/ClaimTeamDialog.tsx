@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogTrigger,
   DialogTitle,
 } from "~/_components/ui/dialog";
