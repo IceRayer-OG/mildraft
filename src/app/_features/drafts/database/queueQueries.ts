@@ -60,7 +60,7 @@ export async function updateQueueOrder(queueOrder: {rank: number, playerId: numb
 
     await db
       .update(queues)
-      .set({rank: order.rank})
+      .set({queueRank: order.rank})
       .where(and(eq(queues.playerId, order.playerId),eq(queues.userId, userId)));
 
   }
