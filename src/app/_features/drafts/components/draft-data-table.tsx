@@ -1,5 +1,5 @@
 "use client";
-import { useState, use } from "react";
+import { useState } from "react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -36,10 +36,10 @@ import { DataTableFacetedFilter } from "./draft-table-faceted-filter"; // You wi
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: Promise<TData[]>;
+  data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function DraftDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -48,7 +48,7 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const table = useReactTable({
-    data: use(data),
+    data,
     columns,
     state: {
       columnFilters,

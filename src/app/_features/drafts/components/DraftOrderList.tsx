@@ -13,9 +13,9 @@ import { type QueueDraftPick } from "../utils/draft";
 export default function DraftOrderList({
   draftOrderList,
 }: {
-  draftOrderList: Promise<QueueDraftPick[]>;
+  draftOrderList: QueueDraftPick[];
 }) {
-  const draftPicks = use(draftOrderList);
+  const draftPicks = draftOrderList;
 
   return (
     <div className="flex grow overflow-hidden">

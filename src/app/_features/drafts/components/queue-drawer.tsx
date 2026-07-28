@@ -1,18 +1,19 @@
 // React and Next.js imports
-import { use } from "react";
+import { Suspense, use } from "react";
 
 // UI Components
 import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "~/_components/ui/drawer";
 import { Button } from "~/_components/ui/button";
-import { DataTable } from "../../../../_components/data-table";
+import { QueueDataTable } from "../components/queue-dataTable";
 import { queueColumns } from "./queue-columns";
 
 // Server Actions
@@ -20,7 +21,7 @@ import { getMyQueueAction } from "../actions/queueActions";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 export function QueueDrawer() {
-  const data = getMyQueueAction();
+  const data = use(getMyQueueAction());
 
   return (
     <Drawer>
@@ -32,9 +33,12 @@ export function QueueDrawer() {
           <DrawerTitle className="flex justify-center">
             Player Queue
           </DrawerTitle>
+          <DrawerDescription className="sr-only" />
         </DrawerHeader>
         <ScrollArea className="overflow-y-auto">
-          <DataTable columns={queueColumns} data={data} />
+          <Suspense>
+            <QueueDataTable columns={queueColumns} data={data} />
+          </Suspense>
         </ScrollArea>
         <DrawerFooter>
           <DrawerClose asChild>

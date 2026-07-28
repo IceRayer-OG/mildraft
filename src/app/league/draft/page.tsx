@@ -8,7 +8,7 @@ import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
 import { WriteInDialog } from "~/app/_features/drafts/components/write-in-dialog";
 import { QueueDrawer } from "~/app/_features/drafts/components/queue-drawer";
 import { draftColumns } from "~/app/_features/drafts/components/draft-columns";
-import { DataTable } from "~/app/_features/drafts/components/draft-data-table";
+import { DraftDataTable } from "~/app/_features/drafts/components/draft-data-table";
 import DraftQueueList from "~/app/_features/drafts/components/draft-picks-queue";
 import { DraftOrderDialog } from "~/app/_features/drafts/components/DraftOrderDialog";
 import DraftCountdownTimer from "~/app/_features/drafts/components/PickClockTimer";
@@ -23,9 +23,9 @@ export const dynamic = 'force-dynamic'
 
 export default function DraftPage() {
   const leagueData = { leagueId: 1, draftId: 2}
-  const draftablePlayers = getDraftablePlayersAction();
-  const draftPicks = getDraftPicksListAction();
-  const allTeams = getLeagueTeamsAction();
+  const draftablePlayers = use(getDraftablePlayersAction());
+  const draftPicks = use(getDraftPicksListAction());
+  const allTeams = use(getLeagueTeamsAction());
   const userDraftDetails = use(getDraftDetailsAction(leagueData));
   const draftDetails = use(getDraftPageDetailsAction(leagueData));
 
@@ -62,7 +62,7 @@ export default function DraftPage() {
         <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
           <div className="w-full overflow-hidden">
             <Suspense fallback={<div className="w-full h-full">Loading...</div>}>
-              <DataTable columns={draftColumns} data={draftablePlayers} />
+              <DraftDataTable columns={draftColumns} data={draftablePlayers} />
             </Suspense>
           </div>
           <ScrollBar orientation="horizontal" />

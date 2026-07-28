@@ -10,14 +10,14 @@ export async function getMyQueueAction() {
     return myQueue;
 }
 
-export async function updateMyQueueOrderAction(queueOrder: {playerId: number, rank: number}[]) {
-    if(!queueOrder) {
-        throw new Error("No order provided")
-    }
+// export async function updateMyQueueOrderAction(queueOrder: {playerId: number, rank: number}[]) {
+//     if(!queueOrder) {
+//         throw new Error("No order provided")
+//     }
 
-    updateMyQueueOrderUseCase(queueOrder);
-    return;
-};
+//     updateMyQueueOrderUseCase(queueOrder);
+//     return;
+// };
 
 export async function addPlayerToQueueAction(playerToDraft: DraftablePlayers) {
     await addPlayerToQueueUseCase(playerToDraft);
