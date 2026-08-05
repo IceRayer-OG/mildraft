@@ -1,17 +1,17 @@
 "use client"
-
-import * as React from "react";
-
-import { use } from "react";
+import { useState } from "react";
  
 import {
   type ColumnDef,
   type ColumnFiltersState,
+  createColumnHelper,
   flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  useReactTable,
+  rowPaginationFeature,
+  createPaginatedRowModel,
+  columnVisibilityFeature,
+  rowSelectionFeature,
+  tableFeatures,
+  useTable,
 } from "@tanstack/react-table"
  
 import {
@@ -22,32 +22,82 @@ import {
   TableHeader,
   TableRow,
 } from "~/_components/ui/table"
-import { Input } from "~/_components/ui/input"
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/_components/ui/dropdown-menu"
+import { MoreHorizontal } from "lucide-react";
 import { Button } from "~/_components/ui/button";
- 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: Promise<TData[]>
+import { toast } from "sonner";
+
+import {type TeamPlayers } from "../utils/team"
+
+// Server Actions
+import { dropPlayerFromMyTeamAction } from "~/app/_features/team/actions/teamActions";
+
+async function dropPlayer(player: TeamPlayers) {
+  await dropPlayerFromMyTeamAction(player.player.id);
+  toast.success(`${player.pros.playerName} has been removed from your team`);
 }
  
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
+interface TeamDataTableProps{
+  data: TeamPlayers[]
+}
 
-  const table = useReactTable({
-    data: use(data),
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    // onColumnFiltersChange: setColumnFilters,
-    // getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      columnFilters,
+const features = tableFeatures({
+  rowPaginationFeature,
+  paginatedRowModel: createPaginatedRowModel(),
+  rowSelectionFeature,
+  columnVisibilityFeature,
+});
+
+const columnHelper = createColumnHelper<typeof features, TeamPlayers>();
+
+const teamColumns = columnHelper.columns([
+  columnHelper.accessor("pros.playerName", {
+    header: "Player Name",
+  }),
+  columnHelper.accessor("pros.position", {
+    header: "Position",
+    id: "position",
+  }),
+ columnHelper.accessor("pros.team", {
+    header: "Team" 
+  }),
+  columnHelper.display({
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const player = row.original
+  
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="destructive" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => dropPlayer(player)}>
+              Drop
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
     },
+  }),
+]);
+ 
+export function TeamDataTable({data: initialData}: TeamDataTableProps) {
+  const [data, setSata] = useState(initialData);
+
+  const table = useTable({
+    features,
+    data,
+    columns: teamColumns,
   });
  
   return (
@@ -98,7 +148,7 @@ export function DataTable<TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell colSpan={teamColumns.length} className="h-24 text-center">
                 No results.
               </TableCell>
             </TableRow>

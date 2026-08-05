@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, use } from "react";
 
 // UI Components
 import {
@@ -11,13 +11,12 @@ import {
 import { Button } from "~/_components/ui/button";
 import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
 import { DraftPickTable } from "./pick-history-data-table";
-import { draftPickColumns } from "./pick-history-columns";
 
 // Server Actions
 import { getCompleteDraftPicksAction } from "../actions/draftActions";
 
 export function DraftHistoryDialog() {
-  const completedPickInfo = getCompleteDraftPicksAction();
+  const completedPickInfo = use(getCompleteDraftPicksAction());
 
   return (
     <Dialog>
@@ -29,7 +28,7 @@ export function DraftHistoryDialog() {
         <DialogDescription className="place-content-start">Here are the recent picks</DialogDescription>
         <ScrollArea className="overflow-y-hidden">
           <Suspense fallback={<div className="h-full w-full">Loading...</div>}>
-            <DraftPickTable columns={draftPickColumns} data={completedPickInfo} />
+            <DraftPickTable data={completedPickInfo} />
           </Suspense>
           <ScrollBar orientation="vertical" />
         </ScrollArea>

@@ -1,19 +1,34 @@
 "use client";
-import { useState, use } from "react";
+import { useState } from "react";
 import {
-  type ColumnDef,
   type ColumnFiltersState,
   flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getFacetedRowModel, 
-  getFacetedUniqueValues,
+  columnFacetingFeature,
+  createFacetedRowModel,
+  createFacetedUniqueValues,
+  columnFilteringFeature,
+  createFilteredRowModel,
+  filterFn_includesString,
+  rowSortingFeature,
+  createSortedRowModel,
+  rowPaginationFeature,
+  createPaginatedRowModel,
   SortingState,
-  getSortedRowModel, 
-  useReactTable,
+  columnVisibilityFeature,
+  rowSelectionFeature,
+  useTable,
+  tableFeatures,
+  createColumnHelper,
 } from "@tanstack/react-table";
 
+// UI
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/_components/ui/dropdown-menu";
 import { Input } from "~/_components/ui/input";
 import {
   Table,
@@ -24,38 +39,138 @@ import {
   TableRow,
 } from "~/_components/ui/table";
 import { Button } from "~/_components/ui/button";
-import { DataTableFacetedFilter } from "./player-table-faceted-filter"; // You will need to create this
 
+// Components
+import { DataTableFacetedFilter } from "./player-table-faceted-filter"; // You will need to create this
 import { PlayerLoadingDialog } from "./PlayerLoadingDialog";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: Promise<TData[]>;
+// Types
+import { type Players } from "../utils/players";
+
+interface PlayerDataTableProps {
+  data: Players[];
 }
 
-export function PlayerDataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
+const features = tableFeatures({
+  columnVisibilityFeature,
+  rowSelectionFeature,
+  columnFacetingFeature,
+  columnFilteringFeature,
+  filteredRowModel: createFilteredRowModel(), // if using client-side filtering
+  facetedRowModel: createFacetedRowModel(), // if using client-side faceting
+  facetedUniqueValues: createFacetedUniqueValues(),
+  filterFns: {
+    includesString: filterFn_includesString,
+  },
+  rowSortingFeature,
+  sortedRowModel: createSortedRowModel(),
+  rowPaginationFeature,
+  paginatedRowModel: createPaginatedRowModel(),
+});
 
-  const table = useReactTable({
-    data: use(data),
-    columns,
-    state: {
-      columnFilters,
-      sorting,
+const columnHelper = createColumnHelper<typeof features, Players>();
+
+const playerColumns = columnHelper.columns([
+  columnHelper.accessor("teamRank", {
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Team Rank
+          <ArrowUpDown className="" />
+        </Button>
+      );
     },
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    // Added for enum/faceted filtering
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
+    sortFn: (rowA, rowB, columnId) => {
+      const a = rowA.getValue(columnId);
+      const b = rowB.getValue(columnId);
+
+      // Handle blanks (null, undefined, or empty string)
+      const isEmpty = (val: any) =>
+        val === null || val === undefined || val === "";
+
+      if (isEmpty(a) && !isEmpty(b)) return 1; // Move A to bottom
+      if (!isEmpty(a) && isEmpty(b)) return -1; // Move B to bottom
+      if (isEmpty(a) && isEmpty(b)) return 0; // They are equal
+
+      // Standard numeric sort for the remaining values
+      return Number(a) > Number(b) ? 1 : -1;
+    },
+  }),
+  columnHelper.accessor("playerName",{
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Player Name
+          <ArrowUpDown className="" />
+        </Button>
+      );
+    },
+  }),
+  columnHelper.accessor("position", {
+    header: "Position",
+    filterFn: (row, id, value: string[]) => {
+      // Cast the row value to string[] to resolve the 'includes' error
+      const rowValue = row.getValue(id) as string[];
+
+      // Safety check: ensure rowValue exists and is an array
+      if (!rowValue || !Array.isArray(rowValue)) return false;
+
+      // Return true if any of the selected filter values (value)
+      // are present in the row's array (rowValue)
+      return value.some((val) => rowValue.includes(val));
+    },
+    cell: ({ row }) => {
+      const positions = row.getValue("position") as string[];
+      return <div className="flex gap-1">{positions.join(", ")}</div>;
+    },
+  }),
+  columnHelper.accessor("team", {
+    header: "Team",
+  }),
+  columnHelper.accessor("throws", {
+    header: "Throws",
+  }),
+  columnHelper.accessor("bats", {
+    header: "Bats",
+  }),
+  columnHelper.display({
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const player = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem /* onClick={() => draftPlayer(player)}> */>
+              Add
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  }),
+]);
+
+export function PlayerDataTable({ data: initialData }: PlayerDataTableProps) {
+  const [data, setData] = useState(initialData);
+
+  const table = useTable({
+    features,
+    data,
+    columns: playerColumns,
   });
 
   return (
@@ -89,7 +204,10 @@ export function PlayerDataTable<TData, TValue>({
               column={table.getColumn("team")}
               title="Team"
               options={[
-                { label: "Arizona Diamondbacks", value: "Arizona Diamondbacks" },
+                {
+                  label: "Arizona Diamondbacks",
+                  value: "Arizona Diamondbacks",
+                },
                 { label: "Athletics", value: "Athletics" },
                 { label: "Atlanta Braves", value: "Atlanta Braves" },
                 { label: "Baltimore Orioles", value: "Baltimore Orioles" },
@@ -109,16 +227,25 @@ export function PlayerDataTable<TData, TValue>({
                 { label: "Minnesota Twins", value: "Minnesota Twins" },
                 { label: "New York Mets", value: "New York Mets" },
                 { label: "New York Yankees", value: "New York Yankees" },
-                { label: "Philadelphia Phillies", value: "Philadelphia Phillies"},
+                {
+                  label: "Philadelphia Phillies",
+                  value: "Philadelphia Phillies",
+                },
                 { label: "Pittsburgh Pirates", value: "Pittsburgh Pirates" },
                 { label: "San Diego Padres", value: "San Diego Padres" },
                 { label: "Seattle Mariners", value: "Seattle Mariners" },
-                { label: "San Francisco Giants", value: "San Francisco Giants" },
+                {
+                  label: "San Francisco Giants",
+                  value: "San Francisco Giants",
+                },
                 { label: "St. Louis Cardinals", value: "St. Louis Cardinals" },
                 { label: "Tampa Bay Rays", value: "Tampa Bay Rays" },
                 { label: "Texas Rangers", value: "Texas Rangers" },
                 { label: "Toronto Blue Jays", value: "Toronto Blue Jays" },
-                { label: "Washington Nationals", value: "Washington Nationals" },
+                {
+                  label: "Washington Nationals",
+                  value: "Washington Nationals",
+                },
               ]}
             />
           )}
@@ -133,7 +260,7 @@ export function PlayerDataTable<TData, TValue>({
             className="max-w-sm"
           />
 
-          {columnFilters.length > 0 && (
+          {playerColumns.length > 0 && (
             <Button
               variant="destructive"
               onClick={() => table.resetColumnFilters()}
@@ -165,27 +292,33 @@ export function PlayerDataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={playerColumns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
+            )}
+          </TableBody>
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">

@@ -7,7 +7,6 @@ import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
 // Feature components
 import { WriteInDialog } from "~/app/_features/drafts/components/write-in-dialog";
 import { QueueDrawer } from "~/app/_features/drafts/components/queue-drawer";
-import { draftColumns } from "~/app/_features/drafts/components/draft-columns";
 import { DraftDataTable } from "~/app/_features/drafts/components/draft-data-table";
 import DraftQueueList from "~/app/_features/drafts/components/draft-picks-queue";
 import { DraftOrderDialog } from "~/app/_features/drafts/components/DraftOrderDialog";
@@ -62,7 +61,7 @@ export default function DraftPage() {
         <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
           <div className="w-full overflow-hidden">
             <Suspense fallback={<div className="w-full h-full">Loading...</div>}>
-              <DraftDataTable columns={draftColumns} data={draftablePlayers} />
+              <DraftDataTable data={draftablePlayers} />
             </Suspense>
           </div>
           <ScrollBar orientation="horizontal" />
