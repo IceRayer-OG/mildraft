@@ -16,8 +16,7 @@ import { Skeleton } from "~/_components/ui/skeleton";
 import { TeamsTableLoading } from "~/app/_features/team/components/TeamsLoading";
 
 // Components
-import { teamColumns } from "~/app/_features/team/components/team-columns";
-import { DataTable } from "~/app/_features/team/components/team-data-table";
+import { TeamDataTable } from "~/app/_features/team/components/team-data-table";
 import { TeamSettingsDialogForm } from "~/app/_features/team/components/TeamSettingsDialogForm";
 
 // Actions
@@ -37,7 +36,7 @@ export default function TeamPage(
 // }
 ) {
   // const { team } = await params;
-  const data = getMyTeamAction();
+  const teamData = use(getMyTeamAction());
   const teamSettings = getTeamSettingsAction();
   const myTeamInfo = use(getMyTeamInfoAction());
 
@@ -67,7 +66,7 @@ export default function TeamPage(
       </div>
       <div className="grow p-4">
         <Suspense fallback={<TeamsTableLoading />}>
-          <DataTable columns={teamColumns} data={data} />
+          <TeamDataTable data={teamData} />
         </Suspense>
       </div>
     </main>

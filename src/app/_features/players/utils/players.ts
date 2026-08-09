@@ -84,6 +84,7 @@ const teamPlayersSchema = z.object({
 
 const PlayersSchema = z.object({
     id: z.number(),
+    teamRank: z.number(),
     playerName: z.string(),
     position: positions.array(),
     team: z.string(),

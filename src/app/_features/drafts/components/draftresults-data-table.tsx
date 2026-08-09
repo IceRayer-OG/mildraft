@@ -1,27 +1,35 @@
 "use client";
-import { useState, use } from "react";
+import { useState, use, useMemo } from "react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
   flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getFacetedRowModel, // Added
-  getFacetedUniqueValues, // Added
-  useReactTable,
-  getSortedRowModel,
+  columnVisibilityFeature,
+  columnFilteringFeature,
+  columnSizingFeature,
+  rowSelectionFeature,
+  rowPaginationFeature,
+  createPaginatedRowModel,
+  rowSortingFeature,
+  createSortedRowModel,
   SortingState,
-  VisibilityState,
+  useTable,
+  tableFeatures,
+  createColumnHelper,
+  createFilteredRowModel,
+  filterFn_includesString,
 } from "@tanstack/react-table";
 
+import { createAppColumnHelper, useAppTable } from '~/hooks/table'
+
+// UI
+import { ArrowUpDown } from "lucide-react";
 import { 
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem 
 } from "~/_components/ui/dropdown-menu";
-
 import {
   Table,
   TableBody,
@@ -33,34 +41,143 @@ import {
 import { Button } from "~/_components/ui/button";
 import { Input } from "~/_components/ui/input";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: Promise<TData[]>;
+// Types
+import { type DraftResults } from "../utils/draft";
+
+interface ResultsDataTableProps{
+  data: DraftResults[];
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+const features = tableFeatures({
+  columnVisibilityFeature,
+  rowPaginationFeature,
+  paginatedRowModel: createPaginatedRowModel(),
+  rowSortingFeature,
+  sortedRowModel: createSortedRowModel(),
+  columnFilteringFeature,
+  filteredRowModel: createFilteredRowModel(),
+  filterFns: {
+    includesString: filterFn_includesString,
+  },
+  columnSizingFeature,
+});
 
-  const table = useReactTable({
-    data: use(data),
-    columns,
-    state: {
-      columnFilters,
-      sorting,
-      columnVisibility,
+
+const columnHelper = createColumnHelper<typeof features,DraftResults>();
+
+const resultColumns = columnHelper.columns([
+  columnHelper.accessor("pickNumber", {
+    header: ({column}) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Pick
+          <ArrowUpDown className="" />
+        </Button>
+      );
     },
-    onColumnFiltersChange: setColumnFilters,
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
+    cell: ({ row }) => {
+      return (
+        <div className="w-px p-1 whitespace-nowrap">{row.getValue("pickNumber")}</div>
+      );
+    },
+    sortFn: (rowA, rowB, columnId) => {
+      const a = rowA.getValue(columnId);
+      const b = rowB.getValue(columnId);
+
+      // Handle blanks (null, undefined, or empty string)
+      const isEmpty = (val: any) =>
+        val === null || val === undefined || val === "";
+
+      if (isEmpty(a) && !isEmpty(b)) return 1; // Move A to bottom
+      if (!isEmpty(a) && isEmpty(b)) return -1; // Move B to bottom
+      if (isEmpty(a) && isEmpty(b)) return 0; // They are equal
+
+      // Standard numeric sort for the remaining values
+      return Number(a) > Number(b) ? 1 : -1;
+    },
+  }),
+  columnHelper.accessor("teamName", {
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Team
+          <ArrowUpDown className="" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <div className="w-px p-1 whitespace-nowrap">
+          {row.getValue("teamName")}
+        </div>
+      );
+    },
+    sortFn: (rowA, rowB, columnId) => {
+      const a = rowA.getValue(columnId);
+      const b = rowB.getValue(columnId);
+
+      // Handle blanks (null, undefined, or empty string)
+      const isEmpty = (val: any) =>
+        val === null || val === undefined || val === "";
+
+      if (isEmpty(a) && !isEmpty(b)) return 1; // Move A to bottom
+      if (!isEmpty(a) && isEmpty(b)) return -1; // Move B to bottom
+      if (isEmpty(a) && isEmpty(b)) return 0; // They are equal
+
+      // Standard numeric sort for the remaining values
+      return Number(a) > Number(b) ? 1 : -1;
+    },
+  }),
+  columnHelper.accessor("playerName", {
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Player
+          <ArrowUpDown className="" />
+        </Button>
+      );
+    },
+    sortFn: (rowA, rowB, columnId) => {
+      const a = rowA.getValue(columnId);
+      const b = rowB.getValue(columnId);
+
+      // Handle blanks (null, undefined, or empty string)
+      const isEmpty = (val: any) =>
+        val === null || val === undefined || val === "";
+
+      if (isEmpty(a) && !isEmpty(b)) return 1; // Move A to bottom
+      if (!isEmpty(a) && isEmpty(b)) return -1; // Move B to bottom
+      if (isEmpty(a) && isEmpty(b)) return 0; // They are equal
+
+      // Standard numeric sort for the remaining values
+      return Number(a) > Number(b) ? 1 : -1;
+    },
+    cell: ({ row }) => {
+      return (
+        <div className="w-px p-1 whitespace-nowrap">
+          {row.getValue("playerName")}
+        </div>
+      );
+    },
+  }),
+]);
+
+export function ResultsDataTable({data: initialData}: ResultsDataTableProps) {
+  const [data, setData] = useState(initialData);
+
+  const table = useTable({
+    features,
+    data,
+    columns: resultColumns,
   });
 
   return (
@@ -78,7 +195,7 @@ export function DataTable<TData, TValue>({
             className="max-w-sm"
           />
 
-          {columnFilters.length > 0 && (
+          {resultColumns.length > 0 && (
             <Button
               variant="destructive"
               onClick={() => table.resetColumnFilters()}
@@ -153,7 +270,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={resultColumns.length}
                   className="h-24 text-center"
                 >
                   No results.

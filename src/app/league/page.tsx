@@ -11,13 +11,12 @@ import { AddPostDialog } from "~/app/_features/posts/components/addPost";
 import { SettingDialog } from "~/app/_features/leagues/components/SettingDialog";
 import TeamList from "~/app/_features/team/components/TeamsList";
 import Posts from "~/_components/Posts";
-import { DataTable } from "../_features/drafts/components/draftresults-data-table";
+import { ResultsDataTable } from "../_features/drafts/components/draftresults-data-table";
 
 // Actions
 import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
 import { getLeagueSettingsAction } from "~/app/_features/leagues/actions/leagueActions";
 import { getLeaguePostsAction } from "../_features/posts/actions/postActions";
-import { draftResultColumns } from "../_features/drafts/components/draftresults-columns";
 import { getDraftResultsAction } from "../_features/drafts/actions/draftActions";
 
 export default function LeaguePage() {
@@ -26,7 +25,7 @@ export default function LeaguePage() {
   const leagueSettingsData = use(
     getLeagueSettingsAction({ leagueId: 1, draftId: 2 }),
   );
-  const draftResultData = getDraftResultsAction(2);
+  const draftResultData = use(getDraftResultsAction(2));
 
   return (
     <div className="flex min-h-screen min-w-screen flex-col bg-linear-to-b from-[#12026d] to-[#15162c] p-4 text-white">
@@ -85,7 +84,7 @@ export default function LeaguePage() {
                   </div>
                 }
               >
-                <DataTable columns={draftResultColumns} data={draftResultData} />
+                <ResultsDataTable data={draftResultData} />
               </Suspense>
             </div>
           </div>

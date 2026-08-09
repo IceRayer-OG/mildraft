@@ -48,11 +48,11 @@ export function DraftOrderDialog({
   draftOrderList,
   leagueTeams,
 }: {
-  draftOrderList: Promise<QueueDraftPick[]>;
-  leagueTeams: Promise<Team[]>;
+  draftOrderList: QueueDraftPick[];
+  leagueTeams: Team[];
 }) {
   const [selectedTeam, setSelectedTeam] = useState("");
-  const allTeams = use(leagueTeams);
+  const allTeams = leagueTeams;
 
   return (
     <Dialog modal={true}>

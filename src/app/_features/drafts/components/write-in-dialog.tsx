@@ -47,7 +47,9 @@ export function WriteInDialog() {
         <DialogHeader>
           <DialogTitle className="flex justify-center">Write-In</DialogTitle>
         </DialogHeader>
-        <DialogDescription></DialogDescription>
+        <DialogDescription className="sr-only">
+          Please write in the player First & Last Name
+        </DialogDescription>
         <Form action={draftWriteIn}>
           <Label>Player Name</Label>
           <Input

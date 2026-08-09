@@ -14,9 +14,9 @@ import { PickCountdownTimer } from "./PickClockTimer";
 export default function DraftQueueList({
   draftQueue,
 }: {
-  draftQueue: Promise<QueueDraftPick[]>;
+  draftQueue: QueueDraftPick[];
 }) {
-  const allPicks = use(draftQueue);
+  const allPicks = draftQueue;
   // Add useActionState to determine on the clock
 
   return (
