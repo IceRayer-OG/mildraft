@@ -34,11 +34,11 @@ import { type TeamSettings } from "../utils/team";
 export function TeamSettingsDialogForm({
   teamSettingsData,
 }: {
-  teamSettingsData: Promise<TeamSettings>;
+  teamSettingsData: TeamSettings;
 }) {
   const [content, updateTeamSettings, isPending] = useActionState(
     updateTeamSettingsAction,
-    { status: "", message: "", data: use(teamSettingsData) },
+    { status: "", message: "", data: teamSettingsData },
   );
 
   useEffect(() => {

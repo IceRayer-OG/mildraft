@@ -20,24 +20,15 @@ import { TeamDataTable } from "~/app/_features/team/components/team-data-table";
 import { TeamSettingsDialogForm } from "~/app/_features/team/components/TeamSettingsDialogForm";
 
 // Actions
-import {
-  getMyTeamAction,
-  getMyTeamInfoAction,
-} from "~/app/_features/team/actions/teamActions";
+import { getMyTeamAction, getMyTeamInfoAction } from "~/app/_features/team/actions/teamActions";
 import { getTeamSettingsAction } from "~/app/_features/team/actions/teamSettingsActions";
 
 export const dynamic = 'force-dynamic'
 
-export default function TeamPage(
-// {
-//   params,
-// }: {
-//   params: Promise<{ team: string }>
-// }
-) {
+export default function TeamPage() {
   // const { team } = await params;
   const teamData = use(getMyTeamAction());
-  const teamSettings = getTeamSettingsAction();
+  const teamSettings = use(getTeamSettingsAction());
   const myTeamInfo = use(getMyTeamInfoAction());
 
   return (
