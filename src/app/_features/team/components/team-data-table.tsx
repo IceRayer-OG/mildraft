@@ -1,9 +1,7 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 
 import {
-  type ColumnDef,
-  type ColumnFiltersState,
   createColumnHelper,
   flexRender,
   rowPaginationFeature,
@@ -42,10 +40,6 @@ async function dropPlayer(player: TeamPlayers) {
   toast.success(`${player.pros.playerName} has been removed from your team`);
 }
 
-interface TeamDataTableProps {
-  data: TeamPlayers[];
-}
-
 const features = tableFeatures({
   rowPaginationFeature,
   paginatedRowModel: createPaginatedRowModel(),
@@ -55,48 +49,44 @@ const features = tableFeatures({
 
 const columnHelper = createColumnHelper<typeof features, TeamPlayers>();
 
-const teamColumns = useMemo(
-  () =>
-    columnHelper.columns([
-      columnHelper.accessor("pros.playerName", {
-        header: "Player Name",
-      }),
-      columnHelper.accessor("pros.position", {
-        header: "Position",
-        id: "position",
-      }),
-      columnHelper.accessor("pros.team", {
-        header: "Team",
-      }),
-      columnHelper.display({
-        id: "actions",
-        header: "Actions",
-        cell: ({ row }) => {
-          const player = row.original;
+const teamColumns = columnHelper.columns([
+  columnHelper.accessor("pros.playerName", {
+    header: "Player Name",
+  }),
+  columnHelper.accessor("pros.position", {
+    header: "Position",
+    id: "position",
+  }),
+  columnHelper.accessor("pros.team", {
+    header: "Team",
+  }),
+  columnHelper.display({
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const player = row.original;
 
-          return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="destructive" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => dropPlayer(player)}>
-                  Drop
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          );
-        },
-      }),
-    ]),
-  [],
-);
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="destructive" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => dropPlayer(player)}>
+              Drop
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  }),
+]);
 
-export function TeamDataTable({ data: initialData }: TeamDataTableProps) {
-  const [data, setSata] = useState(initialData);
+export function TeamDataTable({ data: initialData }: { data: TeamPlayers[] }) {
+  const [data, setData] = useState(initialData);
 
   const table = useTable({
     features,
