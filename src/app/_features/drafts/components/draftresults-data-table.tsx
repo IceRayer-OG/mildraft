@@ -1,5 +1,5 @@
 "use client";
-import { useState, use } from "react";
+import { useState, use, useMemo } from "react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -19,6 +19,8 @@ import {
   createFilteredRowModel,
   filterFn_includesString,
 } from "@tanstack/react-table";
+
+import { createAppColumnHelper, useAppTable } from '~/hooks/table'
 
 // UI
 import { ArrowUpDown } from "lucide-react";
@@ -60,11 +62,12 @@ const features = tableFeatures({
   columnSizingFeature,
 });
 
-const columnHelper = createColumnHelper<typeof features, DraftResults>();
+
+const columnHelper = createColumnHelper<typeof features,DraftResults>();
 
 const resultColumns = columnHelper.columns([
   columnHelper.accessor("pickNumber", {
-    header: ({ column }) => {
+    header: ({column}) => {
       return (
         <Button
           variant="ghost"
