@@ -19,7 +19,8 @@ export async function getMyQueuePlayers(userId: string) {
   const myQueue = db
     .select({ queuedPlayer: queues.playerId })
     .from(queues)
-    .where(eq(queues.userId, userId));
+    .where(eq(queues.userId, userId))
+    .orderBy(asc(queues.queueRank));
 
   const myQueuedPlayeers = await db
     .select()
