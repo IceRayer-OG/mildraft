@@ -43,7 +43,10 @@ import { toast } from "sonner";
 import { type QueuePlayers } from "../utils/draft";
 
 // Actions
-import { removePlayerFromQueueAction } from "../actions/queueActions";
+import {
+  removePlayerFromQueueAction,
+  updateMyQueueOrderAction,
+} from "../actions/queueActions";
 import { draftPlayerAction } from "../actions/draftActions";
 import { createAppColumnHelper, useAppTable, appFeatures } from "~/hooks/table";
 
@@ -116,6 +119,18 @@ async function draftPlayer(playerToDraft: QueuePlayers) {
   }
 }
 
+async function updateMyQueueOrder(
+  queueOrder: { playerId: number; rank: number }[],
+) {
+  try {
+    await updateMyQueueOrderAction(queueOrder);
+    toast.success("Queue order updated");
+  } catch (error) {
+    console.log(error);
+    toast.error("Error updating queue order");
+  }
+}
+
 const columnHelper = createAppColumnHelper<QueuePlayers>();
 
 export function QueueDataTable({
@@ -127,7 +142,7 @@ export function QueueDataTable({
   const dataIds = useMemo<Array<UniqueIdentifier>>(
     () => data.map(({ id }) => id),
     [data],
-  )
+  );
 
   const queueColumns = useMemo(
     () =>
@@ -202,13 +217,18 @@ export function QueueDataTable({
   // reorder rows after drag & drop
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
-    if (over && active.id !== over.id) {
-      setData((data) => {
-        const oldIndex = dataIds.indexOf(active.id);
-        const newIndex = dataIds.indexOf(over.id);
-        return arrayMove(data, oldIndex, newIndex); // this is just a splice util
-      });
-    }
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = dataIds.indexOf(active.id);
+    const newIndex = dataIds.indexOf(over.id);
+    const newData = arrayMove(data, oldIndex, newIndex);
+    setData(newData); // this is just a splice util
+
+    const queueOrder = newData.map((player, index) => ({
+      playerId: player.id,
+      rank: index + 1,
+    }));
+    updateMyQueueOrder(queueOrder);
   }
 
   const sensors = useSensors(
