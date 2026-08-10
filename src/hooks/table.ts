@@ -23,6 +23,7 @@ import {
 // Component imports
 import { TablePagination } from "~/_components/table/TablePagination";
 import { TableFacetedFilter } from "~/_components/table/TableFacetedFilters";
+import { DragCell } from "~/_components/table/CellComponents";
 
 /**
  * Create the custom table hook with all pre-bound components.
@@ -34,6 +35,7 @@ import { TableFacetedFilter } from "~/_components/table/TableFacetedFilters";
  * - useHeaderContext: Access header instance in headerComponents
  */
 export const {
+  appFeatures,
   createAppColumnHelper,
   useAppTable,
   useTableContext,
@@ -88,6 +90,7 @@ export const {
   },
   cellComponents: {
     // Add any custom cell components here
+    DragCell,
   },
   headerComponents: {
     // Add any custom header components here

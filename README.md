@@ -1,16 +1,13 @@
   
   TO DO LIST
-  - [x] Updated Settings pages for league and teams
-  - [x] Restage UI
 
   Drafting
-  - [X] Add drafting order
-  - [X] Add settings controls for drafting
-  - [X] Add error handling for drafting
+  - [X] Add queue drag n drop
   - [ ] Add role based access controls for drafting
+  - [ ] Add auto drafting
+  - [ ] Update queue ranking
 
   Setttings
-  - [x] Teams UI updates
   - [ ] Role Based Access Controls
 
   
