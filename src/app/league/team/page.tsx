@@ -1,5 +1,6 @@
 // React
 import { Suspense, use } from "react";
+import { auth } from '@clerk/nextjs/server'
 
 // UI Elements
 import { 

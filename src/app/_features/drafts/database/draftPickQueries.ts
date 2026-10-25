@@ -1,20 +1,35 @@
 import { db } from "~/server/db";
 import {
   eq,
-  notInArray,
   and,
-  isNotNull,
-  isNull,
   asc,
   desc,
-  inArray,
-  ne,
-  count,
   or,
   sql,
 } from "drizzle-orm";
 import { draftPicks, players, pros, teams } from "~/server/db/schema";
 import { type InngestPick } from "../utils/draft";
+
+export async function getFirstDraftPick(draftId: number) {
+  const [firstPick] = await db
+    .select({
+      pickId: draftPicks.id,
+      pickNumber: draftPicks.pickNumber,
+      teamName: teams.name,
+    })
+    .from(draftPicks)
+    .where(
+      and(
+        eq(draftPicks.draftId, draftId),
+        eq(draftPicks.pickMade, false),
+      ),
+    )
+    .orderBy(asc(draftPicks.pickNumber))
+    .limit(1)
+    .leftJoin(teams, eq(draftPicks.teamId, teams.id));
+
+  return firstPick;
+}
 
 export async function getNextDraftPick(draftId: number) {
   // Check if user is current pick
@@ -63,16 +78,24 @@ export async function startPickClock(
 }
 
 export async function updateDraftPickOverdue(pickId: number) {
-  const pickData = await db
+  await db
     .update(draftPicks)
     .set({
       status: "overdue",
       isOnClock: false,
     })
-    .where(eq(draftPicks.id, pickId))
-    .returning({
+    .where(eq(draftPicks.id, pickId));
+
+  const [pickData] = await db
+    .select({
       id: draftPicks.id,
-    });
+      pickNumber: draftPicks.pickNumber,
+      teamName: teams.name,
+    })
+    .from(draftPicks)
+    .where(eq(draftPicks.id, pickId))
+    .leftJoin(teams, eq(draftPicks.teamId, teams.id))
+    .limit(1);
 
   return pickData;
 }

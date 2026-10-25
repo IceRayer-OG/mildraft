@@ -1,10 +1,10 @@
 "use client";
 // import React & Nextjs
 import Link from "next/link";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 // import Clerk
-import { SignInButton, UserButton, Show } from "@clerk/nextjs";
+import { SignInButton, UserButton, Show, useAuth } from "@clerk/nextjs";
 
 // import UI
 import { MenuIcon } from "lucide-react";
@@ -51,12 +51,14 @@ export function TopNav() {
         </div>
         <div className="flex gap-4">
           <div>
-            <Show when="signed-out">
-              <SignInButton />
-            </Show>
-            <Show when="signed-in">
-              <UserButton />
-            </Show>
+            <Suspense>
+              <Show when="signed-out">
+                <SignInButton />
+              </Show>
+              <Show when="signed-in">
+                <UserButton />
+              </Show>
+            </Suspense>
           </div>
         </div>
       </div>
@@ -68,12 +70,14 @@ export function TopNav() {
           </Button>
         </div>
         <div className="flex gap-4">
-          <Show when="signed-out">
-            <SignInButton />
-          </Show>
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
+          <Suspense>
+            <Show when="signed-out">
+              <SignInButton />
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
+          </Suspense>
         </div>
       </div>
       <div

@@ -3,6 +3,7 @@ import "~/styles/globals.css";
 
 // import Providers
 import { ClerkProvider } from "@clerk/nextjs";
+import { auth } from '@clerk/nextjs/server'
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>

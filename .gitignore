@@ -45,5 +45,8 @@ yarn-error.log*
 # idea files
 .idea
 
+# GEMINI Files
+GEMINI.md
+
 # working files
 /_compoenets/working

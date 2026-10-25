@@ -1,4 +1,5 @@
 import { Suspense, use } from "react";
+import { auth } from '@clerk/nextjs/server'
 
 // UI Components
 import { PlayerDataTable } from "~/app/_features/players/components/player-data-table";

@@ -81,3 +81,17 @@ export async function getDraftResultsAction(draftId: number) {
   const draftResults = await getDraftResultsUseCase(draftId);
   return draftResults;
 }
+
+export async function getActiveDraftAction(leagueId = 1) {
+  const { getActiveDraft } = await import("../database/queries");
+  const activeDraft = await getActiveDraft(leagueId);
+  return activeDraft;
+}
+
+export async function rolloverSeasonAction(leagueId = 1) {
+  const { rolloverSeasonUseCase } = await import("../use_cases/seasonRolloverUseCase");
+  const result = await rolloverSeasonUseCase(leagueId);
+  revalidatePath("/league");
+  revalidatePath("/league/draft");
+  return result;
+}
