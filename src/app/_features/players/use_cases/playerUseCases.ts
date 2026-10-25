@@ -1,8 +1,9 @@
 "use server";
 
-// React & Next
+// Node & React
+import { Readable } from "stream";
 import { auth } from "@clerk/nextjs/server";
-import * as XLSX from 'xlsx';
+import ExcelJS from "exceljs";
 
 // Import Types
 import { type Players, type ProPlayers } from "../utils/players";
@@ -48,63 +49,75 @@ export async function loadProspectPlayersUseCase(loadFile: File) {
     return response;
   }
 
-  // 1. Convert File to Buffer
+  // 1. Convert File to Stream
   const bytes = await draftablePlayerFile.arrayBuffer();
-  const buffer = Buffer.from(bytes);
+  const stream = Readable.from(Buffer.from(bytes));
 
   // 2. Parse Excel
-  const workbook = XLSX.read(buffer, { type: 'buffer' });
-  const sheetName = workbook.SheetNames[0];
-  if (!sheetName) {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.read(stream);
+
+  const worksheet = workbook.worksheets[0];
+  if (!worksheet) {
     response.status = "error";
     response.message = "No sheets found in the Excel file";
     return response;
   }
-  const sheet = workbook.Sheets[sheetName];
-  if (!sheet) {
-    response.status = "error";
-    response.message = "No sheet data found";
-    return response;
-  }
-  
-  
+
   // 3. Convert to JSON
-  // header: 1 returns an array of arrays; default returns objects using the first row as keys
-  const rawData = XLSX.utils.sheet_to_json(sheet);
+  const headers: string[] = [];
+  const headerRow = worksheet.getRow(1);
+  headerRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+    headers[colNumber] = String(cell.value ?? "").trim();
+  });
+
+  const rawData: Record<string, unknown>[] = [];
+  worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+    if (rowNumber === 1) return; // Skip header row
+    const rowObj: Record<string, unknown> = {};
+    row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+      const header = headers[colNumber];
+      if (header) {
+        rowObj[header] = cell.value;
+      }
+    });
+    rawData.push(rowObj);
+  });
+
   if (rawData.length === 0) {
     response.status = "error";
     response.message = "Sheet is empty";
     return response;
   }
 
-	console.log("Raw Data:", rawData);
+  console.log("Raw Data:", rawData);
 
-	const dataToInsert = rawData.map((row: any) => {
+  const dataToInsert = rawData.map((row) => {
       // Logic to split "6' 2\" / 210 lbs" into two variables
-      const rawHeightWeight = String(row['Height / Weight'] || '');
-      const rawEta = String(row['eta'] || '').trim();
+      const rawHeightWeight = String(row['Height / Weight'] ?? '');
+      const rawEta = String(row['eta'] ?? '').trim();
       const numberedETA = (rawEta === '-' || rawEta === '') ? null : rawEta;
       const [h, w] = rawHeightWeight.split('/').map(s => s.trim());
 			// Mapping logic for Weight
 			// 1. w.replace(/\D/g, '') removes " lbs" or any other text
 			// 2. parseInt converts the remaining "210" string to a number
 			const numericWeight = w ? parseInt(w.replace(/\D/g, ''), 10) : null;
-			const positionsPlayed = String(row['Position'] || '').split('/').map(s => s.trim()).filter(Boolean);
+			const positionsPlayed = String(row['Position'] ?? '').split('/').map(s => s.trim()).filter(Boolean);
 
 			return {
         rank: Number(row['Top 100 Rank']) || null,
         teamRank: Number(row['Team Rank']) || null,
         draftRank: Number(row['Draft Rank']) || null,
-        playerName: String(row['Player'] || ''),
+        playerName: String(row['Player'] ?? ''),
         position: positionsPlayed as ProPlayers['position'],
-        team: String(row['Team'] || ''),
-        level: String(row['Level'] || ''),
+        team: String(row['Team'] ?? ''),
+        level: String(row['Level'] ?? ''),
         eta: numberedETA,
         age: Number(row['Age']) || null,
-        height: String(h || ''),
+        height: String(h ?? ''),
         weight: numericWeight || null,
-        bats: (row['Bats'] || '') as "R" | "L" | "B" | "S",
-        throws: (row['Throws'] || '') as "R" | "L" | "B" | "S",
+        bats: (row['Bats'] ?? '') as "R" | "L" | "B" | "S",
+        throws: (row['Throws'] ?? '') as "R" | "L" | "B" | "S",
       } as ProPlayers;
 	});
  

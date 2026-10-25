@@ -1,6 +1,5 @@
 // React and Next.js imports
 import { Suspense, use } from "react";
-import { auth } from '@clerk/nextjs/server'
 
 // Global UI components
 import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
@@ -14,15 +13,22 @@ import { DraftOrderDialog } from "~/app/_features/drafts/components/DraftOrderDi
 import DraftCountdownTimer from "~/app/_features/drafts/components/PickClockTimer";
 
 // Server actions
-import { getDraftablePlayersAction, getDraftPicksListAction } from "~/app/_features/drafts/actions/draftActions";
+import {
+  getDraftablePlayersAction,
+  getDraftPicksListAction,
+  getActiveDraftAction,
+} from "~/app/_features/drafts/actions/draftActions";
 import { DraftHistoryDialog } from "~/app/_features/drafts/components/DraftHistory";
 import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
 import { getDraftDetailsAction, getDraftPageDetailsAction } from "~/app/_features/leagues/actions/leagueActions";
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 export default function DraftPage() {
-  const leagueData = { leagueId: 1, draftId: 2}
+  const activeDraft = use(getActiveDraftAction(1));
+  const draftId = activeDraft?.id ?? 2;
+  const leagueData = { leagueId: 1, draftId };
+
   const draftablePlayers = use(getDraftablePlayersAction());
   const draftPicks = use(getDraftPicksListAction());
   const allTeams = use(getLeagueTeamsAction());
@@ -32,7 +38,11 @@ export default function DraftPage() {
   return (
     <div className="flex flex-col w-full min-h-screen gap-4 p-4 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
       <div className="flex w-full h-10 justify-center gap-8 rounded-md items-center text-sm md:text-md">
-        <p>Draft Start: {userDraftDetails.draftStart.toDateString()} @ {userDraftDetails.draftTime}</p>
+        <p>
+          {activeDraft?.draftYear ?? 2026} Draft Start:{" "}
+          {userDraftDetails.draftStart ? userDraftDetails.draftStart.toDateString() : "TBD"} @{" "}
+          {userDraftDetails.draftTime || "TBD"}
+        </p>
         <Suspense>
           <DraftCountdownTimer targetDate={draftDetails.serverDetails}/>
         </Suspense>
@@ -45,7 +55,13 @@ export default function DraftPage() {
           <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
             <div>
               <Suspense fallback={<div>Loading...</div>}>
-                <DraftQueueList draftQueue={draftPicks} />
+                {draftPicks && draftPicks.length > 0 ? (
+                  <DraftQueueList draftQueue={draftPicks} />
+                ) : (
+                  <div className="text-gray-300 text-sm pl-4 flex items-center h-full">
+                    {activeDraft?.draftYear ?? 2027} Draft Order has not been established yet.
+                  </div>
+                )}
               </Suspense>
             </div>
             <ScrollBar orientation="horizontal" />
@@ -79,5 +95,5 @@ export default function DraftPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

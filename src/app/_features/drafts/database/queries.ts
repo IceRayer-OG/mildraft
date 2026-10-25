@@ -13,21 +13,63 @@ import {
   sql,
   desc
 } from "drizzle-orm";
-import { draftPicks, pros, teams } from "~/server/db/schema";
+import { draftPicks, drafts, pros, teams } from "~/server/db/schema";
 import { PickCountdownTimer } from "../components/PickClockTimer";
 
-export async function getDraftPicks() {
+export async function getActiveDraft(leagueId = 1) {
+  // 1. Look for in-progress or setup draft first
+  const [activeDraft] = await db
+    .select()
+    .from(drafts)
+    .where(and(eq(drafts.leagueId, leagueId), ne(drafts.status, "completed")))
+    .orderBy(desc(drafts.draftYear))
+    .limit(1);
+
+  if (activeDraft) return activeDraft;
+
+  // 2. If all completed, return the latest draft
+  const [latestDraft] = await db
+    .select()
+    .from(drafts)
+    .where(eq(drafts.leagueId, leagueId))
+    .orderBy(desc(drafts.draftYear))
+    .limit(1);
+
+  return latestDraft;
+}
+
+export async function getAllDrafts(leagueId = 1) {
+  const allDrafts = await db
+    .select()
+    .from(drafts)
+    .where(eq(drafts.leagueId, leagueId))
+    .orderBy(desc(drafts.draftYear));
+
+  return allDrafts;
+}
+
+export async function getDraftPicks(draftId = 2) {
   const draftPicksData = await db
     .select()
     .from(draftPicks)
-    .where(ne(draftPicks.pickMade, true))
+    .where(and(eq(draftPicks.draftId, draftId), ne(draftPicks.pickMade, true)))
     .orderBy(asc(draftPicks.pickNumber))
     .leftJoin(teams, eq(draftPicks.teamId, teams.id));
 
   return draftPicksData;
 }
 
-export async function checkUserCanPick(userId: string) {
+export async function checkUserCanPick(userId: string, draftId?: number) {
+  const conditions = [
+    eq(teams.ownerId, userId), 
+    eq(draftPicks.pickMade, false),
+    or(eq(draftPicks.status, "overdue"), eq(draftPicks.status, "on the clock"))
+  ];
+
+  if (draftId != null) {
+    conditions.push(eq(draftPicks.draftId, draftId));
+  }
+
   const [pickNumber] = await db.select({ 
     pickId: draftPicks.id,
     pickNumber: draftPicks.pickNumber,
@@ -35,11 +77,7 @@ export async function checkUserCanPick(userId: string) {
     pickStatus: draftPicks.status
   })
   .from(draftPicks)
-  .where(and(
-    eq(teams.ownerId, userId), 
-    eq(draftPicks.pickMade, false),
-    or(eq(draftPicks.status, "overdue"), eq(draftPicks.status, "on the clock"))
-  ))
+  .where(and(...conditions))
   .orderBy(asc(draftPicks.pickNumber))
   .limit(1)
   .leftJoin(teams, eq(draftPicks.teamId, teams.id))
@@ -49,10 +87,15 @@ export async function checkUserCanPick(userId: string) {
   return pickNumber;
 }
 
-export async function getCurrentDraftPick() {  
+export async function getCurrentDraftPick(draftId?: number) {  
+    const conditions = [eq(draftPicks.status, "on the clock")];
+    if (draftId != null) {
+      conditions.push(eq(draftPicks.draftId, draftId));
+    }
+
     // Check if user is current pick
     const [currentPick] = await db.select().from(draftPicks)
-      .where(eq(draftPicks.status, "on the clock"))
+      .where(and(...conditions))
       .orderBy(asc(draftPicks.pickNumber))
       .limit(1)
       .leftJoin(teams, eq(draftPicks.teamId, teams.id));
@@ -70,7 +113,12 @@ export async function getNextDraftPick(draftId: number) {
         teamName: teams.name
       })
       .from(draftPicks)
-      .where(eq(draftPicks.status, "pending"))
+      .where(
+        and(
+          eq(draftPicks.draftId, draftId),
+          eq(draftPicks.status, "pending")
+        )
+      )
       .orderBy(asc(draftPicks.pickNumber))
       .limit(1)
       .leftJoin(teams, eq(draftPicks.teamId, teams.id));

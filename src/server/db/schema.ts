@@ -118,6 +118,7 @@ export const drafts = createTable(
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     leagueId: integer("league_id").references(() => leagues.id),  // Make not null later
     draftYear: integer("draft_year"),
+    status: varchar("status", { length: 32 }).default("setup").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
