@@ -1,5 +1,6 @@
 // React and Next.js imports
 import { Suspense, use } from "react";
+import { auth } from '@clerk/nextjs/server'
 
 // Global UI components
 import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
@@ -27,7 +28,6 @@ export default function DraftPage() {
   const allTeams = use(getLeagueTeamsAction());
   const userDraftDetails = use(getDraftDetailsAction(leagueData));
   const draftDetails = use(getDraftPageDetailsAction(leagueData));
-
 
   return (
     <div className="flex flex-col w-full min-h-screen gap-4 p-4 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
@@ -57,8 +57,8 @@ export default function DraftPage() {
           </Suspense>
         </div>
       </div>
-      <div>
-        <ScrollArea className="w-full whitespace-nowrap overflow-x-auto">
+      <div className="flex flex-col grow gap-4 overflow-y-hidden">
+        <ScrollArea className="w-full whitespace-nowrap overflow-x-hidden">
           <div className="w-full overflow-hidden">
             <Suspense fallback={<div className="w-full h-full">Loading...</div>}>
               <DraftDataTable data={draftablePlayers} />
@@ -67,7 +67,7 @@ export default function DraftPage() {
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
-      <div className="w-full flex fixed bottom-0 gap-4 justify-center pb-8 ">
+      <div className="flex fixed bottom-2 w-1/4 justify-self-center inset-x-0 bg-black rounded-full justify-center">
         <div>
           <QueueDrawer />
         </div>

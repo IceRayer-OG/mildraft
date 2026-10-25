@@ -1,16 +1,12 @@
-import { clerkMiddleware,createRouteMatcher } from "@clerk/nextjs/server"
-
-const isProtectedRoute = createRouteMatcher(['/league(.*)']) // Format(['a' , 'b'])
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
 export default clerkMiddleware(async (auth, req) => {
-  const { isAuthenticated, redirectToSignIn } = await auth()
+  const { isAuthenticated, redirectToSignIn } = await auth();
 
-  if (!isAuthenticated && isProtectedRoute(req)) {
-    // Add custom logic to run before redirecting
-
-    return redirectToSignIn()
+  if (!isAuthenticated && req.nextUrl.pathname.startsWith("/league")) {
+    return redirectToSignIn();
   }
-})
+});
 
 export const config = {
   matcher: [
@@ -21,4 +17,4 @@ export const config = {
     // Always run for Clerk-specific frontend API routes
     '/__clerk/(.*)',
   ],
-}
+};

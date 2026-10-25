@@ -6,6 +6,7 @@ import { auth } from "@clerk/nextjs/server";
 // Types
 import {
   DraftResults,
+  QueuePlayers,
   type CompletedDraftPicks,
   type DraftablePlayers,
   type QueueDraftPick,
@@ -24,15 +25,16 @@ import {
   checkUserCanPick,
 } from "../database/queries";
 import { getDraftPickEmails } from "..//database/teamQueries";
-import { deletePlayerFromQueues } from "../database/queueQueries";
+import { deletePlayerFromQueues, getMyQueuePlayers } from "../database/queueQueries";
 import {
   checkWriteInNameAvailable,
   getDraftResults,
   startPickClock,
+  getFirstDraftPick,
+  updateDraftPickOverdue,
 } from "../database/draftPickQueries";
 import { getDraftablePlayers } from "../database/draftPalyersQueries";
 import { removePlayerFromQueueUseCase } from "./queueUseCases";
-import { updateDraftPickOverdue } from "../database/draftPickQueries";
 
 // Inngest Import
 import { inngest } from "~/inngest/client";
@@ -64,6 +66,11 @@ export async function startDraftPickClockUseCase(
 export async function markDraftPickOverdueUseCase(pickId: number) {
   const pickData = await updateDraftPickOverdue(pickId);
   return pickData;
+}
+
+export async function getFirstDraftPickUseCase(draftId: number) {
+  const firstPickData = await getFirstDraftPick(draftId);
+  return firstPickData;
 }
 
 export async function getCurrentDraftPickUseCase() {
@@ -371,3 +378,31 @@ export async function getDraftResultsUseCase(draftId: number) {
   }
   return draftResults as DraftResults[];
 }
+
+export async function autoDraftPlayerUseCase(userId: string, draftId: number, pickNumber: number) {
+  // Check if user is authenticated
+  const user = await checkAuthorization();
+  if (!user) {
+    throw new Error("User is not authenticated");
+  }
+
+  // Check if user is on the clock
+  const userPickId = await checkUserCanPick(user.userId);
+  if (!userPickId) {
+    throw new Error("User is not on the clock");
+  }
+
+  var playerToDraft: QueuePlayers | undefined = undefined;
+
+  // Get the user's queue players
+  const [queuePlayers] = await getMyQueuePlayers(userId);
+
+  // if (queuePlayers.length === 0) {
+  //   playerToDraft = queuePlayers[0]?.id
+  // }
+
+  // Auto-draft the first player in the queue
+  
+
+
+};

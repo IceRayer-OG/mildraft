@@ -20,6 +20,7 @@ import { getLeaguePostsAction } from "../_features/posts/actions/postActions";
 import { getDraftResultsAction } from "../_features/drafts/actions/draftActions";
 
 export default function LeaguePage() {
+
   const posts = getLeaguePostsAction();
   const allLeagueTeams = getLeagueTeamsAction();
   const leagueSettingsData = use(
