@@ -4,6 +4,8 @@ import { inngest } from "./client";
 
 // Database Queries
 import { getDraftSettings } from "~/app/_features/leagues/database/queries";
+import { getPickWithTeamDetails } from "~/app/_features/drafts/database/draftPickQueries";
+import { getTopQueuedPlayer } from "~/app/_features/drafts/database/queueQueries";
 
 // Use Cases
 import { 
@@ -12,6 +14,7 @@ import {
   getNextDraftPickUseCase, 
   getCurrentDraftPickUseCase,
   getFirstDraftPickUseCase,
+  executeAutoDraftPickUseCase,
 } from "~/app/_features/drafts/use_cases/draftUseCases";
 import { sendDraftStartEmail, sendPickDeadlineEmail, sendPickTimeoutEmail } from "~/app/_features/emails/use_cases/sendUseCases";
 
@@ -83,6 +86,42 @@ export const handlePickTimer = inngest.createFunction(
       return updated;
     });
 
+    // Check if team is eligible for instant auto-draft
+    const autoDraftCheck = await step.run("check-instant-autodraft", async () => {
+      const pick = await getPickWithTeamDetails(pickId);
+      if (
+        pick?.autoDraftEnabled &&
+        (pick.autoDraftMode === "instant" || !pick.autoDraftMode) &&
+        pick.ownerId
+      ) {
+        const topQueued = await getTopQueuedPlayer(
+          pick.ownerId,
+          pick.draftId ?? draftId ?? 2,
+        );
+        if (topQueued) {
+          return { eligible: true, playerName: topQueued.playerName };
+        }
+      }
+      return { eligible: false };
+    });
+
+    if (autoDraftCheck.eligible) {
+      // 10-second buffer before auto-drafting to allow UI settlement
+      await step.sleep("instant-autodraft-buffer", "10s");
+
+      const autoPickResult = await step.run("execute-instant-autodraft", async () => {
+        return await executeAutoDraftPickUseCase({
+          pickId,
+          draftId: draftId ?? 2,
+        });
+      });
+
+      return {
+        message: "Instant auto-draft completed",
+        result: autoPickResult,
+      };
+    }
+
     const pickReminder = await step.run("generate-reminder-time", async () => {
       const pickDate = new Date(pickDeadline);
       const reminderTime = new Date(pickDate.getTime() - 60 * 60 * 1000);
@@ -110,23 +149,51 @@ export const handlePickTimer = inngest.createFunction(
     await step.sleepUntil("wait-for-pick-deadline", pickDeadline);
 
     await step.run("process-timeout", async () => {
-      const timedOutPick = await markDraftPickOverdueUseCase(pickId);
-      const [nextPick] = await getNextDraftPickUseCase(2);
+      const pick = await getPickWithTeamDetails(pickId);
+      let autoDraftHandled = false;
 
-      const emailProps = {
-        pickNumber: timedOutPick?.pickNumber ?? 0,
-        teamName: timedOutPick?.teamName ?? "Unknown Team",
-        pickingTeam: nextPick?.teamName ?? "None (Draft Complete)",
-      };
-
-      const email = await sendPickTimeoutEmail(emailProps);
-      console.log("LOG: Pick timeout email sent with response:", email.data);
-      if (email.error != null) {
-        console.log("Debug: Pick timeout email error:", email.error);
+      // Safety Net: if auto-draft is enabled and there is a queued player, auto-pick instead of skipping
+      if (pick?.autoDraftEnabled && pick.ownerId) {
+        const topQueued = await getTopQueuedPlayer(
+          pick.ownerId,
+          pick.draftId ?? draftId ?? 2,
+        );
+        if (topQueued) {
+          const autoPickResult = await executeAutoDraftPickUseCase({
+            pickId,
+            draftId: draftId ?? 2,
+          });
+          if (autoPickResult.status === "Success") {
+            autoDraftHandled = true;
+            console.log(
+              `LOG: Safety net auto-draft executed successfully for ${pick.teamName}`,
+            );
+          }
+        }
       }
-      
-      if (nextPick?.pickId != null) {
-        await inngest.send({ name: "draft/turn.started", data: { pickId: nextPick.pickId, draftId } });
+
+      if (!autoDraftHandled) {
+        const timedOutPick = await markDraftPickOverdueUseCase(pickId);
+        const [nextPick] = await getNextDraftPickUseCase(2);
+
+        const emailProps = {
+          pickNumber: timedOutPick?.pickNumber ?? 0,
+          teamName: timedOutPick?.teamName ?? "Unknown Team",
+          pickingTeam: nextPick?.teamName ?? "None (Draft Complete)",
+        };
+
+        const email = await sendPickTimeoutEmail(emailProps);
+        console.log("LOG: Pick timeout email sent with response:", email.data);
+        if (email.error != null) {
+          console.log("Debug: Pick timeout email error:", email.error);
+        }
+
+        if (nextPick?.pickId != null) {
+          await inngest.send({
+            name: "draft/turn.started",
+            data: { pickId: nextPick.pickId, draftId },
+          });
+        }
       }
     });
   }

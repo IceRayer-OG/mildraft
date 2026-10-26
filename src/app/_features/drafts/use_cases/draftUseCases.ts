@@ -6,7 +6,6 @@ import { auth } from "@clerk/nextjs/server";
 // Types
 import {
   DraftResults,
-  QueuePlayers,
   type CompletedDraftPicks,
   type DraftablePlayers,
   type QueueDraftPick,
@@ -23,15 +22,20 @@ import {
   getCurrentDraftPick,
   getNextDraftPick,
   checkUserCanPick,
+  getActiveDraft,
 } from "../database/queries";
 import { getDraftPickEmails } from "..//database/teamQueries";
-import { deletePlayerFromQueues, getMyQueuePlayers } from "../database/queueQueries";
+import {
+  deletePlayerFromQueues,
+  getTopQueuedPlayer,
+} from "../database/queueQueries";
 import {
   checkWriteInNameAvailable,
   getDraftResults,
   startPickClock,
   getFirstDraftPick,
   updateDraftPickOverdue,
+  getPickWithTeamDetails,
 } from "../database/draftPickQueries";
 import { getDraftablePlayers } from "../database/draftPalyersQueries";
 
@@ -76,8 +80,8 @@ export async function getCurrentDraftPickUseCase() {
   return currentPickData;
 }
 
-export async function getNextDraftPickUseCase(draftId: number) {
-  const nextPickData = await getNextDraftPick(2);
+export async function getNextDraftPickUseCase(draftId = 2) {
+  const nextPickData = await getNextDraftPick(draftId);
   return nextPickData;
 }
 
@@ -106,13 +110,15 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
     return response;
   }
 
+  const effectiveDraftId = userPickId.draftId ?? 2;
+
   // Perform the draft operation
   try {
-    await postDraftPick(2, userPickId.pickNumber, playerToDraft.id);
+    await postDraftPick(effectiveDraftId, userPickId.pickNumber, playerToDraft.id);
 
     // Attempt to remove player from queues
     try {
-      await deletePlayerFromQueues(playerToDraft.id);
+      await deletePlayerFromQueues(playerToDraft.id, effectiveDraftId);
       console.log("LOG: Player removed from queues successfully");
     } catch (error) {
       console.error("ERROR: Error removing player from queues:", error);
@@ -140,11 +146,11 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
 
     if (userPickId.pickStatus === "on the clock") {
       // Start the next timer
-      const [nextPick] = await getNextDraftPick(2);
+      const [nextPick] = await getNextDraftPick(effectiveDraftId);
       if (nextPick) {
         await inngest.send({
           name: "draft/turn.started",
-          data: { pickId: nextPick.pickId, draftId: 2 },
+          data: { pickId: nextPick.pickId, draftId: effectiveDraftId },
         });
       }
 
@@ -164,7 +170,7 @@ export async function draftPlayerUseCase(playerToDraft: DraftablePlayers) {
       );
     }
   } else {
-    const currentPick = await getCurrentDraftPick();
+    const currentPick = await getCurrentDraftPick(effectiveDraftId);
 
     const { data, error } = await sendDraftPickEmail(
       userPickId.pickNumber,
@@ -199,6 +205,9 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
     console.error("ERROR: User not on the clock");
     return response;
   }
+
+  const effectiveDraftId = userPickId.draftId ?? 2;
+
   // Check if name is available
   const existingPlayer = await checkWriteInNameAvailable(playerToDraft);
   if (existingPlayer) {
@@ -210,7 +219,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
 
   // draft write in player
   try {
-    await postWriteInDraftPick(2, userPickId.pickNumber, playerToDraft);
+    await postWriteInDraftPick(effectiveDraftId, userPickId.pickNumber, playerToDraft);
     response.status = "Success";
     response.message = `${playerToDraft} drafted successfully`;
     console.log(
@@ -235,11 +244,11 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
 
     if (userPickId.pickStatus === "on the clock") {
       // Start the next timer
-      const [nextPick] = await getNextDraftPick(2);
+      const [nextPick] = await getNextDraftPick(effectiveDraftId);
       if (nextPick) {
         await inngest.send({
           name: "draft/turn.started",
-          data: { pickId: nextPick.pickId, draftId: 2 },
+          data: { pickId: nextPick.pickId, draftId: effectiveDraftId },
         });
       }
 
@@ -259,7 +268,7 @@ export async function draftWriteInPlayerUseCase(playerToDraft: string) {
       );
     }
   } else {
-    const currentPick = await getCurrentDraftPick();
+    const currentPick = await getCurrentDraftPick(effectiveDraftId);
 
     const { data, error } = await sendDraftPickEmail(
       userPickId.pickNumber,
@@ -312,8 +321,14 @@ export async function getDraftablePlayersUseCase(): Promise<
   return draftablePlayers as DraftablePlayers[];
 }
 
-export async function getDraftPicksListUseCase(): Promise<QueueDraftPick[]> {
-  const draftPickQueueData = await getDraftPicks();
+export async function getDraftPicksListUseCase(draftId?: number): Promise<QueueDraftPick[]> {
+  let targetDraftId = draftId;
+  if (!targetDraftId) {
+    const activeDraft = await getActiveDraft(1);
+    targetDraftId = activeDraft?.id ?? 2;
+  }
+
+  const draftPickQueueData = await getDraftPicks(targetDraftId);
   if (!draftPickQueueData) {
     throw new Error("Error getting draft pick queue");
   }
@@ -321,15 +336,21 @@ export async function getDraftPicksListUseCase(): Promise<QueueDraftPick[]> {
   return draftPickQueueData as QueueDraftPick[];
 }
 
-export async function getCompletedDraftPicksUseCase(): Promise<
-  CompletedDraftPicks[]
-> {
+export async function getCompletedDraftPicksUseCase(
+  draftId?: number,
+): Promise<CompletedDraftPicks[]> {
   const user = await checkAuthorization();
   if (!user) {
     throw new Error("User is not authenticated");
   }
 
-  const draftedPlayers = await getCompletedDraftPicks(2);
+  let targetDraftId = draftId;
+  if (!targetDraftId) {
+    const activeDraft = await getActiveDraft(1);
+    targetDraftId = activeDraft?.id ?? 2;
+  }
+
+  const draftedPlayers = await getCompletedDraftPicks(targetDraftId);
 
   if (!draftedPlayers) {
     throw new Error("No players drafted yet");
@@ -338,33 +359,35 @@ export async function getCompletedDraftPicksUseCase(): Promise<
   return draftedPlayers as CompletedDraftPicks[];
 }
 
-export async function undoDraftPickUseCase(draftPickToUndo: number) {
-  // const response = {
-  //   status: "",
-  //   message: ""
-  // }
+export async function undoDraftPickUseCase(draftPickToUndo: number, draftId?: number) {
+  let targetDraftId = draftId;
+  if (!targetDraftId) {
+    const activeDraft = await getActiveDraft(1);
+    targetDraftId = activeDraft?.id ?? 2;
+  }
 
   try {
-    await undoDraftPick(draftPickToUndo, 2);
-    // response.status="Success"
-    // response.message=`Draft Pick #${draftPickToUndo} has been cleared`
+    await undoDraftPick(draftPickToUndo, targetDraftId);
     return;
   } catch (error) {
     console.log("undoDraftPick Error", error);
-    // response.status="Error"
-    // response.message="Error while undoing draft pick"
-    // return response
     return;
   }
 }
 
-export async function addNewDraftPickUseCase(teamName: string) {
+export async function addNewDraftPickUseCase(teamName: string, draftId?: number) {
   const user = await checkAuthorization();
   if (!user) {
     throw new Error("User is not authenticated");
   }
 
-  const teamSelected = await insertNewDraftPick(2, teamName);
+  let targetDraftId = draftId;
+  if (!targetDraftId) {
+    const activeDraft = await getActiveDraft(1);
+    targetDraftId = activeDraft?.id ?? 2;
+  }
+
+  const teamSelected = await insertNewDraftPick(targetDraftId, teamName);
 
   return teamSelected;
 }
@@ -377,22 +400,104 @@ export async function getDraftResultsUseCase(draftId: number) {
   return draftResults as DraftResults[];
 }
 
-export async function autoDraftPlayerUseCase(userId: string, draftId: number, pickNumber: number) {
-  // Check if user is authenticated
-  const user = await checkAuthorization();
-  if (!user) {
-    throw new Error("User is not authenticated");
+export async function executeAutoDraftPickUseCase({
+  pickId,
+  draftId = 2,
+}: {
+  pickId: number;
+  draftId?: number;
+}) {
+  const pick = await getPickWithTeamDetails(pickId);
+  if (!pick) {
+    return { status: "Error", message: "Draft pick not found" };
   }
 
-  // Check if user is on the clock
-  const userPickId = await checkUserCanPick(user.userId);
-  if (!userPickId) {
-    throw new Error("User is not on the clock");
+  if (pick.pickMade) {
+    return { status: "AlreadyPicked", message: "Pick has already been made" };
   }
 
-  var playerToDraft: QueuePlayers | undefined = undefined;
+  if (!pick.ownerId) {
+    return { status: "NoOwner", message: "Team has no owner assigned" };
+  }
 
-  // Get the user's queue players
-  const [queuePlayers] = await getMyQueuePlayers(userId);
+  const effectiveDraftId = pick.draftId ?? draftId;
 
-};
+  // Retrieve top-ranked player from user's queue
+  const topPlayer = await getTopQueuedPlayer(pick.ownerId, effectiveDraftId);
+  if (!topPlayer) {
+    console.log(
+      `LOG: Auto-draft skipped for ${pick.teamName}: No queued players available`,
+    );
+    return { status: "NoQueuedPlayer", message: "No queued players available" };
+  }
+
+  try {
+    await postDraftPick(effectiveDraftId, pick.pickNumber, topPlayer.id);
+
+    try {
+      await deletePlayerFromQueues(topPlayer.id, effectiveDraftId);
+      console.log(
+        `LOG: Queued player ${topPlayer.playerName} removed from queues`,
+      );
+    } catch (error) {
+      console.error(
+        "ERROR: Error removing auto-drafted player from queues:",
+        error,
+      );
+    }
+
+    console.log(
+      `LOG: ${topPlayer.playerName} auto-drafted successfully for ${pick.teamName} (Pick #${pick.pickNumber})`,
+    );
+
+    // Cancel timer for this pick
+    await inngest.send({
+      name: "draft/pick.submitted",
+      data: { pickId: pick.pickId },
+    });
+
+    // Advance to next pick
+    const [nextPick] = await getNextDraftPick(effectiveDraftId);
+    if (nextPick) {
+      await inngest.send({
+        name: "draft/turn.started",
+        data: { pickId: nextPick.pickId, draftId: effectiveDraftId },
+      });
+    }
+
+    try {
+      await sendDraftPickEmail(
+        pick.pickNumber,
+        pick.teamName ?? "Unknown Team",
+        topPlayer.playerName ?? "Selected Player",
+        nextPick?.teamName ?? "Unknown Team",
+      );
+    } catch (emailErr) {
+      console.error(
+        "ERROR: Failed sending auto-draft notification email:",
+        emailErr,
+      );
+    }
+
+    return {
+      status: "Success",
+      message: `${topPlayer.playerName} auto-drafted for ${pick.teamName}`,
+      playerId: topPlayer.id,
+      playerName: topPlayer.playerName,
+    };
+  } catch (error) {
+    console.error("ERROR: Failed executing auto-draft pick:", error);
+    return { status: "Error", message: "Failed executing auto-draft pick" };
+  }
+}
+
+export async function triggerAutoDraftIfOnClockUseCase(userId: string) {
+  const userPick = await checkUserCanPick(userId);
+  if (!userPick) {
+    return { status: "NotOnClock", message: "User is not on the clock" };
+  }
+
+  return await executeAutoDraftPickUseCase({
+    pickId: userPick.pickId,
+  });
+}

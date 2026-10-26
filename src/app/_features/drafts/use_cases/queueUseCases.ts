@@ -12,7 +12,11 @@ import {
   deletePlayerFromQueue,
   getMyQueuePlayers,
   updateQueueOrder,
+  getQueueCount,
 } from "../database/queueQueries";
+import { getTeamSettings, updateTeamSettings } from "~/app/_features/team/database/queries";
+import { checkUserCanPick } from "../database/queries";
+import { executeAutoDraftPickUseCase } from "./draftUseCases";
 
 async function checkAuthorization() {
   // Authorization
@@ -89,4 +93,64 @@ export async function updateMyQueueOrderUseCase(
     console.log("Error Updating Queue:", error);
     throw new Error("Error Updating Queue");
   }
+}
+
+export async function getMyAutoDraftSettingsUseCase() {
+  const user = await checkAuthorization();
+  if (!user.userId) throw new Error("Not logged in");
+
+  const team = await getTeamSettings(user.userId);
+  const queueCount = await getQueueCount(user.userId);
+
+  return {
+    autoDraftEnabled: Boolean(team?.autoDraftEnabled),
+    autoDraftMode: (team?.autoDraftMode === "safety_net" ? "safety_net" : "instant") as "instant" | "safety_net",
+    queueCount,
+    teamName: team?.name ?? "My Team",
+  };
+}
+
+export async function updateMyAutoDraftSettingsUseCase({
+  enabled,
+  mode,
+}: {
+  enabled: boolean;
+  mode?: "instant" | "safety_net";
+}) {
+  const user = await checkAuthorization();
+  if (!user.userId) throw new Error("Not logged in");
+
+  const currentTeam = await getTeamSettings(user.userId);
+  if (!currentTeam) throw new Error("Team not found for user");
+
+  const newMode = mode ?? (currentTeam.autoDraftMode === "safety_net" ? "safety_net" : "instant");
+
+  await updateTeamSettings(
+    {
+      teamName: currentTeam.name,
+      teamAbbreviation: currentTeam.abbreviation ?? "TM",
+      teamLogo: undefined,
+      autoDraftEnabled: enabled,
+      autoDraftMode: newMode,
+    },
+    user.userId,
+  );
+
+  let immediatePickResult = null;
+  // If enabled and instant mode, check if user is on clock to trigger pick immediately
+  if (enabled && newMode === "instant") {
+    const userPick = await checkUserCanPick(user.userId);
+    if (userPick) {
+      immediatePickResult = await executeAutoDraftPickUseCase({
+        pickId: userPick.pickId,
+      });
+    }
+  }
+
+  return {
+    success: true,
+    autoDraftEnabled: enabled,
+    autoDraftMode: newMode,
+    immediatePick: immediatePickResult,
+  };
 }

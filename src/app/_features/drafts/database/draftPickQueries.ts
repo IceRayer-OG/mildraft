@@ -133,3 +133,25 @@ const existingPlayer = await db
 
 return existingPlayer.length > 0;
 }
+
+export async function getPickWithTeamDetails(pickId: number) {
+  const [pick] = await db
+    .select({
+      pickId: draftPicks.id,
+      pickNumber: draftPicks.pickNumber,
+      draftId: draftPicks.draftId,
+      status: draftPicks.status,
+      pickMade: draftPicks.pickMade,
+      teamId: teams.id,
+      teamName: teams.name,
+      ownerId: teams.ownerId,
+      autoDraftEnabled: teams.autoDraftEnabled,
+      autoDraftMode: teams.autoDraftMode,
+    })
+    .from(draftPicks)
+    .innerJoin(teams, eq(draftPicks.teamId, teams.id))
+    .where(eq(draftPicks.id, pickId))
+    .limit(1);
+
+  return pick ?? null;
+}

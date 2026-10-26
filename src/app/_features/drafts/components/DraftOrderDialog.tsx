@@ -33,27 +33,29 @@ import { addNewDraftPickAction } from "../actions/draftActions";
 import { toast } from "sonner";
 import { ScrollArea, ScrollBar } from "~/_components/ui/scroll-area";
 
-async function addNewDraftPick(teamName: string) {
-  try {
-    const pickAdded = await addNewDraftPickAction(teamName);
-    toast.success(`Pick Added for ${pickAdded}`);
-  } catch (error) {
-    console.error(error);
-    toast.error("Failed to add pick");
-  }
-}
-
 export function DraftOrderDialog({
   draftOrderList,
   leagueTeams,
+  draftId,
   isCompleted = false,
 }: {
   draftOrderList: QueueDraftPick[];
   leagueTeams: Team[];
+  draftId?: number;
   isCompleted?: boolean;
 }) {
   const [selectedTeam, setSelectedTeam] = useState("");
   const allTeams = leagueTeams;
+
+  const handleAddNewPick = async (teamName: string) => {
+    try {
+      const pickAdded = await addNewDraftPickAction(teamName, draftId);
+      toast.success(`Pick Added for ${pickAdded}`);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add pick");
+    }
+  };
 
   return (
     <Dialog modal={true}>
@@ -109,7 +111,7 @@ export function DraftOrderDialog({
                     toast.error("Please select a team");
                     return;
                   }
-                  addNewDraftPick(selectedTeam).catch(console.error);
+                  handleAddNewPick(selectedTeam).catch(console.error);
                 }}
                 className="bg-sky-600 hover:bg-sky-500 text-white cursor-pointer"
               >
@@ -122,3 +124,4 @@ export function DraftOrderDialog({
     </Dialog>
   );
 }
+

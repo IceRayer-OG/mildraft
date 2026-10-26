@@ -52,6 +52,14 @@ export default function DraftOrderList({
                 #{draftPick.draft_pick.pickNumber}
               </span>
               <p className="text-sm font-medium text-white">{draftPick.team.name}</p>
+              {draftPick.team.autoDraftEnabled && (
+                <span
+                  title="Auto-Draft Enabled"
+                  className="text-amber-400 text-xs font-semibold px-1.5 py-0.5 rounded bg-amber-400/10 border border-amber-400/20"
+                >
+                  ⚡ Auto
+                </span>
+              )}
             </li>
           ))}
         </ul>

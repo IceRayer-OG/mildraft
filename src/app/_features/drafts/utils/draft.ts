@@ -8,6 +8,7 @@ const queueDraftPickSchema = z.object({
     id: z.number(),
     name: z.string(),
     abbreviation: z.string(),
+    autoDraftEnabled: z.boolean().nullable().optional(),
   }),
   draft_pick: z.object({
     id: z.number(),

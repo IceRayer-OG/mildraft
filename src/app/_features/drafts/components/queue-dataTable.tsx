@@ -21,7 +21,7 @@ import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
 import { CSSProperties } from "react";
 
 // UI Components
-import { GripVerticalIcon, MoreHorizontal } from "lucide-react";
+import { GripVerticalIcon, MoreHorizontal, Zap, ListOrdered } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -56,8 +56,12 @@ const RowDragHandleCell = ({ rowId }: { rowId: string }) => {
     id: rowId,
   });
   return (
-    // Alternatively, you could set these attributes on the rows themselves
-    <button {...attributes} {...listeners}>
+    <button
+      {...attributes}
+      {...listeners}
+      className="p-1 rounded text-stone-400 hover:text-white hover:bg-white/10 cursor-grab active:cursor-grabbing transition-colors"
+      title="Drag to reorder priority"
+    >
       <GripVerticalIcon className="h-4 w-4" />
     </button>
   );
@@ -74,17 +78,26 @@ const DraggableRow = ({
   });
 
   const style: CSSProperties = {
-    transform: CSS.Translate.toString(transform), // translate instead of transform to avoid squishing
+    transform: CSS.Translate.toString(transform),
     transition: transition,
-    opacity: isDragging ? 0.8 : 1,
-    zIndex: isDragging ? 1 : 0,
+    opacity: isDragging ? 0.7 : 1,
+    zIndex: isDragging ? 10 : 0,
     position: "relative",
   };
   return (
-    // connect row ref to dnd-kit, apply important styles
-    <TableRow ref={setNodeRef} style={style}>
+    <TableRow
+      ref={setNodeRef}
+      style={style}
+      className={`border-b border-white/10 transition-colors ${
+        isDragging
+          ? "bg-sky-500/20 shadow-lg ring-1 ring-sky-500/40"
+          : row.index === 0
+          ? "bg-emerald-500/5 hover:bg-emerald-500/10"
+          : "hover:bg-white/5"
+      }`}
+    >
       {row.getAllCells().map((cell) => (
-        <TableCell key={cell.id}>
+        <TableCell key={cell.id} className="py-2.5">
           <FlexRender cell={cell} />
         </TableCell>
       ))}
@@ -152,29 +165,71 @@ export function QueueDataTable({
           header: "",
           cell: ({ row }) => <RowDragHandleCell rowId={row.id} />,
         }),
+        columnHelper.display({
+          id: "priority",
+          header: "Priority",
+          cell: ({ row }) => {
+            const isFirst = row.index === 0;
+            return (
+              <div className="flex items-center gap-1.5 font-mono text-xs">
+                <span className="font-bold text-sky-400">#{row.index + 1}</span>
+                {isFirst && (
+                  <span className="inline-flex items-center gap-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-1.5 py-0.5 rounded-full">
+                    <Zap className="size-2.5" />
+                    Next
+                  </span>
+                )}
+              </div>
+            );
+          },
+        }),
         columnHelper.accessor("playerName", {
           header: "Player Name",
+          cell: ({ row }) => (
+            <span className="font-semibold text-white">{row.original.playerName}</span>
+          ),
         }),
         columnHelper.accessor("position", {
           header: "Position",
+          cell: ({ row }) => (
+            <span className="text-stone-300">{row.original.position?.join(", ")}</span>
+          ),
         }),
         columnHelper.accessor("team", {
           header: "Team",
+          cell: ({ row }) => (
+            <span className="text-stone-300">{row.original.team}</span>
+          ),
         }),
         columnHelper.accessor("age", {
           header: "Age",
+          cell: ({ row }) => (
+            <span className="text-stone-300">{row.original.age}</span>
+          ),
         }),
         columnHelper.accessor("height", {
           header: "Height",
+          cell: ({ row }) => (
+            <span className="text-stone-300">{row.original.height}</span>
+          ),
         }),
         columnHelper.accessor("weight", {
           header: "Weight",
+          cell: ({ row }) => (
+            <span className="text-stone-300">{row.original.weight}</span>
+          ),
         }),
         columnHelper.accessor("throws", {
           header: "Throws",
+          cell: ({ row }) => (
+            <span className="text-stone-300">{row.original.throws}</span>
+          ),
         }),
         columnHelper.accessor("bats", {
           header: "Bats",
+          cell: ({ row }) => (
+            <span className="text-stone-300">{row.original.bats}</span>
+          ),
         }),
         columnHelper.display({
           id: "actions",
@@ -185,17 +240,21 @@ export function QueueDataTable({
             return (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0">
+                  <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-white/10 text-stone-300 hover:text-white">
                     <span className="sr-only">Open menu</span>
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-white" align="end">
-                  <DropdownMenuItem onClick={() => draftPlayer(player)}>
-                    Draft
+                <DropdownMenuContent className="bg-slate-900 border border-white/15 text-white shadow-xl min-w-[120px]" align="end">
+                  <DropdownMenuItem
+                    onClick={() => draftPlayer(player)}
+                    className="cursor-pointer hover:bg-emerald-500/20 focus:bg-emerald-500/20 text-emerald-300 font-medium"
+                  >
+                    Draft Now
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => removePlayerFromQueue(player)}
+                    className="cursor-pointer hover:bg-rose-500/20 focus:bg-rose-500/20 text-rose-300"
                   >
                     Remove
                   </DropdownMenuItem>
@@ -244,14 +303,14 @@ export function QueueDataTable({
       sensors={sensors}
     >
       <table.AppTable>
-        <div className="rounded-md border">
+        <div className="rounded-xl border border-white/10 bg-slate-950/60 overflow-hidden shadow-lg backdrop-blur-md">
           <Table>
-            <TableHeader>
+            <TableHeader className="bg-slate-900/90 border-b border-white/15">
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow key={headerGroup.id} className="border-b border-white/15 hover:bg-transparent">
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id}>
+                      <TableHead key={header.id} className="text-stone-300 font-semibold text-xs py-3">
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -271,28 +330,23 @@ export function QueueDataTable({
               >
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) => (
-                    // <TableRow
-                    //   key={row.id}
-                    //   data-state={row.getIsSelected() && "selected"}
-                    // >
-                    //   {row.getVisibleCells().map((cell) => (
-                    //     <TableCell key={cell.id}>
-                    //       {flexRender(
-                    //         cell.column.columnDef.cell,
-                    //         cell.getContext(),
-                    //       )}
-                    //     </TableCell>
-                    //   ))}
-                    // </TableRow>
                     <DraggableRow key={row.id} row={row} />
                   ))
                 ) : (
-                  <TableRow>
+                  <TableRow className="hover:bg-transparent border-none">
                     <TableCell
                       colSpan={queueColumns.length}
-                      className="h-24 text-center"
+                      className="h-44 text-center"
                     >
-                      No results.
+                      <div className="flex flex-col items-center justify-center gap-2 text-stone-400">
+                        <div className="rounded-full bg-white/5 p-3 border border-white/10">
+                          <ListOrdered className="size-6 text-stone-300" />
+                        </div>
+                        <p className="font-semibold text-sm text-stone-200">Your Queue is Empty</p>
+                        <p className="text-xs text-stone-400 max-w-sm">
+                          Add prospects from the draft board to build your custom priority list and enable automated drafting.
+                        </p>
+                      </div>
                     </TableCell>
                   </TableRow>
                 )}

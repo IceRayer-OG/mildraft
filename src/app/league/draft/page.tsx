@@ -31,7 +31,7 @@ export default function DraftPage() {
   const leagueData = { leagueId: 1, draftId };
 
   const draftablePlayers = use(getDraftablePlayersAction());
-  const draftPicks = use(getDraftPicksListAction());
+  const draftPicks = use(getDraftPicksListAction(draftId));
   const allTeams = use(getLeagueTeamsAction());
   const userDraftDetails = use(getDraftDetailsAction(leagueData));
   const draftDetails = use(getDraftPageDetailsAction(leagueData));
@@ -94,6 +94,7 @@ export default function DraftPage() {
             <DraftOrderDialog
               draftOrderList={draftPicks}
               leagueTeams={allTeams}
+              draftId={draftId}
               isCompleted={isDraftCompleted}
             />
           </Suspense>
@@ -107,13 +108,17 @@ export default function DraftPage() {
       </div>
       <div className="flex fixed bottom-3 z-30 max-w-fit mx-auto inset-x-0 bg-slate-950/90 backdrop-blur-md border border-white/20 rounded-full justify-center shadow-2xl py-1 px-4 gap-2">
         <div>
-          <QueueDrawer />
+          <Suspense fallback={<button className="px-4 py-2 text-sm text-stone-300">Queue</button>}>
+            <QueueDrawer />
+          </Suspense>
         </div>
         <div>
           <WriteInDialog />
         </div>
         <div>
-          <DraftHistoryDialog />
+          <Suspense fallback={<button className="px-4 py-2 text-sm text-stone-300">History</button>}>
+            <DraftHistoryDialog draftId={draftId} />
+          </Suspense>
         </div>
       </div>
     </div>

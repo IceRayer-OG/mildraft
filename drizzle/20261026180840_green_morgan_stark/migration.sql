@@ -1,0 +1,1 @@
+ALTER TABLE "mildraft_team" ADD COLUMN "auto_draft_mode" varchar(32) DEFAULT 'instant';

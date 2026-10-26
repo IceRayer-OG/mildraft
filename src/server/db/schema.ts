@@ -11,7 +11,6 @@ import {
   unique,
   date,
   text,
-  pgTable,
 } from "drizzle-orm/pg-core";
 
 // export const namespace = "mildraft_";
@@ -77,6 +76,7 @@ export const teams = createTable(
     ownerId: varchar("owner_id", { length: 256 }),
     abbreviation: varchar("abbreviation", { length: 5 }),
     autoDraftEnabled: boolean("auto_draft_enabled").default(false),
+    autoDraftMode: varchar("auto_draft_mode", { length: 32 }).default("instant"),
     email: varchar("email", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)

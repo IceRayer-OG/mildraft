@@ -1,6 +1,6 @@
 "use client";
 // React
-import { useActionState, useEffect, use } from "react";
+import { useActionState, useEffect } from "react";
 import Form from "next/form";
 import { PopoverClose } from "@radix-ui/react-popover";
 
@@ -21,6 +21,7 @@ import { Input } from "~/_components/ui/input";
 import { toast } from "sonner";
 import { Checkbox } from "~/_components/ui/checkbox";
 import { Separator } from "~/_components/ui/separator";
+import { RadioGroup, RadioGroupItem } from "~/_components/ui/radio-group";
 
 // Actions
 import {
@@ -121,7 +122,7 @@ export function TeamSettingsDialogForm({
             </div>
             <Separator className="border"/>
             <div className="flex items-center justify-between space-y-1">
-              <Label>Auto Draft</Label>
+              <Label htmlFor="auto-draft-enabled">Auto Draft</Label>
               <Checkbox
                 id="auto-draft-enabled"
                 name="autoDraftEnabled"
@@ -135,6 +136,38 @@ export function TeamSettingsDialogForm({
                   {content.message}
                 </p>
               )}
+            </div>
+
+            <div className="space-y-2 pt-2">
+              <Label className="text-xs text-stone-300 font-medium">Auto-Draft Mode</Label>
+              <RadioGroup
+                name="autoDraftMode"
+                defaultValue={content?.data.autoDraftMode ?? "instant"}
+                className="grid grid-cols-1 gap-2"
+              >
+                <div className="flex items-start space-x-2 rounded-md border border-white/10 p-2.5 bg-white/5">
+                  <RadioGroupItem value="instant" id="mode-instant" className="mt-0.5" />
+                  <div className="grid gap-0.5 leading-none">
+                    <Label htmlFor="mode-instant" className="font-medium text-xs cursor-pointer">
+                      ⚡ Instant Pick
+                    </Label>
+                    <p className="text-[11px] text-stone-400">
+                      Drafts top queued player ~10s after turn starts.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-2 rounded-md border border-white/10 p-2.5 bg-white/5">
+                  <RadioGroupItem value="safety_net" id="mode-safety-net" className="mt-0.5" />
+                  <div className="grid gap-0.5 leading-none">
+                    <Label htmlFor="mode-safety-net" className="font-medium text-xs cursor-pointer">
+                      🛡️ Safety Net
+                    </Label>
+                    <p className="text-[11px] text-stone-400">
+                      Full clock runs; drafts top queued player only on timeout.
+                    </p>
+                  </div>
+                </div>
+              </RadioGroup>
             </div>
           </div>
           <DialogFooter className="mt-3">

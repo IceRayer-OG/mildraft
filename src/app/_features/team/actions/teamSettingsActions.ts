@@ -11,15 +11,18 @@ export async function updateTeamSettingsAction(
   previousState: { status: string; message: string; data: TeamSettings },
   formData: FormData,
 ) {
-  await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate a delay
+  const mode = formData.get("autoDraftMode");
   const teamData: TeamSettings = {
     teamName: formData.get("teamName") as string,
     teamAbbreviation: formData.get("teamAbbreviation") as string,
     teamLogo: formData.get("teamLogo") as string,
     autoDraftEnabled: formData.get("autoDraftEnabled") === "on", // Convert checkbox value to boolean
+    autoDraftMode: mode === "safety_net" ? "safety_net" : "instant",
   };
   const response = await updateTeamSettingsUseCase(teamData);
   revalidatePath("/team"); // Revalidate the path to reflect changes
+  revalidatePath("/league/team");
+  revalidatePath("/league/draft");
   return response;
 }
 
