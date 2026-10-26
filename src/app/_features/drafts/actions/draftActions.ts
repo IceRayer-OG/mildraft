@@ -50,8 +50,8 @@ export async function draftWriteInPlayerAction(
   return response;
 }
 
-export async function getDraftPicksListAction() {
-  const draftPickQueue = await getDraftPicksListUseCase();
+export async function getDraftPicksListAction(draftId?: number) {
+  const draftPickQueue = await getDraftPicksListUseCase(draftId);
   if (!draftPickQueue) {
     throw new Error("Error getting draft pick queue");
   }
@@ -71,9 +71,9 @@ export async function undoDraftPickAction(draftPickToUndo: number) {
   revalidatePath("/league/draft");
 }
 
-export async function addNewDraftPickAction(teamName: string) {
-  const teamSelected = await addNewDraftPickUseCase(teamName);
-  revalidatePath("/league/Draft");
+export async function addNewDraftPickAction(teamName: string, draftId?: number) {
+  const teamSelected = await addNewDraftPickUseCase(teamName, draftId);
+  revalidatePath("/league/draft");
   return teamSelected;
 }
 

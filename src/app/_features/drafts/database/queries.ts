@@ -73,6 +73,7 @@ export async function checkUserCanPick(userId: string, draftId?: number) {
   const [pickNumber] = await db.select({ 
     pickId: draftPicks.id,
     pickNumber: draftPicks.pickNumber,
+    draftId: draftPicks.draftId,
     teamName: teams.name,
     pickStatus: draftPicks.status
   })
@@ -251,24 +252,22 @@ export async function getTeamIdByName(teamName: string){
 
 export async function insertNewDraftPick( draftId: number, teamName: string ) {
   // Get the teamId by name
-  const teamId = await getTeamIdByName(teamName)
+  const teamId = await getTeamIdByName(teamName);
 
-  // Get the count of draft picks in the current draft
-  const picksInDraft = await db.select({count: count()}).from(draftPicks).where(eq(draftPicks.draftId, draftId));
-  let countOfPicksInDraft = 0;
-  
-  if(picksInDraft[0]?.count === undefined) {
-    countOfPicksInDraft = 0;
-  } else {
-    countOfPicksInDraft = picksInDraft[0].count + 1;
-  }
+  // Get the highest pick number in this specific draft
+  const [maxPick] = await db
+    .select({ max: sql<number>`COALESCE(MAX(${draftPicks.pickNumber}), 0)` })
+    .from(draftPicks)
+    .where(eq(draftPicks.draftId, draftId));
+
+  const nextPickNumber = Number(maxPick?.max ?? 0) + 1;
 
   await db.insert(draftPicks).values({
     leagueId: 1,
     draftId: draftId,
     teamId: teamId,
-    pickNumber: countOfPicksInDraft
-  })
+    pickNumber: nextPickNumber,
+  });
 
   return teamName;
 }

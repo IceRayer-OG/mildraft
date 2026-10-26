@@ -31,7 +31,7 @@ export default function DraftPage() {
   const leagueData = { leagueId: 1, draftId };
 
   const draftablePlayers = use(getDraftablePlayersAction());
-  const draftPicks = use(getDraftPicksListAction());
+  const draftPicks = use(getDraftPicksListAction(draftId));
   const allTeams = use(getLeagueTeamsAction());
   const userDraftDetails = use(getDraftDetailsAction(leagueData));
   const draftDetails = use(getDraftPageDetailsAction(leagueData));
@@ -94,6 +94,7 @@ export default function DraftPage() {
             <DraftOrderDialog
               draftOrderList={draftPicks}
               leagueTeams={allTeams}
+              draftId={draftId}
               isCompleted={isDraftCompleted}
             />
           </Suspense>
