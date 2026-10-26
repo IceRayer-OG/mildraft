@@ -1,18 +1,11 @@
 import { db } from "~/server/db";
 import {
   eq,
-  notInArray,
   and,
-  isNotNull,
-  isNull,
   asc,
   inArray,
-  ne,
-  count,
-  or,
-  sql,
 } from "drizzle-orm";
-import { queues, draftPicks, pros, teams } from "~/server/db/schema";
+import { queues, pros } from "~/server/db/schema";
 
 // FUNCTIONS
 export async function getMyQueuePlayers(userId: string) {

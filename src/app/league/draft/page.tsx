@@ -36,7 +36,7 @@ export default function DraftPage() {
   const draftDetails = use(getDraftPageDetailsAction(leagueData));
 
   return (
-    <div className="flex flex-col w-full min-h-screen gap-4 p-4 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
+    <div className="flex flex-col w-full min-h-screen gap-4 p-4 pb-24 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
       <div className="flex w-full h-10 justify-center gap-8 rounded-md items-center text-sm md:text-md">
         <p>
           {activeDraft?.draftYear ?? 2026} Draft Start:{" "}
@@ -73,17 +73,12 @@ export default function DraftPage() {
           </Suspense>
         </div>
       </div>
-      <div className="flex flex-col grow gap-4 overflow-y-hidden">
-        <ScrollArea className="w-full whitespace-nowrap overflow-x-hidden">
-          <div className="w-full overflow-hidden">
-            <Suspense fallback={<div className="w-full h-full">Loading...</div>}>
-              <DraftDataTable data={draftablePlayers} />
-            </Suspense>
-          </div>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+      <div className="flex flex-col grow gap-4">
+        <Suspense fallback={<div className="w-full h-full p-8 text-center text-stone-400">Loading draft board...</div>}>
+          <DraftDataTable data={draftablePlayers} />
+        </Suspense>
       </div>
-      <div className="flex fixed bottom-2 w-1/4 justify-self-center inset-x-0 bg-black rounded-full justify-center">
+      <div className="flex fixed bottom-3 z-30 max-w-fit mx-auto inset-x-0 bg-slate-950/90 backdrop-blur-md border border-white/20 rounded-full justify-center shadow-2xl py-1 px-4 gap-2">
         <div>
           <QueueDrawer />
         </div>

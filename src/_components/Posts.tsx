@@ -70,7 +70,7 @@ export default function Posts({
                 <p className="text-sm font-semibold text-white leading-snug">
                   {post.title}
                 </p>
-                <p className="text-xs text-gray-300 leading-relaxed whitespace-pre-line break-words">
+                <p className="text-xs text-gray-300 leading-relaxed whitespace-pre-line wrap-break-words">
                   {post.body}
                 </p>
               </div>
