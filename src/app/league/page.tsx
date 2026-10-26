@@ -50,15 +50,17 @@ export default function LeaguePage() {
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div className="col-span-1 p-2">
-          <div className="flex flex-col items-center gap-4 pb-4">
-            <p className="text-xl font-semibold">League Posts</p>
+          <div className="flex flex-col gap-3 pb-4">
+            <div className="flex items-center justify-between">
+              <p className="text-xl font-semibold">League Posts</p>
+              <AddPostDialog />
+            </div>
             <Suspense fallback={PostsLoading()}>
               <Posts posts={posts} />
             </Suspense>
-            <AddPostDialog />
           </div>
           <Separator />
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center pt-4">
             <p className="text-xl font-semibold">League Teams</p>
           </div>
           <div>

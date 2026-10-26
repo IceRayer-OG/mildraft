@@ -1,9 +1,8 @@
 import "server-only";
 import { db } from "~/server/db";
-import { eq, desc } from "drizzle-orm";
-import { posts } from "~/server/db/schema";
-import { type CreatePost, type Post } from "../utils/posts";
-
+import { eq, desc, and, or, isNull } from "drizzle-orm";
+import { posts, teams } from "~/server/db/schema";
+import { type CreatePost } from "../utils/posts";
 
 export async function getAllPosts() {
   const allPosts = await db.select().from(posts);
@@ -11,25 +10,34 @@ export async function getAllPosts() {
 }
 
 export async function createAPost(postData: CreatePost, userId: string) {
-
-  const newPost = postData;
-
   const postNewPost = await db.insert(posts).values({
-    title: newPost.title,
-    body: newPost.body,
-    leagueId: newPost.leagueId,
+    title: postData.title,
+    body: postData.body,
+    leagueId: postData.leagueId ?? 1,
     ownerId: userId,
   });
   return postNewPost;
 }
 
-export async function getLeaguePosts() {  // add league: number
-
-  const leaguePosts = await db.select().from(posts)
+export async function getLeaguePosts(leagueId = 1) {
+  const leaguePosts = await db
+    .select({
+      id: posts.id,
+      title: posts.title,
+      body: posts.body,
+      createdAt: posts.createdAt,
+      ownerId: posts.ownerId,
+      leagueId: posts.leagueId,
+      teamName: teams.name,
+    })
+    .from(posts)
+    .leftJoin(
+      teams,
+      and(eq(posts.ownerId, teams.ownerId), eq(teams.leagueId, leagueId)),
+    )
+    .where(or(eq(posts.leagueId, leagueId), isNull(posts.leagueId)))
     .orderBy(desc(posts.createdAt))
-    .limit(4);
-    // .where(eq(posts.leagueId, league)); add this back in when league is added to params
+    .limit(10);
 
   return leaguePosts;
-
 }
