@@ -1,11 +1,7 @@
 "use client";
-// import React & Nextjs
-import { use } from "react";
 
 // import UI
 import { Avatar, AvatarImage, AvatarFallback } from "~/_components/ui/avatar";
-
-// import Server Actions
 
 // import Types
 import { type QueueDraftPick } from "~/app/_features/drafts/utils/draft";
@@ -17,7 +13,6 @@ export default function DraftQueueList({
   draftQueue: QueueDraftPick[];
 }) {
   const allPicks = draftQueue;
-  // Add useActionState to determine on the clock
 
   return (
     <div className="flex grow">
@@ -33,7 +28,17 @@ export default function DraftQueueList({
                     {pick.team.abbreviation}
                   </AvatarFallback>
                 </Avatar>
-                <p className="text-xs">{pick.team.name}</p>
+                <div className="flex items-center gap-1">
+                  <p className="text-xs">{pick.team.name}</p>
+                  {pick.team.autoDraftEnabled && (
+                    <span
+                      title="Auto-Draft Enabled"
+                      className="text-amber-400 text-[10px] font-bold"
+                    >
+                      ⚡
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="flex justify-center">
                 {pick.draft_pick.status === "on the clock" ? (

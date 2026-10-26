@@ -14,6 +14,7 @@ export async function updateTeamSettings(
       name: teamData.teamName,
       abbreviation: teamData.teamAbbreviation,
       autoDraftEnabled: teamData.autoDraftEnabled,
+      autoDraftMode: teamData.autoDraftMode,
     })
     .where(eq(teams.ownerId, teamId));
 

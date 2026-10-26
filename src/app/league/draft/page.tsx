@@ -107,7 +107,9 @@ export default function DraftPage() {
       </div>
       <div className="flex fixed bottom-3 z-30 max-w-fit mx-auto inset-x-0 bg-slate-950/90 backdrop-blur-md border border-white/20 rounded-full justify-center shadow-2xl py-1 px-4 gap-2">
         <div>
-          <QueueDrawer />
+          <Suspense fallback={<button className="px-4 py-2 text-sm text-stone-300">Queue</button>}>
+            <QueueDrawer />
+          </Suspense>
         </div>
         <div>
           <WriteInDialog />

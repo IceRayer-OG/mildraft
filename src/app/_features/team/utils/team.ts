@@ -18,6 +18,7 @@ const teamSettingsSchema = z.object({
   teamAbbreviation: z.string(),
   teamLogo: z.string().url("Invalid URL format").optional(),
   autoDraftEnabled: z.boolean(),
+  autoDraftMode: z.enum(["instant", "safety_net"]).default("instant"),
 });
 
 const playersSchema =  z.object({

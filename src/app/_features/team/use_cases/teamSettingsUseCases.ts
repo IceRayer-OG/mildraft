@@ -56,6 +56,7 @@ export async function getTeamSettingsUseCase() {
       teamAbbreviation: teamSettings.abbreviation,
       teamLogo: undefined, // Assuming logo is optional
       autoDraftEnabled: teamSettings.autoDraftEnabled,
+      autoDraftMode: (teamSettings.autoDraftMode === "safety_net" ? "safety_net" : "instant"),
     } as TeamSettings;
     return teamSettingsData;
   } catch (error) {
@@ -75,6 +76,7 @@ export async function getTeamSettingsByIdUseCase(teamId: number) {
       teamAbbreviation: teamSettings.abbreviation,
       teamLogo: undefined, // Assuming logo is optional
       autoDraftEnabled: teamSettings.autoDraftEnabled,
+      autoDraftMode: (teamSettings.autoDraftMode === "safety_net" ? "safety_net" : "instant"),
     } as TeamSettings;
     return teamSettingsData;
   } catch (error) {
