@@ -34,7 +34,6 @@ import {
   updateDraftPickOverdue,
 } from "../database/draftPickQueries";
 import { getDraftablePlayers } from "../database/draftPalyersQueries";
-import { removePlayerFromQueueUseCase } from "./queueUseCases";
 
 // Inngest Import
 import { inngest } from "~/inngest/client";
@@ -42,7 +41,6 @@ import { inngest } from "~/inngest/client";
 // Email Imports
 import { Resend } from "resend";
 import DraftPickEmail from "~/emails/draft_pick";
-import { send } from "process";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -396,13 +394,5 @@ export async function autoDraftPlayerUseCase(userId: string, draftId: number, pi
 
   // Get the user's queue players
   const [queuePlayers] = await getMyQueuePlayers(userId);
-
-  // if (queuePlayers.length === 0) {
-  //   playerToDraft = queuePlayers[0]?.id
-  // }
-
-  // Auto-draft the first player in the queue
-  
-
 
 };

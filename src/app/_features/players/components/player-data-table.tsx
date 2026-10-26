@@ -1,11 +1,19 @@
 "use client";
+
 import { useState, useMemo } from "react";
-import { useAppTable, createAppColumnHelper } from "~/hooks/table";
+import { useAppTable, createAppColumnHelper, appFeatures } from "~/hooks/table";
+import { useSelector } from "@tanstack/react-store";
+import { type Column, type RowData } from "@tanstack/react-table";
 
-import { flexRender } from "@tanstack/react-table";
-
-// UI
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+// UI Components
+import {
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  Search,
+  X,
+  MoreHorizontal,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,8 +30,16 @@ import {
   TableRow,
 } from "~/_components/ui/table";
 import { Button } from "~/_components/ui/button";
+import { Badge } from "~/_components/ui/badge";
+import { cn } from "~/lib/utils";
 
-// Components
+// Shared Constants & Components
+import {
+  POSITIONS,
+  TEAMS,
+  TEAM_ABBREVIATIONS,
+} from "~/app/_features/drafts/utils/constants";
+import { TableFacetedFilter } from "~/_components/table/TableFacetedFilters";
 import { PlayerLoadingDialog } from "./PlayerLoadingDialog";
 
 // Types
@@ -33,246 +49,328 @@ interface PlayerDataTableProps {
   data: Players[];
 }
 
-const POSITIONS = [
-  { label: "RHP", value: "RHP" },
-  { label: "LHP", value: "LHP" },
-  { label: "C", value: "C" },
-  { label: "1B", value: "1B" },
-  { label: "2B", value: "2B" },
-  { label: "3B", value: "3B" },
-  { label: "SS", value: "SS" },
-  { label: "DH", value: "DH" },
-  { label: "CI", value: "CI" },
-  { label: "MI", value: "MI" },
-  { label: "INF", value: "INF" },
-  { label: "OF", value: "OF" },
-  { label: "UTIL", value: "UTIL" },
-];
-
-const TEAMS = [
-  { label: "Arizona Diamondbacks", value: "Arizona Diamondbacks" },
-  { label: "Athletics", value: "Athletics" },
-  { label: "Atlanta Braves", value: "Atlanta Braves" },
-  { label: "Baltimore Orioles", value: "Baltimore Orioles" },
-  { label: "Boston Red Sox", value: "Boston Red Sox" },
-  { label: "Chicago Cubs", value: "Chicago Cubs" },
-  { label: "Chicago White Sox", value: "Chicago White Sox" },
-  { label: "Cincinnati Reds", value: "Cincinnati Reds" },
-  { label: "Cleveland Guardians", value: "Cleveland Guardians" },
-  { label: "Colorado Rockies", value: "Colorado Rockies" },
-  { label: "Detroit Tigers", value: "Detroit Tigers" },
-  { label: "Houston Astros", value: "Houston Astros" },
-  { label: "Kansas City Royals", value: "Kansas City Royals" },
-  { label: "Los Angeles Angels", value: "Los Angeles Angels" },
-  { label: "Los Angeles Dodgers", value: "Los Angeles Dodgers" },
-  { label: "Miami Marlins", value: "Miami Marlins" },
-  { label: "Milwaukee Brewers", value: "Milwaukee Brewers" },
-  { label: "Minnesota Twins", value: "Minnesota Twins" },
-  { label: "New York Mets", value: "New York Mets" },
-  { label: "New York Yankees", value: "New York Yankees" },
-  { label: "Philadelphia Phillies", value: "Philadelphia Phillies" },
-  { label: "Pittsburgh Pirates", value: "Pittsburgh Pirates" },
-  { label: "San Diego Padres", value: "San Diego Padres" },
-  { label: "Seattle Mariners", value: "Seattle Mariners" },
-  { label: "San Francisco Giants", value: "San Francisco Giants" },
-  { label: "St. Louis Cardinals", value: "St. Louis Cardinals" },
-  { label: "Tampa Bay Rays", value: "Tampa Bay Rays" },
-  { label: "Texas Rangers", value: "Texas Rangers" },
-  { label: "Toronto Blue Jays", value: "Toronto Blue Jays" },
-  { label: "Washington Nationals", value: "Washington Nationals" },
-];
-
 const columnHelper = createAppColumnHelper<Players>();
 
-
+function SortableHeader<TData extends RowData, TValue>({
+  column,
+  title,
+}: {
+  column: Column<typeof appFeatures, TData, TValue>;
+  title: string;
+}) {
+  const isSorted = column.getIsSorted();
+  return (
+    <button
+      type="button"
+      onClick={column.getToggleSortingHandler()}
+      className="flex items-center gap-1 font-semibold text-xs tracking-wider uppercase text-stone-300 hover:text-white transition-colors cursor-pointer"
+    >
+      <span>{title}</span>
+      {isSorted === "asc" ? (
+        <ArrowUp className="size-3.5 text-sky-400" />
+      ) : isSorted === "desc" ? (
+        <ArrowDown className="size-3.5 text-sky-400" />
+      ) : (
+        <ArrowUpDown className="size-3 text-stone-500 opacity-60 hover:opacity-100" />
+      )}
+    </button>
+  );
+}
 
 export function PlayerDataTable({ data: initialData }: PlayerDataTableProps) {
-  const [data, setData] = useState(initialData);
+  const [data] = useState(initialData);
 
-  const playerColumns = useMemo(() =>
-  columnHelper.columns([
-    columnHelper.accessor("teamRank", {
-      id: "teamRank",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Team Rank
-            <ArrowUpDown className="" />
-          </Button>
-        );
-      },
-      sortFn: "blankToBottom",
-    }),
-    columnHelper.accessor("playerName", {
-      id: "playerName",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Player Name
-            <ArrowUpDown className="" />
-          </Button>
-        );
-      },
-    }),
-    columnHelper.accessor("position", {
-      id: "position",
-      header: "Position",
-      filterFn: (row, id, value: string[]) => {
-        // Cast the row value to string[] to resolve the 'includes' error
-        const rowValue = row.getValue(id) as string[];
-
-        // Safety check: ensure rowValue exists and is an array
-        if (!rowValue || !Array.isArray(rowValue)) return false;
-
-        // Return true if any of the selected filter values (value)
-        // are present in the row's array (rowValue)
-        return value.some((val) => rowValue.includes(val));
-      },
-      cell: ({ row }) => {
-        const positions = row.getValue("position") as string[];
-        return <div className="flex gap-1">{positions.join(", ")}</div>;
-      },
-    }),
-    columnHelper.accessor("team", {
-      id: "team",
-      header: "Team",
-    }),
-    columnHelper.accessor("throws", {
-      id: "throws",
-      header: "Throws",
-    }),
-    columnHelper.accessor("bats", {
-      id: "bats",
-      header: "Bats",
-    }),
-    columnHelper.display({
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => {
-        const player = row.original;
-
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem /* onClick={() => draftPlayer(player)}> */>
-                Add
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      },
-    }),
-  ]),
-  []
-);
+  const playerColumns = useMemo(
+    () =>
+      columnHelper.columns([
+        columnHelper.accessor("teamRank", {
+          id: "teamRank",
+          header: ({ column }) => (
+            <SortableHeader column={column} title="Team Rank" />
+          ),
+          cell: ({ row }) => (
+            <span className="font-semibold text-stone-200 pl-1">
+              {row.getValue("teamRank") ?? "-"}
+            </span>
+          ),
+          sortFn: "blankToBottom",
+        }),
+        columnHelper.accessor("playerName", {
+          id: "playerName",
+          header: ({ column }) => (
+            <SortableHeader column={column} title="Player Name" />
+          ),
+          cell: ({ row }) => (
+            <span className="font-medium text-stone-100 whitespace-nowrap">
+              {row.getValue("playerName")}
+            </span>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor("position", {
+          id: "position",
+          header: () => (
+            <span className="font-semibold text-xs tracking-wider uppercase text-stone-400">
+              Position
+            </span>
+          ),
+          filterFn: (row, id, value: string[]) => {
+            const rowValue = row.getValue(id) as string[];
+            if (!rowValue || !Array.isArray(rowValue)) return false;
+            return value.some((val) => rowValue.includes(val));
+          },
+          cell: ({ row }) => {
+            const positions = (row.getValue("position") as string[]) ?? [];
+            return (
+              <div className="flex flex-wrap gap-1">
+                {positions.map((pos) => {
+                  const isPitcher = pos === "RHP" || pos === "LHP";
+                  const isCatcher = pos === "C";
+                  const isOF = pos === "OF";
+                  return (
+                    <Badge
+                      key={pos}
+                      variant="outline"
+                      className={cn(
+                        "text-[10px] px-1.5 py-0 font-medium rounded border-0",
+                        isPitcher
+                          ? "bg-blue-500/20 text-blue-300"
+                          : isCatcher
+                            ? "bg-amber-500/20 text-amber-300"
+                            : isOF
+                              ? "bg-emerald-500/20 text-emerald-300"
+                              : "bg-purple-500/20 text-purple-300",
+                      )}
+                    >
+                      {pos}
+                    </Badge>
+                  );
+                })}
+              </div>
+            );
+          },
+        }),
+        columnHelper.accessor("team", {
+          id: "team",
+          header: () => (
+            <span className="font-semibold text-xs tracking-wider uppercase text-stone-400">
+              Team
+            </span>
+          ),
+          enableSorting: false,
+          cell: ({ row }) => {
+            const teamName = row.getValue("team") as string;
+            const abbrev = TEAM_ABBREVIATIONS[teamName] ?? teamName;
+            return (
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-xs px-1.5 py-0.5 rounded bg-white/10 text-stone-200 border border-white/10">
+                  {abbrev}
+                </span>
+                <span
+                  className="hidden xl:inline text-xs text-stone-300 truncate max-w-[140px]"
+                  title={teamName}
+                >
+                  {teamName}
+                </span>
+              </div>
+            );
+          },
+        }),
+        columnHelper.accessor(
+          (row) => `${row.bats ?? "-"}/${row.throws ?? "-"}`,
+          {
+            id: "batsThrows",
+            header: () => (
+              <span className="font-semibold text-xs tracking-wider uppercase text-stone-400">
+                B/T
+              </span>
+            ),
+            enableSorting: false,
+            cell: ({ row }) => (
+              <span className="font-mono text-xs text-stone-300">
+                {row.original.bats ?? "-"}/{row.original.throws ?? "-"}
+              </span>
+            ),
+          },
+        ),
+        columnHelper.display({
+          id: "actions",
+          header: () => (
+            <span className="font-semibold text-xs tracking-wider uppercase text-stone-400 text-right block pr-2">
+              Actions
+            </span>
+          ),
+          cell: () => {
+            return (
+              <div className="flex items-center justify-end pr-1">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 p-0 text-stone-400 hover:text-white hover:bg-white/10 cursor-pointer"
+                    >
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal className="size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="bg-slate-900 border-white/15 text-white"
+                  >
+                    <DropdownMenuItem className="hover:bg-white/10 cursor-pointer">
+                      Add Player
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            );
+          },
+        }),
+      ]),
+    [],
+  );
 
   const table = useAppTable({
     data,
     columns: playerColumns,
   });
 
+  const columnFilters = useSelector(
+    table.store,
+    (state) => state.columnFilters ?? [],
+  );
+  const playerNameFilter =
+    (table.getColumn("playerName")?.getFilterValue() as string) ?? "";
+  const hasActiveFilters =
+    columnFilters.length > 0 || playerNameFilter.trim().length > 0;
+  const totalPlayers = initialData.length;
+  const filteredPlayers = table.getFilteredRowModel().rows.length;
+
   return (
     <table.AppTable>
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-1 items-center space-x-2">
-            {/* Replace Input with Faceted Filter for the 'position' column */}
-            <table.TableFacetedFilter
+      <div className="space-y-3">
+        {/* Toolbar & Filters */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3 bg-white/5 backdrop-blur-md rounded-lg border border-white/10">
+          <div className="flex flex-wrap flex-1 items-center gap-2">
+            <div className="relative flex-1 min-w-[200px] max-w-xs">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-stone-400 pointer-events-none" />
+              <Input
+                placeholder="Search player name..."
+                value={playerNameFilter}
+                onChange={(event) =>
+                  table
+                    .getColumn("playerName")
+                    ?.setFilterValue(event.target.value)
+                }
+                className="pl-9 pr-8 h-8 bg-black/40 border-white/15 text-white placeholder:text-stone-400 focus-visible:ring-sky-500 text-sm"
+              />
+              {playerNameFilter && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    table.getColumn("playerName")?.setFilterValue("")
+                  }
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-white cursor-pointer"
+                  title="Clear search"
+                >
+                  <X className="size-3.5" />
+                </button>
+              )}
+            </div>
+
+            <TableFacetedFilter
               id="position"
               title="Position"
               options={POSITIONS}
             />
-            <table.TableFacetedFilter id="team" title="Team" options={TEAMS} />
-            <Input
-              placeholder="Player Name..."
-              value={
-                (table.getColumn("playerName")?.getFilterValue() as string) ??
-                ""
-              }
-              onChange={(event) =>
-                table
-                  .getColumn("playerName")
-                  ?.setFilterValue(event.target.value)
-              }
-              className="max-w-sm"
+            <TableFacetedFilter
+              id="team"
+              title="Team"
+              options={TEAMS}
             />
 
-            {playerColumns.length > 0 && (
+            {hasActiveFilters && (
               <Button
-                variant="destructive"
-                onClick={() => table.resetColumnFilters()}
-                className="h-8 px-2 text-lg lg:px-3"
+                variant="ghost"
+                onClick={() => {
+                  table.resetColumnFilters();
+                  table.getColumn("playerName")?.setFilterValue("");
+                }}
+                className="h-8 px-2.5 text-xs text-rose-300 hover:text-rose-200 hover:bg-rose-950/40 border border-rose-500/30 cursor-pointer"
               >
-                Reset
+                <X className="mr-1 size-3.5" />
+                Reset Filters
               </Button>
             )}
           </div>
-          <PlayerLoadingDialog />
+
+          <div className="flex items-center gap-3 self-end sm:self-auto">
+            <span className="px-2.5 py-1 rounded bg-black/40 border border-white/10 font-medium text-xs text-stone-400">
+              Showing{" "}
+              <span className="text-white font-semibold">
+                {filteredPlayers}
+              </span>{" "}
+              of {totalPlayers}
+            </span>
+            <PlayerLoadingDialog />
+          </div>
         </div>
 
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader className="bg-white text-stone-950">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+        {/* Table Container */}
+        <div className="rounded-lg border border-white/15 overflow-hidden bg-black/40 backdrop-blur-md shadow-xl">
+          <div className="overflow-x-auto max-h-[65vh]">
+            <Table className="w-full">
+              <TableHeader className="sticky top-0 z-10 bg-slate-950/95 backdrop-blur-md border-b border-white/15">
+                {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
+                    key={headerGroup.id}
+                    className="border-b border-white/10 hover:bg-transparent"
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
+                    {headerGroup.headers.map((header) => (
+                      <TableHead
+                        key={header.id}
+                        className="h-10 px-3 py-2 text-stone-300"
+                      >
+                        {header.isPlaceholder ? null : (
+                          <table.FlexRender header={header} />
                         )}
-                      </TableCell>
+                      </TableHead>
                     ))}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={playerColumns.length}
-                    className="h-24 text-center"
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                ))}
+              </TableHeader>
+              <TableBody className="divide-y divide-white/5">
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      className="hover:bg-white/5 border-white/5 transition-colors"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id} className="px-3 py-2">
+                          <table.FlexRender cell={cell} />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={playerColumns.length}
+                      className="h-28 text-center text-stone-400"
+                    >
+                      No players match the current filters.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <table.TablePagination />
-        </div>
+
+        {/* Pagination */}
+        <table.TablePagination />
       </div>
     </table.AppTable>
   );

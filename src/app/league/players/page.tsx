@@ -1,5 +1,4 @@
 import { Suspense, use } from "react";
-import { auth } from '@clerk/nextjs/server'
 
 // UI Components
 import { PlayerDataTable } from "~/app/_features/players/components/player-data-table";
@@ -8,18 +7,18 @@ import { PlayerDataTable } from "~/app/_features/players/components/player-data-
 import { getFreeAgentsAction } from "~/app/_features/players/actions/playerActions";
 import { TeamsTableLoading } from "~/app/_features/team/components/TeamsLoading";
 
-export const dynamic = 'force-dynamic'
- 
+export const dynamic = 'force-dynamic';
+
 export default function PlayerPage() {
   const data = use(getFreeAgentsAction());
- 
+
   return (
-    <main className="flex flex-col min-h-screen w-full items-center p-4 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
-        <div className="grow w-full">
-            <Suspense fallback={<TeamsTableLoading />}>
-              <PlayerDataTable data={data} />
-            </Suspense>
-        </div>
+    <main className="flex flex-col min-h-screen w-full items-center p-4 pb-12 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
+      <div className="grow w-full max-w-7xl">
+        <Suspense fallback={<TeamsTableLoading />}>
+          <PlayerDataTable data={data} />
+        </Suspense>
+      </div>
     </main>
-  )
+  );
 }
