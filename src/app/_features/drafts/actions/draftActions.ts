@@ -59,15 +59,18 @@ export async function getDraftPicksListAction(draftId?: number) {
   return draftPickQueue;
 }
 
-export async function getCompleteDraftPicksAction(): Promise<
-  CompletedDraftPicks[]
-> {
-  const draftedPlayers = await getCompletedDraftPicksUseCase();
+export async function getCompleteDraftPicksAction(
+  draftId?: number,
+): Promise<CompletedDraftPicks[]> {
+  const draftedPlayers = await getCompletedDraftPicksUseCase(draftId);
   return draftedPlayers;
 }
 
-export async function undoDraftPickAction(draftPickToUndo: number) {
-  await undoDraftPickUseCase(draftPickToUndo);
+export async function undoDraftPickAction(
+  draftPickToUndo: number,
+  draftId?: number,
+) {
+  await undoDraftPickUseCase(draftPickToUndo, draftId);
   revalidatePath("/league/draft");
 }
 

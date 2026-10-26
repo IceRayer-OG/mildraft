@@ -1,5 +1,6 @@
 // React and Next.js imports
 import { Suspense, use } from "react";
+import { ListOrdered, X } from "lucide-react";
 
 // UI Components
 import {
@@ -13,6 +14,7 @@ import {
   DrawerTrigger,
 } from "~/_components/ui/drawer";
 import { Button } from "~/_components/ui/button";
+import { Badge } from "~/_components/ui/badge";
 import { QueueDataTable } from "../components/queue-dataTable";
 import { AutoDraftControl } from "./AutoDraftControl";
 
@@ -30,7 +32,7 @@ export function QueueDrawer() {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button variant="ghost" className="relative flex items-center gap-1.5">
+        <Button variant="ghost" className="relative flex items-center gap-1.5 text-stone-200 hover:text-white cursor-pointer">
           <span>Queue</span>
           {autoDraftSettings.autoDraftEnabled && (
             <span className="flex h-2 w-2 relative">
@@ -40,31 +42,45 @@ export function QueueDrawer() {
           )}
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="p-4 max-h-7/8 flex flex-col gap-3">
-        <DrawerHeader className="pb-1">
-          <DrawerTitle className="flex justify-center text-lg font-bold">
-            Player Queue
-          </DrawerTitle>
-          <DrawerDescription className="sr-only" />
-        </DrawerHeader>
+      <DrawerContent className="px-4 pb-6 pt-2 max-h-[88vh] flex flex-col gap-3 bg-slate-950/95 border-t border-white/15 backdrop-blur-2xl text-white shadow-2xl">
+        <div className="mx-auto w-12 h-1.5 rounded-full bg-white/20 mb-1 shrink-0" />
+        
+        <div className="w-full max-w-5xl mx-auto flex flex-col gap-3 grow overflow-hidden">
+          <DrawerHeader className="pb-0 pt-1 text-center">
+            <DrawerTitle className="flex items-center justify-center gap-2 text-xl font-bold text-white tracking-tight">
+              <ListOrdered className="size-5 text-sky-400" />
+              <span>Prospect Queue</span>
+              <Badge variant="outline" className="border-white/15 bg-white/5 text-stone-300 font-mono text-xs">
+                {data?.length ?? 0}
+              </Badge>
+            </DrawerTitle>
+            <DrawerDescription className="text-xs text-stone-400 mt-0.5">
+              Drag and drop prospects to prioritize your auto-draft selection order.
+            </DrawerDescription>
+          </DrawerHeader>
 
-        {/* Auto-Draft Quick Settings Bar */}
-        <AutoDraftControl
-          initialEnabled={autoDraftSettings.autoDraftEnabled}
-          initialMode={autoDraftSettings.autoDraftMode}
-          queueCount={data?.length ?? autoDraftSettings.queueCount}
-        />
+          {/* Auto-Draft Quick Settings Bar */}
+          <AutoDraftControl
+            initialEnabled={autoDraftSettings.autoDraftEnabled}
+            initialMode={autoDraftSettings.autoDraftMode}
+            queueCount={data?.length ?? autoDraftSettings.queueCount}
+          />
 
-        <ScrollArea className="overflow-y-auto grow">
-          <Suspense>
-            <QueueDataTable data={data} />
-          </Suspense>
-        </ScrollArea>
-        <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <Button variant="outline">Close</Button>
-          </DrawerClose>
-        </DrawerFooter>
+          <ScrollArea className="overflow-y-auto grow pr-1">
+            <Suspense fallback={<div className="p-8 text-center text-sm text-stone-400">Loading queue...</div>}>
+              <QueueDataTable data={data} />
+            </Suspense>
+          </ScrollArea>
+
+          <DrawerFooter className="p-0 pt-1 flex flex-row justify-end">
+            <DrawerClose asChild>
+              <Button variant="outline" size="sm" className="border-white/15 bg-white/5 hover:bg-white/10 text-stone-300 hover:text-white cursor-pointer gap-1.5">
+                <X className="size-3.5" />
+                Close
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </div>
       </DrawerContent>
     </Drawer>
   );

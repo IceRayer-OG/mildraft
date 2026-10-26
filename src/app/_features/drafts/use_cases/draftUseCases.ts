@@ -336,15 +336,21 @@ export async function getDraftPicksListUseCase(draftId?: number): Promise<QueueD
   return draftPickQueueData as QueueDraftPick[];
 }
 
-export async function getCompletedDraftPicksUseCase(): Promise<
-  CompletedDraftPicks[]
-> {
+export async function getCompletedDraftPicksUseCase(
+  draftId?: number,
+): Promise<CompletedDraftPicks[]> {
   const user = await checkAuthorization();
   if (!user) {
     throw new Error("User is not authenticated");
   }
 
-  const draftedPlayers = await getCompletedDraftPicks(2);
+  let targetDraftId = draftId;
+  if (!targetDraftId) {
+    const activeDraft = await getActiveDraft(1);
+    targetDraftId = activeDraft?.id ?? 2;
+  }
+
+  const draftedPlayers = await getCompletedDraftPicks(targetDraftId);
 
   if (!draftedPlayers) {
     throw new Error("No players drafted yet");
@@ -353,22 +359,18 @@ export async function getCompletedDraftPicksUseCase(): Promise<
   return draftedPlayers as CompletedDraftPicks[];
 }
 
-export async function undoDraftPickUseCase(draftPickToUndo: number) {
-  // const response = {
-  //   status: "",
-  //   message: ""
-  // }
+export async function undoDraftPickUseCase(draftPickToUndo: number, draftId?: number) {
+  let targetDraftId = draftId;
+  if (!targetDraftId) {
+    const activeDraft = await getActiveDraft(1);
+    targetDraftId = activeDraft?.id ?? 2;
+  }
 
   try {
-    await undoDraftPick(draftPickToUndo, 2);
-    // response.status="Success"
-    // response.message=`Draft Pick #${draftPickToUndo} has been cleared`
+    await undoDraftPick(draftPickToUndo, targetDraftId);
     return;
   } catch (error) {
     console.log("undoDraftPick Error", error);
-    // response.status="Error"
-    // response.message="Error while undoing draft pick"
-    // return response
     return;
   }
 }

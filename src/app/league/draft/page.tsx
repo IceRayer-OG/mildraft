@@ -116,7 +116,9 @@ export default function DraftPage() {
           <WriteInDialog />
         </div>
         <div>
-          <DraftHistoryDialog />
+          <Suspense fallback={<button className="px-4 py-2 text-sm text-stone-300">History</button>}>
+            <DraftHistoryDialog draftId={draftId} />
+          </Suspense>
         </div>
       </div>
     </div>
