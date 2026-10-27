@@ -31,7 +31,7 @@ export default function TeamPage() {
   const teamAbbrev = teamSettings?.teamAbbreviation || "TM";
 
   return (
-    <main className="flex min-h-screen flex-col bg-linear-to-b from-[#12026d] to-[#15162c] p-4 pb-12 text-white">
+    <div className="flex min-h-screen flex-col p-3 sm:p-4 pb-12 text-white">
       <div className="w-full max-w-7xl mx-auto flex flex-col gap-4">
         {/* Team Header */}
         <div className="flex items-center justify-start gap-3 p-3 bg-white/5 backdrop-blur-md rounded-lg border border-white/10">
@@ -69,6 +69,6 @@ export default function TeamPage() {
           </Suspense>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

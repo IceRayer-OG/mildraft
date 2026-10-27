@@ -61,16 +61,16 @@ export function TeamSettingsDialogForm({
           <DialogDescription>Settings for the Team.</DialogDescription>
         </DialogHeader>
         <Form action={updateTeamSettings}>
-          <div className="flex-col gap-4 space-y-2">
-            <div className="flex items-center justify-between space-y-1">
-              <Label>Team Name</Label>
+          <div className="flex-col gap-4 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4">
+              <Label htmlFor="team-name" className="shrink-0">Team Name</Label>
               <Input
                 id="team-name"
                 name="teamName"
                 required
                 defaultValue={content?.data.teamName}
                 placeholder="Enter team name"
-                className="text-right"
+                className="w-full sm:w-60 text-left sm:text-right"
               />
               {content?.status === "error" && (
                 <p id="team-name-error" className="text-sm text-red-500">
@@ -78,15 +78,15 @@ export function TeamSettingsDialogForm({
                 </p>
               )}
             </div>
-            <div className="flex items-center justify-between space-y-1">
-              <Label>Team Abbreviation</Label>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4">
+              <Label htmlFor="team-abbrviation" className="shrink-0">Team Abbreviation</Label>
               <Input
                 id="team-abbrviation"
                 name="teamAbbreviation"
                 required
                 defaultValue={content?.data.teamAbbreviation}
                 placeholder="Enter team abbreviation"
-                className="text-right"
+                className="w-full sm:w-60 text-left sm:text-right"
               />
               {content?.status === "error" && (
                 <p
@@ -97,15 +97,15 @@ export function TeamSettingsDialogForm({
                 </p>
               )}
             </div>
-            <div className="flex items-center justify-between space-y-1">
-              <Label>Team Logo</Label>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4">
+              <Label htmlFor="team-logo" className="shrink-0">Team Logo</Label>
               <Input
                 id="team-logo"
                 name="teamLogo"
                 defaultValue={content?.data.teamLogo}
                 placeholder="Enter team Logo URL"
                 disabled={true} // Disable the input for now since logo updates aren't implemented
-                className="text-right"
+                className="w-full sm:w-60 text-left sm:text-right"
               />
               {content?.status === "error" && (
                 <p
@@ -117,12 +117,12 @@ export function TeamSettingsDialogForm({
               )}
             </div>
             
-            <div>
-              <h2 className="text-lg font-semibold text-center">Draft Settings</h2>
+            <div className="pt-2">
+              <h2 className="text-base font-semibold text-center">Draft Settings</h2>
             </div>
             <Separator className="border"/>
-            <div className="flex items-center justify-between space-y-1">
-              <Label htmlFor="auto-draft-enabled">Auto Draft</Label>
+            <div className="flex items-center justify-between py-1">
+              <Label htmlFor="auto-draft-enabled" className="cursor-pointer">Auto Draft</Label>
               <Checkbox
                 id="auto-draft-enabled"
                 name="autoDraftEnabled"
