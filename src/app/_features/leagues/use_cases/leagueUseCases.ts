@@ -5,6 +5,7 @@ import {
   type LeagueData,
 } from "../utils/settings";
 import { auth } from "@clerk/nextjs/server";
+import { checkCommissionerAuthorization } from "~/lib/auth";
 import {
   updateLeagueSettings,
   updateDraftSettings,
@@ -49,7 +50,7 @@ export async function updateLeagueSettingsUseCase(
   leagueSettingsData: LeagueSettings,
   leagueData: LeagueData,
 ) {
-  const user = await checkAuthorization();
+  await checkCommissionerAuthorization();
 
   try {
     await updateLeagueSettings(leagueSettingsData, leagueData);
@@ -160,7 +161,7 @@ export async function updateDraftSettingsUseCase(
   draftData: DraftSettings,
   leagueData: LeagueData,
 ) {
-  await checkAuthorization();
+  await checkCommissionerAuthorization();
   const response = {
     status: "",
     message: "",
@@ -214,7 +215,7 @@ export async function updateTeamSettingsUseCase(
   teamData: TeamSettings,
   leagueData: LeagueData,
 ) {
-  await checkAuthorization();
+  await checkCommissionerAuthorization();
 
   try {
     await updateTeamSettings(teamData, leagueData);

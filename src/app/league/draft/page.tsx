@@ -22,6 +22,7 @@ import {
 import { DraftHistoryDialog } from "~/app/_features/drafts/components/DraftHistory";
 import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
 import { getDraftDetailsAction, getDraftPageDetailsAction } from "~/app/_features/leagues/actions/leagueActions";
+import { isCommissionerUser } from "~/lib/auth";
 
 export const dynamic = 'force-dynamic';
 
@@ -35,6 +36,7 @@ export default function DraftPage() {
   const allTeams = use(getLeagueTeamsAction());
   const userDraftDetails = use(getDraftDetailsAction(leagueData));
   const draftDetails = use(getDraftPageDetailsAction(leagueData));
+  const isCommissioner = use(isCommissionerUser());
 
   const isDraftCompleted = activeDraft?.status === "completed";
   const draftYear = activeDraft?.draftYear ?? 2026;
@@ -89,16 +91,18 @@ export default function DraftPage() {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>
-        <div className="p-0 place-content-center">
-          <Suspense>
-            <DraftOrderDialog
-              draftOrderList={draftPicks}
-              leagueTeams={allTeams}
-              draftId={draftId}
-              isCompleted={isDraftCompleted}
-            />
-          </Suspense>
-        </div>
+        {isCommissioner && (
+          <div className="p-0 place-content-center">
+            <Suspense>
+              <DraftOrderDialog
+                draftOrderList={draftPicks}
+                leagueTeams={allTeams}
+                draftId={draftId}
+                isCompleted={isDraftCompleted}
+              />
+            </Suspense>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col grow gap-4">

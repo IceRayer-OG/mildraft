@@ -18,6 +18,7 @@ import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
 import { getLeagueSettingsAction } from "~/app/_features/leagues/actions/leagueActions";
 import { getLeaguePostsAction } from "../_features/posts/actions/postActions";
 import { getDraftResultsAction } from "../_features/drafts/actions/draftActions";
+import { isCommissionerUser } from "~/lib/auth";
 
 export default function LeaguePage() {
   const posts = getLeaguePostsAction();
@@ -26,6 +27,7 @@ export default function LeaguePage() {
     getLeagueSettingsAction({ leagueId: 1, draftId: 2 }),
   );
   const draftResultData = use(getDraftResultsAction(2));
+  const isCommissioner = use(isCommissionerUser());
 
   return (
     <div className="flex min-h-screen w-full flex-col overflow-x-hidden bg-linear-to-b from-[#12026d] to-[#15162c] p-3 sm:p-4 text-white">
@@ -36,9 +38,11 @@ export default function LeaguePage() {
           </p>
         </div>
         <div className="flex items-center gap-2 self-end sm:self-auto shrink-0 pr-1 sm:pr-4">
-          <Suspense fallback={<Skeleton className="h-4 w-20 bg-slate-800" />}>
-            <SettingDialog />
-          </Suspense>
+          {isCommissioner && (
+            <Suspense fallback={<Skeleton className="h-4 w-20 bg-slate-800" />}>
+              <SettingDialog />
+            </Suspense>
+          )}
           <Image
             src="https://fantasy-media.cbssports.com/baseball/siliconvalley/ealsm1LqkKSOqPRQ.jpg"
             width={48}

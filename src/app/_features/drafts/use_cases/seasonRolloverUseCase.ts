@@ -1,21 +1,13 @@
 import "server-only";
 
-import { auth } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
 import { eq, and, isNotNull } from "drizzle-orm";
 import { drafts, draftPicks, draftSettings, players, pros } from "~/server/db/schema";
 import { getActiveDraft } from "../database/queries";
-
-async function checkAuthorization() {
-  const user = await auth();
-  if (!user.userId) {
-    throw new Error("Not logged in");
-  }
-  return user;
-}
+import { checkCommissionerAuthorization } from "~/lib/auth";
 
 export async function rolloverSeasonUseCase(leagueId = 1) {
-  await checkAuthorization();
+  await checkCommissionerAuthorization();
 
   const activeDraft = await getActiveDraft(leagueId);
   if (!activeDraft) {
