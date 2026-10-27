@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useAppTable, createAppColumnHelper, appFeatures } from "~/hooks/table";
 import { useSelector } from "@tanstack/react-store";
 import { type Column, type RowData } from "@tanstack/react-table";
@@ -67,7 +67,11 @@ function SortableHeader<TData extends RowData, TValue>({
 }
 
 export function ResultsDataTable({ data: initialData }: ResultsDataTableProps) {
-  const [data] = useState(initialData);
+  const [data, setData] = useState(initialData);
+
+  useEffect(() => {
+    setData(initialData);
+  }, [initialData]);
 
   const resultColumns = useMemo(
     () =>

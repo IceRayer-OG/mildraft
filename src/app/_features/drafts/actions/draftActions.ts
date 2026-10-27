@@ -91,6 +91,12 @@ export async function getActiveDraftAction(leagueId = 1) {
   return activeDraft;
 }
 
+export async function getAllDraftsAction(leagueId = 1) {
+  const { getAllDrafts } = await import("../database/queries");
+  const allDrafts = await getAllDrafts(leagueId);
+  return allDrafts;
+}
+
 export async function rolloverSeasonAction(leagueId = 1) {
   const { rolloverSeasonUseCase } = await import("../use_cases/seasonRolloverUseCase");
   const result = await rolloverSeasonUseCase(leagueId);

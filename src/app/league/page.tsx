@@ -12,22 +12,52 @@ import { SettingDialog } from "~/app/_features/leagues/components/SettingDialog"
 import TeamList from "~/app/_features/team/components/TeamsList";
 import Posts from "~/_components/Posts";
 import { ResultsDataTable } from "../_features/drafts/components/draftresults-data-table";
+import { DraftYearSelect } from "../_features/drafts/components/DraftYearSelect";
 
 // Actions
 import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
 import { getLeagueSettingsAction } from "~/app/_features/leagues/actions/leagueActions";
 import { getLeaguePostsAction } from "../_features/posts/actions/postActions";
-import { getDraftResultsAction } from "../_features/drafts/actions/draftActions";
+import {
+  getDraftResultsAction,
+  getAllDraftsAction,
+} from "../_features/drafts/actions/draftActions";
 import { isCommissionerUser } from "~/lib/auth";
 
-export default function LeaguePage() {
+interface LeaguePageProps {
+  searchParams: Promise<{ draftId?: string }>;
+}
+
+export default async function LeaguePage(props: LeaguePageProps) {
+  const searchParams = await props.searchParams;
   const posts = getLeaguePostsAction();
   const allLeagueTeams = getLeagueTeamsAction();
-  const leagueSettingsData = use(
-    getLeagueSettingsAction({ leagueId: 1, draftId: 2 }),
+  const allDrafts = await getAllDraftsAction(1);
+
+  // 1. Active draft takes precedence
+  const activeDraft = allDrafts.find(
+    (d) => d.status === "active" || d.status === "in_progress",
   );
-  const draftResultData = use(getDraftResultsAction(2));
-  const isCommissioner = use(isCommissionerUser());
+  // 2. If no active draft, the most recent completed draft is the default
+  const mostRecentCompletedDraft = allDrafts.find(
+    (d) => d.status === "completed",
+  );
+  // 3. Fallback to newest draft or id 2
+  const defaultDraft = activeDraft ?? mostRecentCompletedDraft ?? allDrafts[0];
+
+  const selectedDraftId = searchParams.draftId
+    ? Number(searchParams.draftId)
+    : (defaultDraft?.id ?? 2);
+
+  const selectedDraft =
+    allDrafts.find((d) => d.id === selectedDraftId) ?? defaultDraft;
+
+  const leagueSettingsData = await getLeagueSettingsAction({
+    leagueId: 1,
+    draftId: selectedDraftId,
+  });
+  const draftResultData = await getDraftResultsAction(selectedDraftId);
+  const isCommissioner = await isCommissionerUser();
 
   return (
     <div className="flex min-h-screen w-full flex-col overflow-x-hidden bg-linear-to-b from-[#12026d] to-[#15162c] p-3 sm:p-4 text-white">
@@ -74,13 +104,27 @@ export default function LeaguePage() {
           </div>
         </div>
         <div className="col-span-1 md:col-span-3 p-1 sm:p-4">
-          <div className="flex flex-col items-center gap-4 p-2 sm:p-4">
-            <p className="text-xl md:text-3xl">Draft Results</p>
-            <Separator />
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-2 sm:p-4">
+            <div>
+              <p className="text-xl md:text-3xl font-semibold">Draft Results</p>
+              {selectedDraft?.draftYear && (
+                <p className="text-xs text-stone-400">
+                  Viewing {selectedDraft.draftYear} Draft
+                </p>
+              )}
+            </div>
+            {allDrafts.length > 0 && (
+              <DraftYearSelect
+                drafts={allDrafts}
+                selectedDraftId={selectedDraftId}
+              />
+            )}
           </div>
-          <div className="flex flex-wrap gap-4">
+          <Separator />
+          <div className="flex flex-wrap gap-4 pt-4">
             <div className="flex flex-col w-full space-y-3">
               <Suspense
+                key={selectedDraftId}
                 fallback={
                   <div>
                     <Skeleton className="h-31.25 w-62.5 rounded-xl bg-slate-800" />
