@@ -22,6 +22,7 @@ import {
 import { DraftHistoryDialog } from "~/app/_features/drafts/components/DraftHistory";
 import { getLeagueTeamsAction } from "~/app/_features/team/actions/teamActions";
 import { getDraftDetailsAction, getDraftPageDetailsAction } from "~/app/_features/leagues/actions/leagueActions";
+import { isCommissionerUser } from "~/lib/auth";
 
 export const dynamic = 'force-dynamic';
 
@@ -35,14 +36,15 @@ export default function DraftPage() {
   const allTeams = use(getLeagueTeamsAction());
   const userDraftDetails = use(getDraftDetailsAction(leagueData));
   const draftDetails = use(getDraftPageDetailsAction(leagueData));
+  const isCommissioner = use(isCommissionerUser());
 
   const isDraftCompleted = activeDraft?.status === "completed";
   const draftYear = activeDraft?.draftYear ?? 2026;
 
   return (
-    <div className="flex flex-col w-full min-h-screen gap-4 p-4 pb-24 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
+    <div className="flex flex-col w-full min-h-screen gap-4 p-3 sm:p-4 pb-28 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
       {/* Top Header / Timer Bar */}
-      <div className="flex w-full h-10 justify-center gap-6 rounded-md items-center text-sm md:text-md">
+      <div className="flex flex-wrap w-full min-h-10 py-1 justify-center gap-2 sm:gap-6 rounded-md items-center text-xs sm:text-sm text-center">
         {isDraftCompleted ? (
           <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-medium">
             <CheckCircle2 className="size-4 text-emerald-400" />
@@ -50,7 +52,7 @@ export default function DraftPage() {
           </div>
         ) : (
           <>
-            <p>
+            <p className="font-medium text-stone-200">
               {draftYear} Draft Start:{" "}
               {userDraftDetails.draftStart ? userDraftDetails.draftStart.toDateString() : "TBD"} @{" "}
               {userDraftDetails.draftTime || "TBD"}
@@ -89,16 +91,18 @@ export default function DraftPage() {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>
-        <div className="p-0 place-content-center">
-          <Suspense>
-            <DraftOrderDialog
-              draftOrderList={draftPicks}
-              leagueTeams={allTeams}
-              draftId={draftId}
-              isCompleted={isDraftCompleted}
-            />
-          </Suspense>
-        </div>
+        {isCommissioner && (
+          <div className="p-0 place-content-center">
+            <Suspense>
+              <DraftOrderDialog
+                draftOrderList={draftPicks}
+                leagueTeams={allTeams}
+                draftId={draftId}
+                isCompleted={isDraftCompleted}
+              />
+            </Suspense>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col grow gap-4">
@@ -106,7 +110,7 @@ export default function DraftPage() {
           <DraftDataTable data={draftablePlayers} />
         </Suspense>
       </div>
-      <div className="flex fixed bottom-3 z-30 max-w-fit mx-auto inset-x-0 bg-slate-950/90 backdrop-blur-md border border-white/20 rounded-full justify-center shadow-2xl py-1 px-4 gap-2">
+      <div className="flex fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 max-w-[calc(100%-2rem)] sm:max-w-fit mx-auto inset-x-0 bg-slate-950/90 backdrop-blur-md border border-white/20 rounded-full justify-center items-center shadow-2xl py-1 px-3 sm:px-4 gap-1 sm:gap-2">
         <div>
           <Suspense fallback={<button className="px-4 py-2 text-sm text-stone-300">Queue</button>}>
             <QueueDrawer />

@@ -49,6 +49,15 @@ import {
 } from "../actions/queueActions";
 import { draftPlayerAction } from "../actions/draftActions";
 import { createAppColumnHelper, useAppTable, appFeatures } from "~/hooks/table";
+import { cn } from "~/lib/utils";
+
+const SECONDARY_QUEUE_COLUMNS = new Set([
+  "age",
+  "height",
+  "weight",
+  "throws",
+  "bats",
+]);
 
 // Cell Component
 const RowDragHandleCell = ({ rowId }: { rowId: string }) => {
@@ -59,8 +68,10 @@ const RowDragHandleCell = ({ rowId }: { rowId: string }) => {
     <button
       {...attributes}
       {...listeners}
-      className="p-1 rounded text-stone-400 hover:text-white hover:bg-white/10 cursor-grab active:cursor-grabbing transition-colors"
+      type="button"
+      className="p-1.5 touch-none rounded text-stone-400 hover:text-white hover:bg-white/10 cursor-grab active:cursor-grabbing transition-colors"
       title="Drag to reorder priority"
+      aria-label="Drag to reorder"
     >
       <GripVerticalIcon className="h-4 w-4" />
     </button>
@@ -96,11 +107,17 @@ const DraggableRow = ({
           : "hover:bg-white/5"
       }`}
     >
-      {row.getAllCells().map((cell) => (
-        <TableCell key={cell.id} className="py-2.5">
-          <FlexRender cell={cell} />
-        </TableCell>
-      ))}
+      {row.getAllCells().map((cell) => {
+        const isSecondary = SECONDARY_QUEUE_COLUMNS.has(cell.column.id);
+        return (
+          <TableCell
+            key={cell.id}
+            className={cn("py-2.5", isSecondary && "hidden md:table-cell")}
+          >
+            <FlexRender cell={cell} />
+          </TableCell>
+        );
+      })}
     </TableRow>
   );
 };
@@ -292,7 +309,12 @@ export function QueueDataTable({
 
   const sensors = useSensors(
     useSensor(MouseSensor, {}),
-    useSensor(TouchSensor, {}),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    }),
     useSensor(KeyboardSensor, {}),
   );
 
@@ -304,55 +326,64 @@ export function QueueDataTable({
     >
       <table.AppTable>
         <div className="rounded-xl border border-white/10 bg-slate-950/60 overflow-hidden shadow-lg backdrop-blur-md">
-          <Table>
-            <TableHeader className="bg-slate-900/90 border-b border-white/15">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="border-b border-white/15 hover:bg-transparent">
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead key={header.id} className="text-stone-300 font-semibold text-xs py-3">
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              <SortableContext
-                items={dataIds}
-                strategy={verticalListSortingStrategy}
-              >
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <DraggableRow key={row.id} row={row} />
-                  ))
-                ) : (
-                  <TableRow className="hover:bg-transparent border-none">
-                    <TableCell
-                      colSpan={queueColumns.length}
-                      className="h-44 text-center"
-                    >
-                      <div className="flex flex-col items-center justify-center gap-2 text-stone-400">
-                        <div className="rounded-full bg-white/5 p-3 border border-white/10">
-                          <ListOrdered className="size-6 text-stone-300" />
-                        </div>
-                        <p className="font-semibold text-sm text-stone-200">Your Queue is Empty</p>
-                        <p className="text-xs text-stone-400 max-w-sm">
-                          Add prospects from the draft board to build your custom priority list and enable automated drafting.
-                        </p>
-                      </div>
-                    </TableCell>
+          <div className="overflow-x-auto w-full">
+            <Table>
+              <TableHeader className="bg-slate-900/90 border-b border-white/15">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id} className="border-b border-white/15 hover:bg-transparent">
+                    {headerGroup.headers.map((header) => {
+                      const isSecondary = SECONDARY_QUEUE_COLUMNS.has(header.column.id);
+                      return (
+                        <TableHead
+                          key={header.id}
+                          className={cn(
+                            "text-stone-300 font-semibold text-xs py-3",
+                            isSecondary && "hidden md:table-cell",
+                          )}
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                        </TableHead>
+                      );
+                    })}
                   </TableRow>
-                )}
-              </SortableContext>
-            </TableBody>
-          </Table>
+                ))}
+              </TableHeader>
+              <TableBody>
+                <SortableContext
+                  items={dataIds}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <DraggableRow key={row.id} row={row} />
+                    ))
+                  ) : (
+                    <TableRow className="hover:bg-transparent border-none">
+                      <TableCell
+                        colSpan={queueColumns.length}
+                        className="h-44 text-center"
+                      >
+                        <div className="flex flex-col items-center justify-center gap-2 text-stone-400">
+                          <div className="rounded-full bg-white/5 p-3 border border-white/10">
+                            <ListOrdered className="size-6 text-stone-300" />
+                          </div>
+                          <p className="font-semibold text-sm text-stone-200">Your Queue is Empty</p>
+                          <p className="text-xs text-stone-400 max-w-sm">
+                            Add prospects from the draft board to build your custom priority list and enable automated drafting.
+                          </p>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </SortableContext>
+              </TableBody>
+            </Table>
+          </div>
         </div>
       </table.AppTable>
     </DndContext>

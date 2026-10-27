@@ -51,6 +51,8 @@ interface PlayerDataTableProps {
 
 const columnHelper = createAppColumnHelper<Players>();
 
+const SECONDARY_PLAYER_COLUMNS = new Set(["batsThrows"]);
+
 function SortableHeader<TData extends RowData, TValue>({
   column,
   title,
@@ -208,7 +210,7 @@ export function PlayerDataTable({ data: initialData }: PlayerDataTableProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="size-7 p-0 text-stone-400 hover:text-white hover:bg-white/10 cursor-pointer"
+                      className="size-8 p-0 text-stone-400 hover:text-white hover:bg-white/10 cursor-pointer"
                     >
                       <span className="sr-only">Open menu</span>
                       <MoreHorizontal className="size-4" />
@@ -253,7 +255,7 @@ export function PlayerDataTable({ data: initialData }: PlayerDataTableProps) {
         {/* Toolbar & Filters */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3 bg-white/5 backdrop-blur-md rounded-lg border border-white/10">
           <div className="flex flex-wrap flex-1 items-center gap-2">
-            <div className="relative flex-1 min-w-[200px] max-w-xs">
+            <div className="relative flex-1 min-w-[150px] sm:min-w-[200px] max-w-xs">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-stone-400 pointer-events-none" />
               <Input
                 placeholder="Search player name..."
@@ -327,16 +329,22 @@ export function PlayerDataTable({ data: initialData }: PlayerDataTableProps) {
                     key={headerGroup.id}
                     className="border-b border-white/10 hover:bg-transparent"
                   >
-                    {headerGroup.headers.map((header) => (
-                      <TableHead
-                        key={header.id}
-                        className="h-10 px-3 py-2 text-stone-300"
-                      >
-                        {header.isPlaceholder ? null : (
-                          <table.FlexRender header={header} />
-                        )}
-                      </TableHead>
-                    ))}
+                    {headerGroup.headers.map((header) => {
+                      const isSecondary = SECONDARY_PLAYER_COLUMNS.has(header.column.id);
+                      return (
+                        <TableHead
+                          key={header.id}
+                          className={cn(
+                            "h-10 px-3 py-2 text-stone-300",
+                            isSecondary && "hidden sm:table-cell",
+                          )}
+                        >
+                          {header.isPlaceholder ? null : (
+                            <table.FlexRender header={header} />
+                          )}
+                        </TableHead>
+                      );
+                    })}
                   </TableRow>
                 ))}
               </TableHeader>
@@ -347,11 +355,20 @@ export function PlayerDataTable({ data: initialData }: PlayerDataTableProps) {
                       key={row.id}
                       className="hover:bg-white/5 border-white/5 transition-colors"
                     >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="px-3 py-2">
-                          <table.FlexRender cell={cell} />
-                        </TableCell>
-                      ))}
+                      {row.getVisibleCells().map((cell) => {
+                        const isSecondary = SECONDARY_PLAYER_COLUMNS.has(cell.column.id);
+                        return (
+                          <TableCell
+                            key={cell.id}
+                            className={cn(
+                              "px-3 py-2",
+                              isSecondary && "hidden sm:table-cell",
+                            )}
+                          >
+                            <table.FlexRender cell={cell} />
+                          </TableCell>
+                        );
+                      })}
                     </TableRow>
                   ))
                 ) : (

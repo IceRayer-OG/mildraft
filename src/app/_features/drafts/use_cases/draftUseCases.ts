@@ -2,6 +2,7 @@ import "server-only";
 
 // Clerk Import
 import { auth } from "@clerk/nextjs/server";
+import { checkCommissionerAuthorization } from "~/lib/auth";
 
 // Types
 import {
@@ -360,6 +361,8 @@ export async function getCompletedDraftPicksUseCase(
 }
 
 export async function undoDraftPickUseCase(draftPickToUndo: number, draftId?: number) {
+  await checkCommissionerAuthorization();
+
   let targetDraftId = draftId;
   if (!targetDraftId) {
     const activeDraft = await getActiveDraft(1);
@@ -376,10 +379,7 @@ export async function undoDraftPickUseCase(draftPickToUndo: number, draftId?: nu
 }
 
 export async function addNewDraftPickUseCase(teamName: string, draftId?: number) {
-  const user = await checkAuthorization();
-  if (!user) {
-    throw new Error("User is not authenticated");
-  }
+  await checkCommissionerAuthorization();
 
   let targetDraftId = draftId;
   if (!targetDraftId) {

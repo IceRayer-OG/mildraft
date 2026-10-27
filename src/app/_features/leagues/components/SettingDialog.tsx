@@ -25,8 +25,14 @@ import {
   getTeamSettingsAction,
   getDraftSettingsAction,
 } from "../actions/leagueActions";
+import { isCommissionerUser } from "~/lib/auth";
 
 export function SettingDialog() {
+  const isCommissioner = use(isCommissionerUser());
+  if (!isCommissioner) {
+    return null;
+  }
+
   const leagueData = {
     leagueId: 1, // Example league ID, replace with actual logic to get league ID
     draftId: 2, // Example draft ID, replace with actual logic to get draft ID
