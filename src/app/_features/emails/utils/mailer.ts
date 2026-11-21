@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { env } from "~/env";
 
 export const DEFAULT_FROM_EMAIL = "MilDraft <mildraft@siliconvalleybaseball.com>";
+export const DEFAULT_REPLY_TO = "admin@siliconvalleybaseball.com";
 
 export interface SendEmailOptions {
   from?: string;
@@ -12,6 +13,7 @@ export interface SendEmailOptions {
   cc?: string | string[];
   bcc?: string | string[];
   replyTo?: string | string[];
+  headers?: Record<string, string>;
 }
 
 export interface MailerResult {
@@ -40,6 +42,7 @@ export function resolveDeliveryMode(): "production" | "mock" | "redirect" | "dis
 export async function sendEmail(options: SendEmailOptions): Promise<MailerResult> {
   const mode = resolveDeliveryMode();
   const from = options.from ?? DEFAULT_FROM_EMAIL;
+  const replyTo = options.replyTo ?? DEFAULT_REPLY_TO;
   const toList = Array.isArray(options.to) ? options.to : [options.to];
 
   if (mode === "disabled") {
@@ -55,9 +58,10 @@ export async function sendEmail(options: SendEmailOptions): Promise<MailerResult
 
     console.log(
       `[EMAIL MOCK] Intercepted email (not sent via Resend):\n` +
-      `  Subject: "${options.subject}"\n` +
-      `  From:    ${from}\n` +
-      `  To:      ${toList.length} recipient(s) [${recipientSummary}]`,
+      `  Subject:  "${options.subject}"\n` +
+      `  From:     ${from}\n` +
+      `  Reply-To: ${Array.isArray(replyTo) ? replyTo.join(", ") : replyTo}\n` +
+      `  To:       ${toList.length} recipient(s) [${recipientSummary}]`,
     );
     return { data: { id: `mock-${Date.now()}` }, error: null };
   }
@@ -89,6 +93,8 @@ export async function sendEmail(options: SendEmailOptions): Promise<MailerResult
         to: [env.DEV_EMAIL_OVERRIDE],
         subject: redirectSubject,
         react: options.react,
+        replyTo,
+        ...(options.headers ? { headers: options.headers } : {}),
       });
 
       return {
@@ -121,9 +127,10 @@ export async function sendEmail(options: SendEmailOptions): Promise<MailerResult
       to: options.to,
       subject: options.subject,
       react: options.react,
+      replyTo,
+      ...(options.headers ? { headers: options.headers } : {}),
       ...(options.cc ? { cc: options.cc } : {}),
       ...(options.bcc ? { bcc: options.bcc } : {}),
-      ...(options.replyTo ? { replyTo: options.replyTo } : {}),
     });
 
     return {
