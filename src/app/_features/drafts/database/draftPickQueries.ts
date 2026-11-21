@@ -135,6 +135,25 @@ export async function checkWriteInNameAvailable(playerName: string) {
   return existingPlayer.length > 0;
 }
 
+export async function checkPlayerAlreadyDrafted(
+  playerId: number,
+  draftId: number,
+): Promise<boolean> {
+  const existingPick = await db
+    .select({ id: draftPicks.id })
+    .from(draftPicks)
+    .where(
+      and(
+        eq(draftPicks.draftId, draftId),
+        eq(draftPicks.playerId, playerId),
+        eq(draftPicks.pickMade, true),
+      ),
+    )
+    .limit(1);
+
+  return existingPick.length > 0;
+}
+
 export async function getPickWithTeamDetails(pickId: number) {
   const [pick] = await db
     .select({

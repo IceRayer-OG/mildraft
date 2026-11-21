@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import {
   createColumnHelper,
@@ -60,12 +60,16 @@ const features = tableFeatures({
 const columnHelper = createColumnHelper<typeof features, CompletedDraftPicks>();
 
 export function DraftPickTable({ data: initialPickData, draftId }: DraftPickDataTableProps) {
-  const [data] = useState(initialPickData);
+  const [data, setData] = useState(initialPickData);
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 8,
   });
+
+  useEffect(() => {
+    setData(initialPickData);
+  }, [initialPickData]);
 
   const undoDraftPick = async (draftPickToUndo: CompletedDraftPicks) => {
     try {

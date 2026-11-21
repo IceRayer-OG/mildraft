@@ -1,6 +1,6 @@
 "use client";
-import { useState, useMemo } from "react";
-import { flexRender, FlexRender, Row } from "@tanstack/react-table";
+import { useState, useMemo, useEffect } from "react";
+import { flexRender, Row } from "@tanstack/react-table";
 import {
   DndContext,
   KeyboardSensor,
@@ -21,7 +21,15 @@ import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
 import { CSSProperties } from "react";
 
 // UI Components
-import { GripVerticalIcon, MoreHorizontal, Zap, ListOrdered } from "lucide-react";
+import {
+  GripVerticalIcon,
+  MoreHorizontal,
+  Zap,
+  ListOrdered,
+  ChevronUp,
+  ChevronDown,
+  ArrowUpToLine,
+} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -37,7 +45,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/_components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/_components/ui/alert-dialog";
 import { toast } from "sonner";
+
+// Realtime
+import { useDraftRealtime } from "../hooks/useDraftRealtime";
 
 // Types
 import { type QueuePlayers } from "../utils/draft";
@@ -69,11 +90,10 @@ const RowDragHandleCell = ({ rowId }: { rowId: string }) => {
       {...attributes}
       {...listeners}
       type="button"
-      className="p-1.5 touch-none rounded text-stone-400 hover:text-white hover:bg-white/10 cursor-grab active:cursor-grabbing transition-colors"
-      title="Drag to reorder priority"
-      aria-label="Drag to reorder"
+      className="p-1.5 touch-none rounded text-stone-400 hover:text-white hover:bg-white/10 active:scale-95 transition-all cursor-grab active:cursor-grabbing"
+      aria-label="Drag to reorder player"
     >
-      <GripVerticalIcon className="h-4 w-4" />
+      <GripVerticalIcon className="size-4" />
     </button>
   );
 };
@@ -89,32 +109,35 @@ const DraggableRow = ({
   });
 
   const style: CSSProperties = {
-    transform: CSS.Translate.toString(transform),
+    transform: CSS.Transform.toString(transform),
     transition: transition,
     opacity: isDragging ? 0.7 : 1,
-    zIndex: isDragging ? 10 : 0,
+    zIndex: isDragging ? 50 : 0,
     position: "relative",
   };
+
   return (
     <TableRow
       ref={setNodeRef}
       style={style}
-      className={`border-b border-white/10 transition-colors ${
+      className={cn(
+        "border-b border-white/5 transition-colors",
         isDragging
-          ? "bg-sky-500/20 shadow-lg ring-1 ring-sky-500/40"
-          : row.index === 0
-          ? "bg-emerald-500/5 hover:bg-emerald-500/10"
-          : "hover:bg-white/5"
-      }`}
+          ? "bg-slate-900/90 shadow-2xl ring-1 ring-sky-500/50"
+          : "hover:bg-white/5",
+      )}
     >
-      {row.getAllCells().map((cell) => {
+      {row.getVisibleCells().map((cell) => {
         const isSecondary = SECONDARY_QUEUE_COLUMNS.has(cell.column.id);
         return (
           <TableCell
             key={cell.id}
-            className={cn("py-2.5", isSecondary && "hidden md:table-cell")}
+            className={cn(
+              "py-2.5 px-3 text-xs",
+              isSecondary && "hidden md:table-cell",
+            )}
           >
-            <FlexRender cell={cell} />
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
           </TableCell>
         );
       })}
@@ -165,14 +188,59 @@ const columnHelper = createAppColumnHelper<QueuePlayers>();
 
 export function QueueDataTable({
   data: initialData,
+  draftId = 2,
 }: {
   data: QueuePlayers[];
+  draftId?: number;
 }) {
   const [data, setData] = useState(initialData);
+  const [confirmDraftPlayer, setConfirmDraftPlayer] = useState<QueuePlayers | null>(null);
+
+  // Sync state with server revalidations
+  useEffect(() => {
+    setData(initialData);
+  }, [initialData]);
+
+  // Live Pusher synchronization: remove drafted players in real time
+  useDraftRealtime({
+    draftId,
+    onPickMade: (payload) => {
+      if (payload.playerId) {
+        setData((prev) => prev.filter((p) => p.id !== payload.playerId));
+      }
+    },
+  });
+
   const dataIds = useMemo<Array<UniqueIdentifier>>(
     () => data.map(({ id }) => id),
     [data],
   );
+
+  const movePlayer = (index: number, direction: -1 | 1) => {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= data.length) return;
+
+    const newData = arrayMove(data, index, newIndex);
+    setData(newData);
+
+    const queueOrder = newData.map((player, idx) => ({
+      playerId: player.id,
+      rank: idx + 1,
+    }));
+    updateMyQueueOrder(queueOrder);
+  };
+
+  const moveToTop = (index: number) => {
+    if (index === 0) return;
+    const newData = arrayMove(data, index, 0);
+    setData(newData);
+
+    const queueOrder = newData.map((player, idx) => ({
+      playerId: player.id,
+      rank: idx + 1,
+    }));
+    updateMyQueueOrder(queueOrder);
+  };
 
   const queueColumns = useMemo(
     () =>
@@ -253,35 +321,70 @@ export function QueueDataTable({
           header: "Actions",
           cell: ({ row }) => {
             const player = row.original;
+            const index = row.index;
 
             return (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-white/10 text-stone-300 hover:text-white">
-                    <span className="sr-only">Open menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
+              <div className="flex items-center justify-end gap-1">
+                {/* Mobile touch accessible reorder buttons */}
+                <div className="flex items-center gap-0.5">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    disabled={index === 0}
+                    onClick={() => movePlayer(index, -1)}
+                    className="h-7 w-7 p-0 text-stone-400 hover:text-white disabled:opacity-30 cursor-pointer"
+                    title="Move Up"
+                  >
+                    <ChevronUp className="size-3.5" />
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-slate-900 border border-white/15 text-white shadow-xl min-w-[120px]" align="end">
-                  <DropdownMenuItem
-                    onClick={() => draftPlayer(player)}
-                    className="cursor-pointer hover:bg-emerald-500/20 focus:bg-emerald-500/20 text-emerald-300 font-medium"
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    disabled={index === data.length - 1}
+                    onClick={() => movePlayer(index, 1)}
+                    className="h-7 w-7 p-0 text-stone-400 hover:text-white disabled:opacity-30 cursor-pointer"
+                    title="Move Down"
                   >
-                    Draft Now
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => removePlayerFromQueue(player)}
-                    className="cursor-pointer hover:bg-rose-500/20 focus:bg-rose-500/20 text-rose-300"
-                  >
-                    Remove
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <ChevronDown className="size-3.5" />
+                  </Button>
+                </div>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-white/10 text-stone-300 hover:text-white cursor-pointer">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-slate-900 border border-white/15 text-white shadow-xl min-w-[130px]" align="end">
+                    <DropdownMenuItem
+                      onClick={() => moveToTop(index)}
+                      disabled={index === 0}
+                      className="cursor-pointer hover:bg-white/10 focus:bg-white/10 text-sky-300"
+                    >
+                      <ArrowUpToLine className="size-3.5 mr-1.5" />
+                      Move to Top
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setConfirmDraftPlayer(player)}
+                      className="cursor-pointer hover:bg-emerald-500/20 focus:bg-emerald-500/20 text-emerald-300 font-medium"
+                    >
+                      Draft Now
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => removePlayerFromQueue(player)}
+                      className="cursor-pointer hover:bg-rose-500/20 focus:bg-rose-500/20 text-rose-300"
+                    >
+                      Remove
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             );
           },
         }),
       ]),
-    [],
+    [data],
   );
 
   const table = useAppTable({
@@ -298,7 +401,7 @@ export function QueueDataTable({
     const oldIndex = dataIds.indexOf(active.id);
     const newIndex = dataIds.indexOf(over.id);
     const newData = arrayMove(data, oldIndex, newIndex);
-    setData(newData); // this is just a splice util
+    setData(newData);
 
     const queueOrder = newData.map((player, index) => ({
       playerId: player.id,
@@ -360,7 +463,7 @@ export function QueueDataTable({
                 >
                   {table.getRowModel().rows?.length ? (
                     table.getRowModel().rows.map((row) => (
-                      <DraggableRow key={row.id} row={row} />
+                      <DraggableRow key={row.original.id} row={row} />
                     ))
                   ) : (
                     <TableRow className="hover:bg-transparent border-none">
@@ -386,6 +489,46 @@ export function QueueDataTable({
           </div>
         </div>
       </table.AppTable>
+
+      {/* Confirmation Dialog for Mobile Touch Safety */}
+      <AlertDialog
+        open={Boolean(confirmDraftPlayer)}
+        onOpenChange={(open) => !open && setConfirmDraftPlayer(null)}
+      >
+        <AlertDialogContent className="bg-slate-950 border border-white/20 text-white max-w-sm sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-lg font-bold">
+              Confirm Draft Selection
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-stone-300 text-sm">
+              Are you sure you want to draft{" "}
+              <strong className="text-white font-semibold">
+                {confirmDraftPlayer?.playerName}
+              </strong>
+              {confirmDraftPlayer?.position && confirmDraftPlayer.position.length > 0
+                ? ` (${confirmDraftPlayer.position.join(", ")})`
+                : ""}? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row justify-end gap-2 mt-2">
+            <AlertDialogCancel className="border-white/20 bg-white/5 hover:bg-white/10 text-white cursor-pointer mt-0">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold cursor-pointer"
+              onClick={async () => {
+                if (confirmDraftPlayer) {
+                  const player = confirmDraftPlayer;
+                  setConfirmDraftPlayer(null);
+                  await draftPlayer(player);
+                }
+              }}
+            >
+              Draft Player
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </DndContext>
   );
 }

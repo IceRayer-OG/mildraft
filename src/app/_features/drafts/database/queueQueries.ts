@@ -66,13 +66,15 @@ export async function getQueueCount(userId: string, draftId = 2) {
   return Number(result?.count ?? 0);
 }
 
-export async function postPlayerToQueue(prosId: number, userId: string) {
+export async function postPlayerToQueue(
+  prosId: number,
+  userId: string,
+  draftId = 2,
+) {
   await db.insert(queues).values({
     playerId: prosId,
     userId: userId,
-    // teamId: teams.id,
-    // leagueId: leagues.id,
-    draftId: 2,
+    draftId,
   });
 }
 

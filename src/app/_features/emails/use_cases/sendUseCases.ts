@@ -1,5 +1,5 @@
-// Resend API client
-import { Resend } from "resend";
+// Mailer utility
+import { sendEmail } from "../utils/mailer";
 
 // Database queries
 import { getDraftPickEmails } from "../../drafts/database/teamQueries";
@@ -17,8 +17,6 @@ import DraftPickTimeoutEmail from "~/emails/draft_pick_timeout";
 import DraftStartEmail from "~/emails/draft_start";
 import DraftReminderEmail from "~/emails/one_hour";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 async function getLeagueEmails() {
   const draftPickEmails = await getDraftPickEmails();
   const emails = draftPickEmails.map(email => `${email.teamName} <${email.teamEmail}>`);
@@ -28,43 +26,39 @@ async function getLeagueEmails() {
 export async function sendDraftStartEmail(pickingTeamName: string) {
   const emails = await getLeagueEmails();
 
-  const { data, error } = await resend.emails.send({
-    from: "MilDraft <mildraft@siliconvalleybaseball.com>",
-    to: emails, //used for production
-    // to: ["Slump Busters <matthew.dowling3@gmail.com>"], // used for testing
+  const { data, error } = await sendEmail({
+    to: emails,
     subject: "2026 SVBB MiL Draft Start",
     react: DraftStartEmail({ pickingTeam: pickingTeamName }),
   });
 
   console.log("LOG: Sending draft start email...");
+  return { data, error };
 }
 
-export async function sendPickDeadlineEmail(pickingTeamName: string) {
+export async function sendPickDeadlineEmail(_pickingTeamName: string) {
   // Get the current picking email
   const email = await getCurrentDraftPick().then(email => {
     if(!email?.team?.email) return "Slump Busters <matthew.dowling3@gmail.com>";
     return `${email.team.name} <${email.team.email}>`;
   });
 
-  const { data, error } = await resend.emails.send({
-    from: "MilDraft <mildraft@siliconvalleybaseball.com>",
-    to: email, //used for production
-    // to: ["Slump Busters <matthew.dowling3@gmail.com>"], // used for testing
+  const { data, error } = await sendEmail({
+    to: email,
     subject: "2026 SVBB MiL Draft Pick Reminder",
     react: DraftReminderEmail({ timeRemaining: 1 }),
   });
   
   // Implement the logic to send an email when a pick deadline is approaching
   console.log("LOG: Sending pick deadline email...");
+  return { data, error };
 }
 
 export async function sendPickTimeoutEmail(emailprops: DraftTimeOutEmailData ) {
   const emails = await getLeagueEmails();
 
-  const { data, error } = await resend.emails.send({
-    from: "MilDraft <mildraft@siliconvalleybaseball.com>",
-    to: emails, //used for production
-    // to: ["Slump Busters <matthew.dowling3@gmail.com>"], // used for testing
+  const { data, error } = await sendEmail({
+    to: emails,
     subject: "SVBB MiL Draft Pick Timed Out",
     react: DraftPickTimeoutEmail(emailprops),
   });
@@ -77,15 +71,14 @@ export async function sendPickTimeoutEmail(emailprops: DraftTimeOutEmailData ) {
 export async function sendPickMadeEmail(emailprops: DraftPickEmailProps) {
   const emails = await getLeagueEmails();
 
-  const { data, error } = await resend.emails.send({
-    from: "MilDraft <mildraft@siliconvalleybaseball.com>",
-    to: emails, //used for production
-    // to: ["Slump Busters <matthew.dowling3@gmail.com>"], // used for testing
+  const { data, error } = await sendEmail({
+    to: emails,
     subject: "SVBB MiL Draft Pick Completed",
     react: DraftPickEmail(emailprops),
   });
   // Implement the logic to send an email when a pick is made
   console.log("LOG: Sending pick made email...");
+  return { data, error };
 }
 
 export async function sendDraftPauseEmail() {

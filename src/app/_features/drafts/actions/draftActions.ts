@@ -36,7 +36,7 @@ export async function draftPlayerAction(
 ) {
   const response = await draftPlayerUseCase(playerToDraft);
   
-  revalidatePath("league/draft");
+  revalidatePath("/league/draft");
   return response;
 }
 
@@ -46,7 +46,7 @@ export async function draftWriteInPlayerAction(
 ) {
   const playerToDraft = formData.get("writeInPlayerName") as string;
   const response = await draftWriteInPlayerUseCase(playerToDraft);
-  revalidatePath("league/draft");
+  revalidatePath("/league/draft");
   return response;
 }
 

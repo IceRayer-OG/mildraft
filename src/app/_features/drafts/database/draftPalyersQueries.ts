@@ -14,11 +14,11 @@ import {
 } from "drizzle-orm";
 import { draftPicks, pros, players, teams } from "~/server/db/schema";
 
-export async function getDraftablePlayers() {
+export async function getDraftablePlayers(draftId = 2) {
   const draftedPlayers = db
     .select({ pickedPlayer: draftPicks.playerId })
     .from(draftPicks)
-    .where(and(eq(draftPicks.draftId, 2), isNotNull(draftPicks.playerId)));
+    .where(and(eq(draftPicks.draftId, draftId), isNotNull(draftPicks.playerId)));
 
   const playersOnTeams = db
     .select({ playerOnTeam: players.proId })
@@ -40,11 +40,11 @@ export async function getDraftablePlayers() {
   return draftablePlayers;
 }
 
-export async function getDraftedPlayers() {
+export async function getDraftedPlayers(draftId = 2) {
   const completedDraftPicks = db
     .select({ pickedPlayer: draftPicks.playerId })
     .from(draftPicks)
-    .where(and(eq(draftPicks.draftId, 2), isNotNull(draftPicks.playerId)));
+    .where(and(eq(draftPicks.draftId, draftId), isNotNull(draftPicks.playerId)));
 
   const draftedPlayers = await db
     .select()
