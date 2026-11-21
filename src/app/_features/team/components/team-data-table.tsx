@@ -111,6 +111,7 @@ export function TeamDataTable({ data: initialData }: { data: TeamPlayers[] }) {
               {row.original.pros.playerName}
             </span>
           ),
+          filterFn: "includesString",
           sortFn: "text",
         }),
         columnHelper.accessor((row) => row.pros.position, {

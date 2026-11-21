@@ -9,7 +9,7 @@ const config = {
   // cacheComponents: true,
   experimental: {
     // ppr: 'incremental',
-    
+    agentUpgrade: "security",
   },
   images: {
     remotePatterns: [

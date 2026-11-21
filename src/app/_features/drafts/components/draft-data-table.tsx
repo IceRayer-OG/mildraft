@@ -161,6 +161,7 @@ export function DraftDataTable({
               {row.getValue("playerName")}
             </span>
           ),
+          filterFn: "includesString",
           sortFn: "text",
         }),
         columnHelper.accessor("position", {

@@ -5,7 +5,6 @@ import {
   createSortedRowModel,
   createTableHook,
   filterFn_inNumberRange,
-  filterFn_includesString,
   columnFacetingFeature,
   createFacetedRowModel,
   createFacetedUniqueValues,
@@ -16,14 +15,29 @@ import {
   sortFn_text,
   tableFeatures,
   columnVisibilityFeature,
-  FlexRender,
-  flexRender,
 } from "@tanstack/react-table";
 
 // Component imports
 import { TablePagination } from "~/_components/table/TablePagination";
 import { TableFacetedFilter } from "~/_components/table/TableFacetedFilters";
 import { DragCell } from "~/_components/table/CellComponents";
+import { normalizeDiacritics } from "~/lib/utils";
+
+/**
+ * Custom accent-insensitive and case-insensitive string filter.
+ * Matches e.g. "Jesus" with "Jesús", "Acuna" with "Acuña".
+ */
+export const filterFn_accentInsensitive = (
+  row: { getValue: (columnId: string) => unknown },
+  columnId: string,
+  filterValue: unknown,
+): boolean => {
+  const rowValue = row.getValue(columnId);
+  if (rowValue == null || filterValue == null) return false;
+  return normalizeDiacritics(String(rowValue)).includes(
+    normalizeDiacritics(String(filterValue)),
+  );
+};
 
 /**
  * Create the custom table hook with all pre-bound components.
@@ -56,7 +70,8 @@ export const {
     filteredRowModel: createFilteredRowModel(),
     paginatedRowModel: createPaginatedRowModel(),
     filterFns: {
-      includesString: filterFn_includesString,
+      includesString: filterFn_accentInsensitive,
+      accentInsensitive: filterFn_accentInsensitive,
       inNumberRange: filterFn_inNumberRange,
     },
     sortFns: {
@@ -67,7 +82,7 @@ export const {
         const b = rowB.getValue(columnId);
 
         // Handle blanks (null, undefined, or empty string)
-        const isEmpty = (val: any) =>
+        const isEmpty = (val: unknown) =>
           val === null || val === undefined || val === "";
 
         if (isEmpty(a) && !isEmpty(b)) return 1; // Move A to bottom

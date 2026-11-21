@@ -35,6 +35,7 @@ import { Button } from "~/_components/ui/button";
 import { Input } from "~/_components/ui/input";
 import { Badge } from "~/_components/ui/badge";
 import { toast } from "sonner";
+import { normalizeDiacritics } from "~/lib/utils";
 
 // Actions
 import { undoDraftPickAction } from "../actions/draftActions";
@@ -78,11 +79,11 @@ export function DraftPickTable({ data: initialPickData, draftId }: DraftPickData
 
   const filteredData = useMemo(() => {
     if (!globalFilter.trim()) return data;
-    const search = globalFilter.toLowerCase();
+    const search = normalizeDiacritics(globalFilter);
     return data.filter(
       (item) =>
-        item.playerName.toLowerCase().includes(search) ||
-        item.teamName.toLowerCase().includes(search) ||
+        normalizeDiacritics(item.playerName).includes(search) ||
+        normalizeDiacritics(item.teamName).includes(search) ||
         String(item.pickNumber).includes(search),
     );
   }, [data, globalFilter]);

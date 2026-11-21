@@ -107,6 +107,7 @@ export function PlayerDataTable({ data: initialData }: PlayerDataTableProps) {
               {row.getValue("playerName")}
             </span>
           ),
+          filterFn: "includesString",
           sortFn: "text",
         }),
         columnHelper.accessor("position", {

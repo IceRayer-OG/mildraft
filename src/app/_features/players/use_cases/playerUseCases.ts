@@ -5,11 +5,16 @@ import { Readable } from "stream";
 import { auth } from "@clerk/nextjs/server";
 import ExcelJS from "exceljs";
 
+// Database
+import { db } from "~/server/db";
+import { settings } from "~/server/db/schema";
+
 // Import Types
 import { type Players, type ProPlayers } from "../utils/players";
 
 // Import Database Queries
 import { getFreeAgents, loadProspectPlayers } from "../database/queries";
+import { fetchAllProspectsFromMlb } from "../utils/mlbSync";
 
 async function checkAuthorization() {
     const user = await auth();
@@ -136,6 +141,54 @@ export async function loadProspectPlayersUseCase(loadFile: File) {
 		response.message = "Error loading prospect players into database";
 		console.error("Error loading prospect players:", error);
 	}
+
+  return response;
+}
+
+export async function syncProspectsFromMlbUseCase(syncYear?: number) {
+  const user = await checkAuthorization();
+  if (!user) {
+    throw new Error("User is not authenticated");
+  }
+
+  const response = {
+    status: "",
+    message: "",
+    count: 0,
+  };
+
+  try {
+    const settingsList = await db.select().from(settings).limit(1);
+    const leagueSettings = settingsList[0];
+    const maxCareerAtBats = leagueSettings?.maxCareerAtBats ?? 130;
+    const maxCareerInningsPitched = leagueSettings?.maxCareerInningsPitched
+      ? parseFloat(leagueSettings.maxCareerInningsPitched)
+      : 50.0;
+
+    const year = syncYear ?? new Date().getFullYear();
+    const prospects = await fetchAllProspectsFromMlb({
+      year,
+      maxCareerAtBats,
+      maxCareerInningsPitched,
+    });
+
+    if (prospects.length === 0) {
+      response.status = "error";
+      response.message = `No prospect data returned from MLB Pipeline for year ${year}`;
+      return response;
+    }
+
+    await loadProspectPlayers(prospects as ProPlayers[]);
+
+    response.status = "success";
+    response.message = `Successfully synced ${prospects.length} prospects from MLB Pipeline for ${year}.`;
+    response.count = prospects.length;
+  } catch (error) {
+    console.error("Error syncing prospects from MLB:", error);
+    response.status = "error";
+    response.message =
+      error instanceof Error ? error.message : "Error syncing prospects from MLB";
+  }
 
   return response;
 }

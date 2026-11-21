@@ -11,6 +11,7 @@ import {
   unique,
   date,
   text,
+  numeric,
 } from "drizzle-orm/pg-core";
 
 // export const namespace = "mildraft_";
@@ -190,11 +191,15 @@ export const pros = createTable(
   `pros`,
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    mlbamId: integer("mlbam_id"),
     playerNumber: integer("player_number"),
     playerFirstName: varchar("player_first_name", { length: 256 }),
     playerLastName: varchar("player_last_name", { length: 256 }),
     playerName: varchar("player_name", { length: 256 }),
     team: varchar("team", { length: 256 }),
+    org: varchar("org", { length: 256 }),
+    orgId: integer("org_id"),
+    affiliateTeam: varchar("affiliate_team", { length: 256 }),
     position: positions("position").array(),
     level: varchar("level", { length: 256 }),
     age: integer("age"),
@@ -205,7 +210,16 @@ export const pros = createTable(
     rank: integer("rank"),
     teamRank: integer("team_rank"),
     draftRank: integer("draft_rank"),
+    intlRank: integer("intl_rank"),
+    lists: varchar("lists", { length: 64 }).array(),
     eta: integer("eta"),
+    headshotUrl: varchar("headshot_url", { length: 512 }),
+    careerMlbAtBats: integer("career_mlb_at_bats").default(0).notNull(),
+    careerMlbInningsPitched: numeric("career_mlb_innings_pitched", { precision: 5, scale: 1 })
+      .default("0.0")
+      .notNull(),
+    mlbDebutDate: date("mlb_debut_date"),
+    isMilEligible: boolean("is_mil_eligible").default(true).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -215,8 +229,9 @@ export const pros = createTable(
   },
   (example) => [
     index("pros_idx").on(example.id),
-    unique("player_team_unique").on(example.playerName, example.team),
-    unique("player_throws_unique").on(example.playerName, example.throws)
+    index("pros_mlbam_idx").on(example.mlbamId),
+    index("pros_eligibility_idx").on(example.isMilEligible),
+    unique("pros_mlbam_id_unique").on(example.mlbamId),
   ]
 );
 
@@ -233,6 +248,10 @@ export const settings = createTable(
     teams: integer("teams"),
     teamLogosEnabled: boolean("team_logos_enabled").default(true),
     timezone: varchar("time_zone", { length: 256 }),
+    maxCareerAtBats: integer("max_career_at_bats").default(130).notNull(),
+    maxCareerInningsPitched: numeric("max_career_innings_pitched", { precision: 5, scale: 1 })
+      .default("50.0")
+      .notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
