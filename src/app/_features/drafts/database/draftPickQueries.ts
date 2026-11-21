@@ -9,6 +9,7 @@ import {
 } from "drizzle-orm";
 import { draftPicks, players, pros, teams } from "~/server/db/schema";
 import { type InngestPick } from "../utils/draft";
+import { normalizeDiacritics } from "~/lib/utils";
 
 export async function getFirstDraftPick(draftId: number) {
   const [firstPick] = await db
@@ -116,22 +117,22 @@ export async function getDraftResults(draftId: number) {
 }
 
 export async function checkWriteInNameAvailable(playerName: string) {
+  const normalized = normalizeDiacritics(playerName);
 
-const existingPlayer = await db
-  .select({ id: players.id }) // Minimize data transfer by only selecting the ID
-  .from(players)
-  .leftJoin(pros, eq(players.id, pros.id))
-  .leftJoin(draftPicks, eq(players.id, draftPicks.playerId))
-  .where(
-    or(
-      // Case-insensitive comparison: "Name" vs "name"
-      sql`lower(${pros.playerName}) = lower(${playerName})`,
-      sql`lower(${draftPicks.writeInName}) = lower(${playerName})`
+  const existingPlayer = await db
+    .select({ id: players.id }) // Minimize data transfer by only selecting the ID
+    .from(players)
+    .leftJoin(pros, eq(players.id, pros.id))
+    .leftJoin(draftPicks, eq(players.id, draftPicks.playerId))
+    .where(
+      or(
+        sql`translate(lower(${pros.playerName}), 'áéíóúüñ', 'aeiouun') = ${normalized}`,
+        sql`translate(lower(${draftPicks.writeInName}), 'áéíóúüñ', 'aeiouun') = ${normalized}`,
+      ),
     )
-  )
-  .limit(1);
+    .limit(1);
 
-return existingPlayer.length > 0;
+  return existingPlayer.length > 0;
 }
 
 export async function getPickWithTeamDetails(pickId: number) {

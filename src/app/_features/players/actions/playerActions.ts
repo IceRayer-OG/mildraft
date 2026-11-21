@@ -4,7 +4,11 @@
 import { revalidatePath } from "next/cache";
 
 // Import Use Cases
-import { getFreeAgentsUseCase, loadProspectPlayersUseCase } from "../use_cases/playerUseCases";
+import {
+  getFreeAgentsUseCase,
+  loadProspectPlayersUseCase,
+  syncProspectsFromMlbUseCase,
+} from "../use_cases/playerUseCases";
 
 export async function getFreeAgentsAction() {
     const freeAgents = await getFreeAgentsUseCase();
@@ -21,5 +25,16 @@ export async function loadProspectPlayersAction(
   console.log("loadProspectPlayersAction response:", response);
   
   revalidatePath("/league/draft");
+  revalidatePath("/league/players");
   return response;
 }
+
+export async function syncProspectsAction(year?: number) {
+  const response = await syncProspectsFromMlbUseCase(year);
+  console.log("syncProspectsAction response:", response);
+
+  revalidatePath("/league/draft");
+  revalidatePath("/league/players");
+  return response;
+}
+

@@ -94,6 +94,7 @@ export function ResultsDataTable({ data: initialData }: ResultsDataTableProps) {
               {row.getValue("teamName") ?? "-"}
             </span>
           ),
+          filterFn: "includesString",
           sortFn: "text",
         }),
         columnHelper.accessor("playerName", {
@@ -106,6 +107,7 @@ export function ResultsDataTable({ data: initialData }: ResultsDataTableProps) {
               {row.getValue("playerName") ?? "-"}
             </span>
           ),
+          filterFn: "includesString",
           sortFn: "text",
         }),
       ]),

@@ -28,36 +28,46 @@ export async function getFreeAgents() {
     return freeAgents;
 }
 
-export async function loadDraftablePlayers(draftablePlayers: unknown) {
+export async function loadDraftablePlayers(_draftablePlayers: unknown) {
 
 }
 
 export async function loadProspectPlayers(dataToInsert: ProPlayers[]) {
+  const batchSize = 100;
 
-	const batchSize = 10; // Adjust batch size as needed
-
-	for (let i = 0; i < dataToInsert.length; i += batchSize) {
+  for (let i = 0; i < dataToInsert.length; i += batchSize) {
     const batch = dataToInsert.slice(i, i + batchSize);
-    
-	await db.insert(pros)
-	.values(batch)
-	.onConflictDoUpdate({
-		target: [pros.playerName, pros.throws],
-		set: {
-			rank: sql`excluded.rank`,
-            teamRank: sql`excluded.team_rank`,
-            draftRank: sql`excluded.draft_rank`,
-			position: sql`excluded.position`,
-            team: sql`excluded.team`,
-			level: sql`excluded.level`,
-			eta: sql`excluded.eta`,
-			age: sql`excluded.age`,
-			height: sql`excluded.height`,
-			weight: sql`excluded.weight`,
-			bats: sql`excluded.bats`,
-			updatedAt: sql`NOW()`
-		}
-	});
-}
 
+    await db
+      .insert(pros)
+      .values(batch)
+      .onConflictDoUpdate({
+        target: pros.mlbamId,
+        set: {
+          rank: sql`excluded.rank`,
+          teamRank: sql`excluded.team_rank`,
+          draftRank: sql`excluded.draft_rank`,
+          intlRank: sql`excluded.intl_rank`,
+          position: sql`excluded.position`,
+          team: sql`excluded.team`,
+          org: sql`excluded.org`,
+          orgId: sql`excluded.org_id`,
+          affiliateTeam: sql`excluded.affiliate_team`,
+          level: sql`excluded.level`,
+          eta: sql`excluded.eta`,
+          age: sql`excluded.age`,
+          height: sql`excluded.height`,
+          weight: sql`excluded.weight`,
+          bats: sql`excluded.bats`,
+          throws: sql`excluded.throws`,
+          headshotUrl: sql`excluded.headshot_url`,
+          lists: sql`excluded.lists`,
+          careerMlbAtBats: sql`excluded.career_mlb_at_bats`,
+          careerMlbInningsPitched: sql`excluded.career_mlb_innings_pitched`,
+          mlbDebutDate: sql`excluded.mlb_debut_date`,
+          isMilEligible: sql`excluded.is_mil_eligible`,
+          updatedAt: sql`NOW()`,
+        },
+      });
+  }
 }
