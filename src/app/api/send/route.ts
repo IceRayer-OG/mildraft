@@ -1,23 +1,43 @@
-import { EmailTemplate } from '../../../emails/email-template';
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { EmailTemplate } from "~/emails/email-template";
+import { sendEmail } from "~/app/_features/emails/utils/mailer";
 
 export async function POST() {
   try {
-    const { data, error } = await resend.emails.send({
-      from: 'Acme <onboarding@resend.dev>',
-      to: ['matthew.dowling3@gmail.com'],
-      subject: 'Hello world',
-      react: EmailTemplate({ firstName: 'Matt' }),
+    const { data, error } = await sendEmail({
+      from: "Acme <onboarding@resend.dev>",
+      to: ["matthew.dowling3@gmail.com"],
+      subject: "Hello world",
+      react: EmailTemplate({ firstName: "Matt" }),
     });
 
     if (error) {
-      return Response.json({ error }, { status: 500 });
+      return Response.json(
+        {
+          type: "about:blank",
+          title: "Email Send Error",
+          status: 500,
+          detail: "message" in error ? error.message : "Failed to send email",
+        },
+        {
+          status: 500,
+          headers: { "Content-Type": "application/problem+json" },
+        },
+      );
     }
 
     return Response.json(data);
   } catch (error) {
-    return Response.json({ error }, { status: 500 });
+    return Response.json(
+      {
+        type: "about:blank",
+        title: "Internal Server Error",
+        status: 500,
+        detail: error instanceof Error ? error.message : "Unexpected error sending email",
+      },
+      {
+        status: 500,
+        headers: { "Content-Type": "application/problem+json" },
+      },
+    );
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useAppTable, createAppColumnHelper, appFeatures } from "~/hooks/table";
 import { useSelector } from "@tanstack/react-store";
 import { type Column, type RowData } from "@tanstack/react-table";
@@ -29,9 +29,22 @@ import {
   TableHeader,
   TableRow,
 } from "~/_components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/_components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Input } from "~/_components/ui/input";
 import { cn } from "~/lib/utils";
+
+// Realtime
+import { useDraftRealtime } from "../hooks/useDraftRealtime";
 
 // Actions
 import { draftPlayerAction } from "../actions/draftActions";
@@ -109,10 +122,26 @@ function SortableHeader<TData extends RowData, TValue>({
 
 export function DraftDataTable({
   data: initialData,
+  draftId = 2,
 }: {
   data: DraftablePlayers[];
+  draftId?: number;
 }) {
-  const [data] = useState(initialData);
+  const [data, setData] = useState(initialData);
+  const [confirmPlayer, setConfirmPlayer] = useState<DraftablePlayers | null>(null);
+
+  useEffect(() => {
+    setData(initialData);
+  }, [initialData]);
+
+  useDraftRealtime({
+    draftId,
+    onPickMade: (payload) => {
+      if (payload.playerId) {
+        setData((prev) => prev.filter((p) => p.id !== payload.playerId));
+      }
+    },
+  });
 
   const draftColumns = useMemo(
     () =>
@@ -320,7 +349,7 @@ export function DraftDataTable({
                     <TooltipTrigger asChild>
                       <Button
                         size="sm"
-                        onClick={() => draftPlayer(player)}
+                        onClick={() => setConfirmPlayer(player)}
                         className="h-8 px-3 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium shadow-xs cursor-pointer"
                       >
                         Draft
@@ -336,7 +365,7 @@ export function DraftDataTable({
           },
         }),
       ]),
-    [],
+    [setConfirmPlayer],
   );
 
   const table = useAppTable({
@@ -495,6 +524,46 @@ export function DraftDataTable({
         <table.TablePagination />
       </div>
       <div className="h-5"></div>
+
+      {/* Confirmation Dialog for Mobile Touch Safety */}
+      <AlertDialog
+        open={Boolean(confirmPlayer)}
+        onOpenChange={(open) => !open && setConfirmPlayer(null)}
+      >
+        <AlertDialogContent className="bg-slate-950 border border-white/20 text-white max-w-sm sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-lg font-bold">
+              Confirm Draft Selection
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-stone-300 text-sm">
+              Are you sure you want to draft{" "}
+              <strong className="text-white font-semibold">
+                {confirmPlayer?.playerName}
+              </strong>
+              {confirmPlayer?.position && confirmPlayer.position.length > 0
+                ? ` (${confirmPlayer.position.join(", ")})`
+                : ""}? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row justify-end gap-2 mt-2">
+            <AlertDialogCancel className="border-white/20 bg-white/5 hover:bg-white/10 text-white cursor-pointer mt-0">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold cursor-pointer"
+              onClick={async () => {
+                if (confirmPlayer) {
+                  const player = confirmPlayer;
+                  setConfirmPlayer(null);
+                  await draftPlayer(player);
+                }
+              }}
+            >
+              Draft Player
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </table.AppTable>
   );
 }

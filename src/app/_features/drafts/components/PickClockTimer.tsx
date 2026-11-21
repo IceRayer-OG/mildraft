@@ -7,26 +7,25 @@ import { useState, useEffect } from "react";
 import { calculateTimeLeft } from "../utils/draft";
 
 interface CountdownTimerProps {
-  targetDate: Date;
+  targetDate: Date | string | null | undefined;
 }
 
 export default function DraftCountdownTimer({
   targetDate,
 }: CountdownTimerProps) {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(targetDate));
+  const safeDate = targetDate ? new Date(targetDate) : new Date();
+  const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(safeDate));
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setTimeLeft(calculateTimeLeft(targetDate));
+    const nextDate = targetDate ? new Date(targetDate) : new Date();
+    setTimeLeft(calculateTimeLeft(nextDate));
+
+    const interval = setInterval(() => {
+      setTimeLeft(calculateTimeLeft(nextDate));
     }, 1000);
 
-    // Clean up the timer when the component unmounts
-    return () => clearTimeout(timer);
-  });
-
-  if (!timeLeft.state.active) {
-    const timerComponents = null;
-  }
+    return () => clearInterval(interval);
+  }, [targetDate]);
 
   const timerComponents = Object.entries(timeLeft.dateData).map(
     ([unit, value]) => {
@@ -40,36 +39,35 @@ export default function DraftCountdownTimer({
 
   return (
     <div className="flex gap-1">
-      {timerComponents.length ? (
+      {timeLeft.state.active && timerComponents.length ? (
         timerComponents
       ) : (
-        <span>Time`&apos;`s up!</span>
+        <span>Time&apos;s up!</span>
       )}
     </div>
   );
 }
 
 export function PickCountdownTimer({ targetDate }: CountdownTimerProps) {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(targetDate));
+  const safeDate = targetDate ? new Date(targetDate) : new Date();
+  const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(safeDate));
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setTimeLeft(calculateTimeLeft(targetDate));
+    const nextDate = targetDate ? new Date(targetDate) : new Date();
+    setTimeLeft(calculateTimeLeft(nextDate));
+
+    const interval = setInterval(() => {
+      setTimeLeft(calculateTimeLeft(nextDate));
     }, 1000);
 
-    // Clean up the timer when the component unmounts
-    return () => clearTimeout(timer);
-  });
-
-  if (!timeLeft.state.active) {
-    const timerComponents = null;
-  }
+    return () => clearInterval(interval);
+  }, [targetDate]);
 
   const timerComponents = Object.entries(timeLeft.dateData)
     .filter(([unit]) => unit !== "D") // Skip the Days unit
     .map(([unit, value]) => {
       return (
-        <div key={unit} className="flex text-xs text-green-500">
+        <div key={unit} className="flex text-xs text-green-500 font-mono">
           {`${value.toString().padStart(2, "0")}${unit.toLowerCase()}`}
         </div>
       );
@@ -77,10 +75,10 @@ export function PickCountdownTimer({ targetDate }: CountdownTimerProps) {
 
   return (
     <div className="flex gap-1">
-      {timerComponents.length ? (
+      {timeLeft.state.active && timerComponents.length ? (
         timerComponents
       ) : (
-        <span>Time`&apos;`s up!</span>
+        <span className="text-xs text-stone-400">Time&apos;s up!</span>
       )}
     </div>
   );

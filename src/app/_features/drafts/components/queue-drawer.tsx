@@ -25,7 +25,7 @@ import {
 } from "../actions/queueActions";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
-export function QueueDrawer() {
+export function QueueDrawer({ draftId }: { draftId?: number } = {}) {
   const data = use(getMyQueueAction());
   const autoDraftSettings = use(getMyAutoDraftSettingsAction());
 
@@ -68,7 +68,7 @@ export function QueueDrawer() {
 
           <ScrollArea className="overflow-y-auto grow pr-1">
             <Suspense fallback={<div className="p-8 text-center text-sm text-stone-400">Loading queue...</div>}>
-              <QueueDataTable data={data} />
+              <QueueDataTable data={data} draftId={draftId} />
             </Suspense>
           </ScrollArea>
 

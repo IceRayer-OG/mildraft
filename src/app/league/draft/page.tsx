@@ -11,7 +11,7 @@ import { QueueDrawer } from "~/app/_features/drafts/components/queue-drawer";
 import { DraftDataTable } from "~/app/_features/drafts/components/draft-data-table";
 import DraftQueueList from "~/app/_features/drafts/components/draft-picks-queue";
 import { DraftOrderDialog } from "~/app/_features/drafts/components/DraftOrderDialog";
-import DraftCountdownTimer from "~/app/_features/drafts/components/PickClockTimer";
+import DraftCountdownTimer, { PickCountdownTimer } from "~/app/_features/drafts/components/PickClockTimer";
 
 // Server actions
 import {
@@ -41,6 +41,10 @@ export default function DraftPage() {
   const isDraftCompleted = activeDraft?.status === "completed";
   const draftYear = activeDraft?.draftYear ?? 2026;
 
+  const currentPick = draftPicks?.find(
+    (p) => p.draft_pick.status === "on the clock",
+  );
+
   return (
     <div className="flex flex-col w-full min-h-screen gap-4 p-3 sm:p-4 pb-28 bg-linear-to-b from-[#12026d] to-[#15162c] text-white">
       {/* Top Header / Timer Bar */}
@@ -63,6 +67,22 @@ export default function DraftPage() {
           </>
         )}
       </div>
+
+      {/* Mobile-Only On-The-Clock Banner */}
+      {!isDraftCompleted && currentPick && (
+        <div className="flex sm:hidden items-center justify-between px-3 py-2 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-xs shadow-md">
+          <div className="flex items-center gap-1.5 truncate">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
+            <span className="text-emerald-200 truncate">
+              On Clock: <strong className="text-white font-semibold">{currentPick.team.name}</strong> (#{currentPick.draft_pick.pickNumber})
+            </span>
+          </div>
+          <PickCountdownTimer targetDate={currentPick.draft_pick.clockEndsAt} />
+        </div>
+      )}
 
       {/* Picks Banner / Draft Order */}
       <div className="flex items-center bg-white/5 backdrop-blur-md rounded-lg border border-white/10 px-2 py-1">
@@ -107,13 +127,13 @@ export default function DraftPage() {
 
       <div className="flex flex-col grow gap-4">
         <Suspense fallback={<div className="w-full h-full p-8 text-center text-stone-400">Loading draft board...</div>}>
-          <DraftDataTable data={draftablePlayers} />
+          <DraftDataTable data={draftablePlayers} draftId={draftId} />
         </Suspense>
       </div>
       <div className="flex fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 max-w-[calc(100%-2rem)] sm:max-w-fit mx-auto inset-x-0 bg-slate-950/90 backdrop-blur-md border border-white/20 rounded-full justify-center items-center shadow-2xl py-1 px-3 sm:px-4 gap-1 sm:gap-2">
         <div>
           <Suspense fallback={<button className="px-4 py-2 text-sm text-stone-300">Queue</button>}>
-            <QueueDrawer />
+            <QueueDrawer draftId={draftId} />
           </Suspense>
         </div>
         <div>
